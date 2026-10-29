@@ -3,257 +3,291 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profesyonel Video Stüdyosu | AGENT-GELISTIRME</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>AI Reklam Stüdyosu | AGENT-GELISTIRME</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Montserrat:wght@300;600&family=Inter:wght@400&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background: #111827; color: white; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        body { font-family: 'Inter', sans-serif; background: #0F172A; color: white; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         .header { text-align: center; margin-bottom: 20px; }
-        .header h1 { margin: 0; font-family: 'Playfair Display', serif; font-size: 32px; color: #FDF2F8; }
-        .header p { color: #9CA3AF; font-size: 14px; margin-top: 5px; }
+        .header h1 { margin: 0; font-family: 'Playfair Display', serif; font-size: 32px; background: linear-gradient(90deg, #38BDF8, #A78BFA); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header p { color: #94A3B8; font-size: 13px; margin-top: 5px; }
         
-        .studio-container { width: 100%; max-width: 800px; background: #1F2937; border-radius: 20px; padding: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid #374151; }
+        .studio-container { width: 100%; max-width: 800px; background: #1E293B; border-radius: 20px; padding: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid #334155; }
         
-        .prompt-area { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
-        .prompt-area label { font-size: 14px; font-weight: 600; color: #F3F4F6; }
-        .prompt-area textarea { width: 100%; height: 80px; background: #111827; border: 1px solid #374151; border-radius: 10px; padding: 14px; color: #F3F4F6; font-family: 'Inter', sans-serif; resize: none; outline: none; transition: border 0.3s; }
-        .prompt-area textarea:focus { border-color: #F472B6; }
+        .prompt-area { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+        .prompt-area label { font-size: 14px; font-weight: 600; color: #E2E8F0; }
+        .prompt-area textarea { width: 100%; height: 80px; background: #0F172A; border: 1px solid #334155; border-radius: 10px; padding: 14px; color: white; font-family: 'Inter', sans-serif; resize: none; outline: none; transition: border 0.3s; }
+        .prompt-area textarea:focus { border-color: #38BDF8; }
         
         .action-row { display: flex; gap: 10px; }
-        .action-row button { flex: 1; background: linear-gradient(135deg, #F472B6, #A78BFA); color: white; border: none; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-        .action-row button:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(244,114,182,0.3); }
-        .action-row button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .action-row button { flex: 1; background: linear-gradient(135deg, #38BDF8, #818CF8); color: white; border: none; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .action-row button:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(56,189,248,0.3); }
+        .action-row button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; background: #475569; }
 
-        .canvas-area { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; position: relative; display: flex; justify-content: center; align-items: center; margin-bottom: 20px; border: 2px solid #374151; box-shadow: inset 0 0 20px rgba(0,0,0,0.8); }
+        .canvas-area { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; position: relative; display: flex; justify-content: center; align-items: center; margin-bottom: 15px; border: 2px solid #334155; box-shadow: inset 0 0 20px rgba(0,0,0,0.8); }
         canvas { width: 100%; height: 100%; display: none; }
         
-        .status { text-align: center; font-size: 14px; color: #9CA3AF; margin-bottom: 15px; font-weight: 600; }
+        .status { text-align: center; font-size: 13px; color: #94A3B8; margin-bottom: 10px; font-weight: 600; }
         .status.recording { color: #F87171; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
         .download-area { display: none; text-align: center; margin-top: 10px; }
-        .download-area a { display: inline-block; background: #10B981; color: white; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: 600; transition: background 0.2s; }
+        .download-area a { display: inline-block; background: #10B981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 10px; font-weight: 600; transition: background 0.2s; }
         .download-area a:hover { background: #059669; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>Luxe Studio</h1>
-        <p>Yapay zeka destekli, profesyonel pastel video üretici.</p>
+        <h1>AI Reklam Stüdyosu</h1>
+        <p>Yapay zeka sizin için renkleri, yazıları ve temayı tasarlar.</p>
     </div>
 
     <div class="studio-container">
         <div class="prompt-area">
-            <label for="videoPrompt">Videonuzun konseptini yazın:</label>
-            <textarea id="videoPrompt" placeholder="Örnek: Yumuşak pastel renklerde, doğal ve lüks bir makyaj tanıtımı. Zarif, dinlendirici ve göz alıcı olsun."></textarea>
+            <label for="videoPrompt">Nasıl bir reklam filmi istiyorsunuz?</label>
+            <textarea id="videoPrompt" placeholder="Örnek: Fütüristik bir elektrikli araba reklamı. Karanlık, neon mavi detaylar ve hız hissi olsun."></textarea>
             <div class="action-row">
-                <button id="generateBtn" onclick="generateVideo()">✨ Profesyonel Videoyu Üret</button>
+                <button id="generateBtn" onclick="generateVideo()" disabled>Yapay Zeka Yükleniyor...</button>
             </div>
         </div>
 
         <div class="canvas-area" id="canvasContainer">
-            <span style="color: #6B7280; font-weight: 300;">Önizleme Alanı</span>
+            <span style="color: #64748B; font-weight: 300;">Yapay Zeka Hazır Olduğunda Burada Video Oluşacak</span>
             <canvas id="videoCanvas" width="1280" height="720"></canvas>
         </div>
 
-        <div class="status" id="statusText"></div>
+        <div class="status" id="statusText">Model indiriliyor, lütfen bekleyin (İlk açılışta 1-2 dk sürebilir)...</div>
 
         <div class="download-area" id="downloadArea">
-            <a id="downloadLink" download="luxe_video.webm">📥 Videoyu İndir (.webm)</a>
+            <a id="downloadLink" download="ai_reklam_filmi.webm">📥 Reklam Filmini İndir (.webm)</a>
         </div>
     </div>
 
-    <script>
+    <!-- WebLLM Yapay Zeka Kütüphanesi -->
+    <script type="module">
+        import * as webllm from "https://esm.run/@mlc-ai/web-llm";
+
+        let engine = null;
         const canvas = document.getElementById('videoCanvas');
         const ctx = canvas.getContext('2d');
         const statusText = document.getElementById('statusText');
+        const generateBtn = document.getElementById('generateBtn');
         const downloadArea = document.getElementById('downloadArea');
         const downloadLink = document.getElementById('downloadLink');
-        const generateBtn = document.getElementById('generateBtn');
         const canvasContainer = document.getElementById('canvasContainer');
 
         let mediaRecorder;
         let recordedChunks = [];
         let animationId;
 
-        // Gelişmiş Prompt Analizi ve Pastel Paletler
-        function getPromptSettings(prompt) {
-            const p = prompt.toLowerCase();
+        // 1. YAPAY ZEKAYI BAŞLAT (Hafif ve Hızlı Model: Llama-3.2-1B)
+        async function initAI() {
+            try {
+                const selectedModel = "Llama-3.2-1B-Instruct-q4f32_1-MLC";
+                engine = await webllm.CreateMLCEngine(selectedModel, {
+                    initProgressCallback: (progress) => {
+                        statusText.innerText = progress.text;
+                    }
+                });
+                statusText.innerText = "✅ Yapay Zeka Hazır! Prompt yazıp videoyu üretebilirsiniz.";
+                statusText.style.color = "#10B981";
+                generateBtn.disabled = false;
+                generateBtn.innerText = "✨ Yapay Zeka ile Reklam Filmi Üret";
+            } catch (e) {
+                statusText.innerText = "⚠️ Model yüklenemedi: " + e.message;
+                statusText.style.color = "#EF4444";
+            }
+        }
+        initAI();
+
+        // 2. YAPAY ZEKADAN VİDEO TASARIMI (JSON) AL
+        async function getVideoDesignFromAI(prompt) {
+            const messages = [
+                { 
+                    role: "system", 
+                    content: `Sen profesyonel bir sanat yönetmeni ve video tasarımcısısın. Kullanıcının verdiği prompt'a göre 6 saniyelik bir reklam filmi için tasarım parametreleri üreteceksin. 
+                    SADECE geçerli bir JSON objesi döndür. Asla açıklama yazma, asla kod bloğu (\`\`\`) kullanma.
+                    Format tam olarak şöyle olmalı:
+                    {
+                      "title": "En fazla 15 karakterlik çarpıcı ana başlık",
+                      "subtitle": "En fazla 25 karakterlik alt slogan",
+                      "colors": ["#hexRenk1", "#hexRenk2", "#hexRenk3"],
+                      "textColor": "#hexRenk",
+                      "particleColor": "rgba(r,g,b,0.5)",
+                      "fontStyle": "serif veya sans-serif"
+                    }
+                    Renkler prompt'un havasına uygun (lüks ise altın/koyu, teknoloji ise neon/mavi, doğa ise pastel yeşil vb.) olmalı.` 
+                },
+                { 
+                    role: "user", 
+                    content: `Şu reklam için tasarım üret: "${prompt}"` 
+                }
+            ];
+
+            const reply = await engine.chat.completions.create({ 
+                messages: messages,
+                temperature: 0.2, // Daha tutarlı JSON çıktısı için düşük tutuyoruz
+                max_tokens: 200
+            });
+
+            let responseText = reply.choices[0].message.content.trim();
             
-            // 1. MAKYAJ / GÜZELLİK (Pastel Pembe, Lila, Şeftali)
-            if (p.includes('makyaj') || p.includes('güzellik') || p.includes('cilt') || p.includes('ruj') || p.includes('lüks')) {
-                return { 
-                    colors: ['#FDE68A', '#FBCFE8', '#E9D5FF', '#FDF2F8'], // Pastel sarı, pembe, lila
-                    text: "LUXE BEAUTY",
-                    subtext: "DOĞAL IŞILTI",
-                    particleColor: 'rgba(255,255,255,0.6)',
-                    font: "600 70px 'Playfair Display', serif"
-                };
+            // AI bazen JSON dışında metin yazabilir, sadece { ... } arasındaki kısmı alalım
+            const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+                return JSON.parse(jsonMatch[0]);
             }
-            // 2. DOĞA / DİNLENDİRİCİ (Pastel Yeşil, Mavi, Mint)
-            if (p.includes('doğa') || p.includes('orman') || p.includes('deniz') || p.includes('dinlendirici')) {
-                return { 
-                    colors: ['#A7F3D0', '#BAE6FD', '#ECFCCB', '#E0F2FE'], 
-                    text: "PURE NATURE",
-                    subtext: "DOĞANIN GÜCÜ",
-                    particleColor: 'rgba(255,255,255,0.4)',
-                    font: "600 70px 'Playfair Display', serif"
-                };
-            }
-            // 3. TEKNOLOJİ / GELECEK (Pastel Mavi, Gri, Beyaz)
-            if (p.includes('teknoloji') || p.includes('yazılım') || p.includes('gelecek') || p.includes('bilim')) {
-                return { 
-                    colors: ['#E0E7FF', '#C7D2FE', '#BFDBFE', '#F3F4F6'], 
-                    text: "FUTURE TECH",
-                    subtext: "YENİ NESİL",
-                    particleColor: 'rgba(255,255,255,0.7)',
-                    font: "600 70px 'Inter', sans-serif"
-                };
-            }
-            // Varsayılan (Yumuşak Pastel Tonlar)
-            return { 
-                colors: ['#FDE68A', '#FBCFE8', '#E9D5FF', '#FDF2F8'],
-                text: "PREMIUM",
-                subtext: "LUXE COLLECTION",
-                particleColor: 'rgba(255,255,255,0.5)',
-                font: "600 70px 'Playfair Display', serif"
-            };
+            throw new Error("Yapay zeka geçerli bir tasarım üretemedi.");
         }
 
-        async function generateVideo() {
-            const prompt = document.getElementById('videoPrompt').value || "Yumuşak pastel renklerde lüks bir sunum.";
-            const settings = getPromptSettings(prompt);
+        // 3. VİDEO ÜRETİM FONKSİYONU
+        window.generateVideo = async function() {
+            const prompt = document.getElementById('videoPrompt').value.trim();
+            if (!prompt) {
+                alert("Lütfen bir reklam senaryosu yazın!");
+                return;
+            }
             
             generateBtn.disabled = true;
             downloadArea.style.display = 'none';
-            canvas.style.display = 'block';
-            canvasContainer.querySelector('span').style.display = 'none';
-            statusText.innerText = "🎬 Profesyonel video render ediliyor...";
+            statusText.innerText = "🧠 Yapay Zeka senaryonuzu tasarlıyor...";
             statusText.className = "status recording";
-            recordedChunks = [];
 
-            const stream = canvas.captureStream(60); // 60 FPS akıcılık
-            mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9' });
-            
-            mediaRecorder.ondataavailable = (event) => {
-                if (event.data.size > 0) recordedChunks.push(event.data);
-            };
+            try {
+                // Yapay zekadan tasarımı al
+                const design = await getVideoDesignFromAI(prompt);
+                statusText.innerText = "🎬 Tasarım hazır! Video render ediliyor...";
 
-            mediaRecorder.onstop = () => {
-                const blob = new Blob(recordedChunks, { type: 'video/webm' });
-                const url = URL.createObjectURL(blob);
-                downloadLink.href = url;
-                downloadArea.style.display = 'block';
-                statusText.innerText = "✅ Video Hazır! Hemen İndirin.";
-                statusText.className = "status";
-                generateBtn.disabled = false;
-                cancelAnimationFrame(animationId);
-            };
+                // Canvas'ı göster
+                canvas.style.display = 'block';
+                canvasContainer.querySelector('span').style.display = 'none';
+                recordedChunks = [];
 
-            mediaRecorder.start();
-
-            let startTime = Date.now();
-            const duration = 6000; // 6 Saniyelik profesyonel klip
-            let particles = [];
-
-            // Zarif Parçacıklar (Işıltılar) Oluştur
-            for (let i = 0; i < 150; i++) {
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    radius: Math.random() * 4 + 0.5, // Küçük ve zarif
-                    speedX: (Math.random() - 0.5) * 1.5, // Yavaş süzülme
-                    speedY: (Math.random() - 0.5) * 1.5 - 0.5, // Hafif yukarı
-                    alpha: Math.random() * 0.5 + 0.1
-                });
-            }
-
-            function drawFrame() {
-                const time = Date.now() - startTime;
+                // Video Kaydını Başlat
+                const stream = canvas.captureStream(60);
+                mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9' });
                 
-                // 1. HAREKETLİ PASTEL ARKA PLAN (Animasyonlu Gradient)
-                // Renklerin açısını ve pozisyonunu zamanla değiştiriyoruz
-                const gradient = ctx.createLinearGradient(
-                    canvas.width/2 + Math.sin(time/1000) * 500, 
-                    0, 
-                    canvas.width/2 - Math.sin(time/1000) * 500, 
-                    canvas.height
-                );
-                
-                // Renk duraklarını (color stops) zamanla kaydırarak akış efekti veriyoruz
-                const offset = Math.sin(time / 2000) * 0.2;
-                gradient.addColorStop(Math.max(0, 0 + offset), settings.colors[0]);
-                gradient.addColorStop(Math.min(1, 0.33 + offset), settings.colors[1]);
-                gradient.addColorStop(Math.min(1, 0.66 + offset), settings.colors[2]);
-                gradient.addColorStop(1, settings.colors[3]);
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) recordedChunks.push(event.data);
+                };
 
-                ctx.fillStyle = gradient;
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                    const url = URL.createObjectURL(blob);
+                    downloadLink.href = url;
+                    downloadArea.style.display = 'block';
+                    statusText.innerText = "✅ Reklam Filmi Hazır! Hemen İndirin.";
+                    statusText.className = "status";
+                    statusText.style.color = "#10B981";
+                    generateBtn.disabled = false;
+                    generateBtn.innerText = "✨ Yapay Zeka ile Reklam Filmi Üret";
+                    cancelAnimationFrame(animationId);
+                };
 
-                // 2. IŞILTILARI ÇİZ (Bokeh Efekti)
-                particles.forEach(p => {
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = settings.particleColor;
-                    ctx.globalAlpha = p.alpha * (0.5 + Math.sin(time/500 + p.x) * 0.5); // Göz kırpma efekti
-                    ctx.shadowColor = "white";
-                    ctx.shadowBlur = 10;
-                    ctx.fill();
-                    
-                    // Süzülme hareketi
-                    p.x += p.speedX;
-                    p.y += p.speedY;
+                mediaRecorder.start();
 
-                    // Ekran sınırlarından çıkınca geri döndür
-                    if (p.x < 0) p.x = canvas.width;
-                    if (p.x > canvas.width) p.x = 0;
-                    if (p.y < 0) p.y = canvas.height;
-                    if (p.y > canvas.height) p.y = 0;
-                });
-                ctx.globalAlpha = 1;
-                ctx.shadowBlur = 0;
+                // Animasyon Döngüsü (6 Saniye)
+                let startTime = Date.now();
+                const duration = 6000;
+                let particles = [];
 
-                // 3. PROFESYONEL METİN ANİMASYONU
-                const textOpacity = Math.min(1, time / 1000); // 1 saniyede belir
-                const textScale = 1 + Math.sin(time / 2000) * 0.02; // Çok hafif nefes alma efekti
-                
-                ctx.save();
-                ctx.translate(canvas.width / 2, canvas.height / 2);
-                ctx.scale(textScale, textScale);
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
-                ctx.globalAlpha = textOpacity;
-
-                // Gölge ve Işıma (Glow)
-                ctx.shadowColor = "rgba(0,0,0,0.2)"; // Hafif koyu gölge pastel üzerinde okunabilirlik sağlar
-                ctx.shadowBlur = 15;
-                ctx.shadowOffsetY = 5;
-
-                // Ana Başlık
-                ctx.fillStyle = "#4C1D95"; // Koyu mor (Pastel arka plan üzerinde şık durur)
-                ctx.font = settings.font;
-                ctx.fillText(settings.text, 0, -20);
-
-                // Alt Başlık
-                ctx.shadowBlur = 5;
-                ctx.fillStyle = "#831843"; // Koyu pembe
-                ctx.font = "600 24px 'Inter', sans-serif";
-                // Harfler arası boşluk efekti için
-                ctx.letterSpacing = "10px"; 
-                ctx.fillText(settings.subtext, 0, 50);
-                
-                ctx.restore();
-
-                // Zaman kontrolü
-                if (time >= duration) {
-                    mediaRecorder.stop();
-                } else {
-                    animationId = requestAnimationFrame(drawFrame);
+                // Parçacıkları hazırla (Tasarımdan gelen renklerle)
+                for (let i = 0; i < 100; i++) {
+                    particles.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        radius: Math.random() * 3 + 0.5,
+                        speedX: (Math.random() - 0.5) * 1.5,
+                        speedY: (Math.random() - 0.5) * 1.5 - 0.5,
+                        alpha: Math.random() * 0.5 + 0.1
+                    });
                 }
-            }
 
-            drawFrame();
-        }
+                function drawFrame() {
+                    const time = Date.now() - startTime;
+                    
+                    // 1. ARKA PLAN (Animasyonlu Gradient)
+                    const gradient = ctx.createLinearGradient(
+                        canvas.width/2 + Math.sin(time/1000) * 500, 
+                        0, 
+                        canvas.width/2 - Math.sin(time/1000) * 500, 
+                        canvas.height
+                    );
+                    
+                    const offset = Math.sin(time / 2000) * 0.2;
+                    gradient.addColorStop(Math.max(0, 0 + offset), design.colors[0] || "#1E293B");
+                    gradient.addColorStop(Math.min(1, 0.5 + offset), design.colors[1] || "#0F172A");
+                    gradient.addColorStop(1, design.colors[2] || "#000000");
+
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    // 2. IŞILTILAR (Bokeh)
+                    particles.forEach(p => {
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = design.particleColor || 'rgba(255,255,255,0.5)';
+                        ctx.globalAlpha = p.alpha * (0.5 + Math.sin(time/500 + p.x) * 0.5);
+                        ctx.shadowColor = "white";
+                        ctx.shadowBlur = 10;
+                        ctx.fill();
+                        
+                        p.x += p.speedX;
+                        p.y += p.speedY;
+
+                        if (p.x < 0) p.x = canvas.width;
+                        if (p.x > canvas.width) p.x = 0;
+                        if (p.y < 0) p.y = canvas.height;
+                        if (p.y > canvas.height) p.y = 0;
+                    });
+                    ctx.globalAlpha = 1;
+                    ctx.shadowBlur = 0;
+
+                    // 3. METİN ANİMASYONU (Yapay zekanın verdiği yazılar)
+                    const textOpacity = Math.min(1, time / 1000);
+                    const textScale = 1 + Math.sin(time / 2000) * 0.03; // Nefes alma efekti
+                    
+                    ctx.save();
+                    ctx.translate(canvas.width / 2, canvas.height / 2);
+                    ctx.scale(textScale, textScale);
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.globalAlpha = textOpacity;
+
+                    // Gölge
+                    ctx.shadowColor = "rgba(0,0,0,0.6)";
+                    ctx.shadowBlur = 15;
+                    ctx.shadowOffsetY = 5;
+
+                    // Ana Başlık
+                    ctx.fillStyle = design.textColor || "#FFFFFF";
+                    const fontStyle = design.fontStyle === 'serif' ? "'Playfair Display', serif" : "'Montserrat', sans-serif";
+                    ctx.font = `600 80px ${fontStyle}`;
+                    ctx.fillText(design.title || "REKLAM", 0, -30);
+
+                    // Alt Başlık
+                    ctx.shadowBlur = 5;
+                    ctx.font = "300 28px 'Montserrat', sans-serif";
+                    ctx.fillText(design.subtitle || "SİZİN İÇİN", 0, 50);
+                    
+                    ctx.restore();
+
+                    if (time >= duration) {
+                        mediaRecorder.stop();
+                    } else {
+                        animationId = requestAnimationFrame(drawFrame);
+                    }
+                }
+
+                drawFrame();
+
+            } catch (error) {
+                statusText.innerText = "⚠️ Hata: " + error.message;
+                statusText.style.color = "#EF4444";
+                generateBtn.disabled = false;
+                generateBtn.innerText = "✨ Yapay Zeka ile Reklam Filmi Üret";
+            }
+        };
     </script>
 </body>
 </html>
