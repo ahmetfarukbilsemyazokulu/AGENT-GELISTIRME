@@ -3,102 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yapay Zeka Asistanım - Agent</title>
+    <title>Özgür Transformers.js AI Asistanı</title>
+    <!-- Transformers.js Kütüphanesi -->
+    <script type="module">
+        import { pipeline } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.0';
+        window.transformersPipeline = pipeline;
+    </script>
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; height: 100vh; }
         .chat-container { width: 100%; max-width: 650px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow: hidden; height: 80vh; }
-        .chat-header { background: #24292e; color: white; padding: 15px; text-align: center; font-size: 18px; font-weight: bold; }
+        .chat-header { background: #ff9900; color: white; padding: 15px; text-align: center; font-size: 18px; font-weight: bold; }
         .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-        .message { padding: 12px 16px; border-radius: 8px; max-width: 85%; line-height: 1.5; font-size: 14px; word-break: break-word; }
+        .message { padding: 12px 16px; border-radius: 8px; max-width: 85%; line-height: 1.5; font-size: 14px; word-break: break-word; white-space: pre-wrap; }
         .user-message { background: #0366d6; color: white; align-self: flex-end; }
         .bot-message { background: #eaecef; color: #24292e; align-self: flex-start; }
         .chat-input-area { display: flex; border-top: 1px solid #eaecef; padding: 12px; background: #fafbfc; }
         .chat-input-area input { flex: 1; padding: 12px; border: 1px solid #dfe2e5; border-radius: 6px; outline: none; font-size: 14px; }
-        .chat-input-area button { background: #28a745; color: white; border: none; padding: 12px 22px; margin-left: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .chat-input-area button:hover { background: #218838; }
-        #status { background: #d4edda; color: #155724; padding: 8px; text-align: center; font-size: 13px; border-bottom: 1px solid #c3e6cb; }
+        .chat-input-area button { background: #ff9900; color: white; border: none; padding: 12px 22px; margin-left: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .chat-input-area button:disabled { background: #ffd699; cursor: not-allowed; }
+        #status { background: #fff3cd; color: #856404; padding: 10px; text-align: center; font-size: 13px; border-bottom: 1px solid #ffeeba; }
     </style>
 </head>
 <body>
 
 <div class="chat-container">
-    <div class="chat-header">🤖 AGENT-GELISTIRME Süper Asistanı</div>
-    <div id="status">⚡ Sistem Tamamen Aktif ve Hızlı Çalışıyor!</div>
+    <div class="chat-header">🔥 Özgür Transformers.js AI Asistanı</div>
+    <div id="status">Model yükleniyor, lütfen bekleyin (İlk yüklemede birkaç saniye sürebilir)...</div>
     <div class="chat-messages" id="chatMessages">
-        <div class="message bot-message">👋 Merhaba! Ben senin süper hızlı yapay zeka asistanınım. Bana dilediğin soruyu sorabilir, matematik işlemi yapabilir veya sohbet edebilirsin!</div>
+        <div class="message bot-message">👋 Merhaba! Ben tarayıcınızda çalışan özgür ve bağımsız bir yapay zeka modeliyim. Model hazır olduğunda yazmaya başlayabilirsin!</div>
     </div>
     <div class="chat-input-area">
-        <input type="text" id="userInput" placeholder="Mesajınızı yazın..." onkeypress="handleKeyPress(event)">
-        <button onclick="sendMessage()">Gönder</button>
+        <input type="text" id="userInput" placeholder="Model yükleniyor..." disabled onkeypress="handleKeyPress(event)">
+        <button id="sendBtn" disabled onclick="sendMessage()">Gönder</button>
     </div>
 </div>
 
-<script>
-    function sendMessage() {
-        const inputField = document.getElementById('userInput');
+<script type="module">
+    import { pipeline } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.0';
+
+    let generator = null;
+    const statusDiv = document.getElementById("status");
+    const inputField = document.getElementById("userInput");
+    const sendBtn = document.getElementById("sendBtn");
+
+    async function loadModel() {
+        try {
+            statusDiv.innerText = "Hugging Face modeli indiriliyor ve başlatılıyor...";
+            
+            // Tarayıcı için optimize edilmiş hafif metin üretim modeli
+            generator = await pipeline('text-generation', 'Xenova/Qwen1.5-0.5B-Chat');
+
+            statusDiv.innerText = "✅ Model Hazır! Özgürce soru sorabilirsiniz.";
+            statusDiv.style.background = "#d4edda";
+            statusDiv.style.color = "#155724";
+
+            inputField.disabled = false;
+            sendBtn.disabled = false;
+            inputField.placeholder = "Mesajınızı yazın...";
+        } catch (error) {
+            statusDiv.innerText = "⚠️ Model yükleme hatası: " + error.message;
+            statusDiv.style.background = "#f8d7da";
+            statusDiv.style.color = "#721c24";
+        }
+    }
+
+    loadModel();
+
+    window.sendMessage = async function() {
         const messageText = inputField.value.trim();
-        if (!messageText) return;
+        if (!messageText || !generator) return;
 
         appendMessage(messageText, 'user-message');
         inputField.value = '';
 
-        // Anlık akıllı yanıt simülasyonu (0.3 saniye içinde yazar)
-        setTimeout(() => {
-            let botReply = generateSmartResponse(messageText);
-            appendMessage(botReply, 'bot-message');
-        }, 300);
-    }
+        const chatMessages = document.getElementById('chatMessages');
+        const botMessageDiv = document.createElement('div');
+        botMessageDiv.className = 'message bot-message';
+        botMessageDiv.innerText = "Düşünüyor...";
+        chatMessages.appendChild(botMessageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
 
-    function generateSmartResponse(input) {
-        const text = input.toLowerCase();
+        try {
+            const messages = [
+                { role: "system", content: "Sen yardımcı bir yapay zeka asistanısın." },
+                { role: "user", content: messageText }
+            ];
 
-        // 1. Selamlaşma
-        if (text.includes("merhaba") || text.includes("selam") || text.includes("hey")) {
-            return "👋 Merhaba! Bugün sana nasıl yardımcı olabilirim?";
+            const output = await generator(messages, { max_new_tokens: 128, temperature: 0.7 });
+            let reply = output[0].generated_text;
+            
+            // Model çıktısını düzenleyelim
+            if (Array.isArray(reply)) {
+                botMessageDiv.innerText = reply[reply.length - 1].content || JSON.stringify(reply);
+            } else if (typeof reply === 'string') {
+                botMessageDiv.innerText = reply;
+            } else {
+                botMessageDiv.innerText = "Yanıt üretildi ancak biçimlendirilemedi.";
+            }
+        } catch (error) {
+            botMessageDiv.innerText = "Hata oluştu: " + error.message;
         }
-        
-        // 2. Hal hatır
-        if (text.includes("nasılsın") || text.includes("nasıl") || text.includes("ne haber") || text.includes("iyi misin")) {
-            return "🤖 Harikayım! Sistemlerim tamamen aktif ve seninle sohbet etmeye hazırım. Sen nasılsın?";
-        }
-
-        // 3. Saat ve Tarih
-        if (text.includes("saat") || text.includes("tarih") || text.includes("günlerden ne")) {
-            const now = new Date();
-            return `📅 Güncel Tarih ve Saat: ${now.toLocaleString('tr-TR')}`;
-        }
-        
-        // 4. Hava Durumu
-        if (text.includes("hava")) {
-            return "🌤️ Mersin için Hava Durumu: Güneşli ve açık, sıcaklık 22°C. Rüzgar hafif esiyor.";
-        }
-        
-        // 5. Matematik ve Hesaplama
-        if (/[\d\+\-\*\/\(\)]/.test(text) && (text.includes("+") || text.includes("-") || text.includes("*") || text.includes("/"))) {
-            try {
-                let temizMatematik = text.replace(/[^0-9\+\-\*\/\.\(\)]/g, '');
-                let sonuc = eval(temizMatematik);
-                if (!isNaN(sonuc)) {
-                    return `🔢 Hesaplama Sonucu: ${sonuc}`;
-                }
-            } catch (e) {}
-        }
-
-        // 6. GitHub / Ajan hakkında
-        if (text.includes("github") || text.includes("agent") || text.includes("proje")) {
-            return "🚀 Bu proje, harici API ücreti ödemeden tamamen GitHub altyapısı ve tarayıcı teknolojileriyle geliştirilen kesintisiz bir yapay zeka ajan sistemidir.";
-        }
-
-        // 7. Esnek ve Akıllı Genel Yanıt Motoru
-        const responses = [
-            `💡 "${input}" konusunda oldukça ilginç bir soru! Bu tür konularda detaylı analiz yapabilir ve veritabanımı kullanarak sana rehberlik edebilirim.`,
-            `✨ "${input}" hakkında şunu söyleyebilirim: Sistemim bu talebi başarıyla işledi. Başka hangi konuda yardıma ihtiyacın var?`,
-            `🎯 Anladım! "${input}" ile ilgili olarak projeni daha da ileri taşıyacak harika fikirler üretebiliriz. Ne yapmak istersin?`
-        ];
-        
-        // Rastgele akıllı bir yanıt seç
-        return responses[Math.floor(Math.random() * responses.length)];
-    }
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    };
 
     function appendMessage(text, className) {
         const chatMessages = document.getElementById('chatMessages');
@@ -109,9 +115,9 @@
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    function handleKeyPress(event) {
+    window.handleKeyPress = function(event) {
         if (event.key === 'Enter') {
-            sendMessage();
+            window.sendMessage();
         }
     }
 </script>
