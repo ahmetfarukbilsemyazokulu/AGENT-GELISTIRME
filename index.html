@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Video Maker Şablonu</title>
+    <style>
+        body {
+            margin: 0;
+            width: 1920px;
+            height: 1080px;
+            background: linear-gradient(135deg, #1e1e2f, #2a2a72);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+        }
+        .card {
+            text-align: center;
+            animation: fadeIn 2s ease-in-out;
+        }
+        h1 {
+            font-size: 80px;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        p {
+            font-size: 36px;
+            color: #00d2ff;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>AGENT-GELISTIRME</h1>
+        <p>Otomatik Video Üretim Sistemi</p>
+    </div>
+</body>
+</html>
