@@ -3,15 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Süper Hızlı Yapay Zeka Asistanı</title>
+    <title>Sıfır Maliyetli Tarayıcı Yapay Zekası</title>
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; height: 100vh; }
         .chat-container { width: 100%; max-width: 650px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow: hidden; height: 88vh; }
         .chat-header { background: #24292e; color: white; padding: 15px; text-align: center; font-size: 18px; font-weight: bold; }
-        .settings-bar { background: #fff3cd; padding: 12px 15px; display: flex; flex-direction: column; gap: 8px; border-bottom: 1px solid #ffeeba; }
-        .settings-row { display: flex; gap: 8px; align-items: center; }
-        .settings-row input { flex: 1; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 13px; }
-        .settings-row button { padding: 8px 14px; background: #ffc107; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px; }
+        .info-bar { background: #e1f5fe; color: #01579b; padding: 10px 15px; font-size: 13px; border-bottom: 1px solid #b3e5fc; text-align: center; font-weight: bold; }
         .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
         .message { padding: 12px 16px; border-radius: 8px; max-width: 85%; line-height: 1.5; font-size: 14px; word-break: break-word; white-space: pre-wrap; }
         .user-message { background: #0366d6; color: white; align-self: flex-end; }
@@ -21,116 +18,73 @@
         .chat-input-area button { background: #2ea44f; color: white; border: none; padding: 12px 22px; margin-left: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; }
         .chat-input-area button:hover { background: #2c974b; }
     </style>
+    <!-- HuggingFace Transformers.js Kütüphanesi -->
+    <script type="module">
+        import { pipeline } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2';
+        
+        let generator = null;
+        
+        window.initModel = async function() {
+            const statusDiv = document.getElementById("statusText");
+            statusDiv.innerText = "Model tarayıcıya indiriliyor, lütfen bekleyin...";
+            
+            try {
+                generator = await pipeline('text2text-generation', 'Xenova/flan-t5-small');
+                statusDiv.innerText = "✅ Model hazır! API anahtarı gerekmeden sohbete başlayabilirsiniz.";
+                document.getElementById("userInput").disabled = false;
+                document.getElementById("sendBtn").disabled = false;
+                document.getElementById("userInput").placeholder = "Mesajınızı yazın...";
+            } catch (err) {
+                statusDiv.innerText = "❌ Model yüklenme hatası: " + err.message;
+            }
+        };
+
+        window.sendLocalMessage = async function() {
+            const inputField = document.getElementById('userInput');
+            const text = inputField.value.trim();
+            if (!text || !generator) return;
+
+            appendMessage(text, 'user-message');
+            inputField.value = '';
+
+            const chatMessages = document.getElementById('chatMessages');
+            const botDiv = document.createElement('div');
+            botDiv.className = 'message bot-message';
+            botDiv.innerText = "Düşünüyor...";
+            chatMessages.appendChild(botDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            try {
+                const output = await generator(text, { max_new_tokens: 128 });
+                botDiv.innerText = output[0].generated_text;
+            } catch (error) {
+                botDiv.innerText = "Yanıt üretilirken hata oluştu: " + error.message;
+            }
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initModel();
+        });
+    </script>
 </head>
 <body>
 
 <div class="chat-container">
-    <div class="chat-header">⚡ Gerçek Yapay Zeka Asistanı</div>
-    
-    <div class="settings-bar">
-        <div class="settings-row">
-            <input type="password" id="apiKeyInput" placeholder="Groq API Key (gsk_...)">
-            <button onclick="saveSettings()">Kaydet</button>
-        </div>
-    </div>
+    <div class="chat-header">⚡ Tamamen Ücretsiz Tarayıcı Asistanı</div>
+    <div class="info-bar" id="statusText">Model yükleniyor, lütfen bekleyin...</div>
 
     <div class="chat-messages" id="chatMessages">
-        <div class="message bot-message">👋 Merhaba! API anahtarınızı girip "Kaydet" deyin ve sohbete başlayın.</div>
+        <div class="message bot-message">👋 Merhaba! Bu asistan harici hiçbir API anahtarına ihtiyaç duymadan doğrudan tarayıcınızda çalışır.</div>
     </div>
     
     <div class="chat-input-area">
-        <input type="text" id="userInput" placeholder="Önce API anahtarınızı kaydedin..." disabled onkeypress="handleKeyPress(event)">
-        <button id="sendBtn" disabled onclick="sendMessage()">Gönder</button>
+        <input type="text" id="userInput" placeholder="Model yükleniyor..." disabled onkeypress="if(event.key==='Enter') sendLocalMessage()">
+        <button id="sendBtn" disabled onclick="sendLocalMessage()">Gönder</button>
     </div>
 </div>
 
 <script>
-    let GROQ_API_KEY = localStorage.getItem("groq_key") || "";
-    
-    if (GROQ_API_KEY) {
-        document.getElementById("apiKeyInput").value = GROQ_API_KEY;
-        document.getElementById("userInput").disabled = false;
-        document.getElementById("sendBtn").disabled = false;
-        document.getElementById("userInput").placeholder = "Mesajınızı yazın...";
-    }
-
-    function saveSettings() {
-        const key = document.getElementById("apiKeyInput").value.trim();
-        if (!key.startsWith("gsk_")) {
-            alert("Geçersiz API anahtarı! Groq anahtarları 'gsk_' ile başlar.");
-            return;
-        }
-
-        localStorage.setItem("groq_key", key);
-        GROQ_API_KEY = key;
-
-        document.getElementById("userInput").disabled = false;
-        document.getElementById("sendBtn").disabled = false;
-        document.getElementById("userInput").placeholder = "Mesajınızı yazın...";
-        alert("API Anahtarı başarıyla kaydedildi!");
-    }
-
-    let chatHistory = [
-        { role: "system", content: "Sen yardımcı, akıllı, samimi ve Türkçe konuşan profesyonel bir yapay zeka asistanısın." }
-    ];
-
-    async function sendMessage() {
-        const inputField = document.getElementById('userInput');
-        const messageText = inputField.value.trim();
-        if (!messageText || !GROQ_API_KEY) return;
-
-        appendMessage(messageText, 'user-message');
-        inputField.value = '';
-
-        chatHistory.push({ role: "user", content: messageText });
-
-        const chatMessages = document.getElementById('chatMessages');
-        const botMessageDiv = document.createElement('div');
-        botMessageDiv.className = 'message bot-message';
-        botMessageDiv.innerText = "Yazıyor...";
-        chatMessages.appendChild(botMessageDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-
-        // Denenecek model sırası (Önce en popülerler, sonra alternatifler)
-        const modelsToTry = ["llama-3.1-8b-instant", "llama-3.3-70b-versatile", "gemma2-9b-it", "mixtral-8x7b-32768"];
-        let success = false;
-
-        for (let model of modelsToTry) {
-            try {
-                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-                    method: "POST",
-                    headers: {
-                        "Authorization": "Bearer " + GROQ_API_KEY,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        model: model,
-                        messages: chatHistory,
-                        temperature: 0.7
-                    })
-                });
-
-                const data = await response.json();
-
-                if (response.ok && data.choices && data.choices[0].message) {
-                    const reply = data.choices[0].message.content;
-                    botMessageDiv.innerText = reply;
-                    chatHistory.push({ role: "assistant", content: reply });
-                    success = true;
-                    break; // Başarılı olursa döngüden çık
-                }
-            } catch (err) {
-                console.log(model + " denendi, başarısız.");
-            }
-        }
-
-        if (!success) {
-            botMessageDiv.innerText = "Hata: API anahtarınız hiçbir model tarafından kabul edilmedi. Lütfen Groq konsolundan yeni bir anahtar oluşturun.";
-        }
-        
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-
     function appendMessage(text, className) {
         const chatMessages = document.getElementById('chatMessages');
         const messageDiv = document.createElement('div');
@@ -138,12 +92,6 @@
         messageDiv.innerText = text;
         chatMessages.appendChild(messageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-
-    function handleKeyPress(event) {
-        if (event.key === 'Enter') {
-            sendMessage();
-        }
     }
 </script>
 
