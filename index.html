@@ -7,7 +7,7 @@
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; height: 100vh; }
         .chat-container { width: 100%; max-width: 650px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow: hidden; height: 88vh; }
-        .chat-header { background: #24292e; color: white; padding: 15px; text-align: center; font-size: 18px; font-weight: bold; }
+        .chat-header { background: #d73a49; color: white; padding: 15px; text-align: center; font-size: 18px; font-weight: bold; }
         .info-bar { background: #e1f5fe; color: #01579b; padding: 10px 15px; font-size: 13px; border-bottom: 1px solid #b3e5fc; text-align: center; font-weight: bold; }
         .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
         .message { padding: 12px 16px; border-radius: 8px; max-width: 85%; line-height: 1.5; font-size: 14px; word-break: break-word; white-space: pre-wrap; }
@@ -18,7 +18,6 @@
         .chat-input-area button { background: #2ea44f; color: white; border: none; padding: 12px 22px; margin-left: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; }
         .chat-input-area button:hover { background: #2c974b; }
     </style>
-    <!-- HuggingFace Transformers.js Kütüphanesi -->
     <script type="module">
         import { pipeline } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2';
         
@@ -71,11 +70,11 @@
 <body>
 
 <div class="chat-container">
-    <div class="chat-header">⚡ Tamamen Ücretsiz Tarayıcı Asistanı</div>
+    <div class="chat-header">🚀 Saf Tarayıcı Yapay Zekası (API Yok)</div>
     <div class="info-bar" id="statusText">Model yükleniyor, lütfen bekleyin...</div>
 
     <div class="chat-messages" id="chatMessages">
-        <div class="message bot-message">👋 Merhaba! Bu asistan harici hiçbir API anahtarına ihtiyaç duymadan doğrudan tarayıcınızda çalışır.</div>
+        <div class="message bot-message">👋 Merhaba! Bu sürüm tamamen tarayıcınızda çalışır, asla API anahtarı istemez.</div>
     </div>
     
     <div class="chat-input-area">
