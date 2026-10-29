@@ -1,0 +1,20 @@
+name: Chatbot Test Ajani
+
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  run-chatbot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Depoyu Kopyala
+        uses: actions/checkout@v4
+
+      - name: Python Kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Chatbot Betigini Calistir
+        run: python chatbot.py
