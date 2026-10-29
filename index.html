@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tarayıcı İçi Yapay Zeka - Agent</title>
+    <title>Akıllı ve Hafızalı Yapay Zeka - Agent</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; height: 100vh; }
         .chat-container { width: 100%; max-width: 650px; background: white; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow: hidden; height: 85vh; }
@@ -23,11 +23,11 @@
 <body>
 
 <div class="chat-container">
-    <div class="chat-header">🤖 Gerçek Tarayıcı İçi AI Asistanı</div>
+    <div class="chat-header">🤖 Akıllı ve Hafızalı Tarayıcı İçi AI</div>
     <div id="status">Model yükleniyor, lütfen bekleyin...</div>
     
     <div class="chat-messages" id="chatMessages">
-        <div class="message bot-message">👋 Merhaba! Ben doğrudan tarayıcınızda çalışan gerçek bir yapay zeka modeliyim. Yüklemem bittiğinde dilediğiniz her soruyu bana sorabilirsiniz!</div>
+        <div class="message bot-message">👋 Merhaba! Ben gelişmiş yapay zeka modelinizim. Artık önceki mesajlarımızı hatırlıyorum. Bana dilediğiniz soruyu sorabilirsiniz!</div>
     </div>
     
     <div class="chat-input-area">
@@ -36,13 +36,17 @@
     </div>
 </div>
 
-<!-- WebLLM Kütüphanesi ve Çalışma Mantığı -->
 <script type="module">
     import * as webllm from "https://esm.run/@mlc-ai/web-llm";
 
     let engine = null;
-    // Çok daha hafif ve hızlı bir model (Llama 3.2 - 1 Milyar Parametre)
-    const selectedModel = "Llama-3.2-1B-Instruct-q4f32_1-MLC"; 
+    // Daha zeki 3 Milyar parametreli model (Llama-3.2-3B)
+    const selectedModel = "Llama-3.2-3B-Instruct-q4f32_1-MLC"; 
+    
+    // Sohbet hafızası dizisi (Geçmişi tutar)
+    let chatHistory = [
+        { role: "system", content: "Sen son derece zeki, bilgili ve yardımcı bir yapay zeka asistanısın. Kullanıcının sorularına her zaman doğru, mantıklı, detaylı ve Türkçe yanıtlar ver. Asla saçmalama, bilgin yoksa bilmediğini söyle." }
+    ];
 
     async function initializeEngine() {
         const statusDiv = document.getElementById("status");
@@ -50,7 +54,7 @@
         const sendBtn = document.getElementById("sendBtn");
 
         try {
-            statusDiv.innerText = "Model indiriliyor ve GPU'ya yükleniyor. (İlk açılışta 1-2 dakika sürebilir)...";
+            statusDiv.innerText = "Daha akıllı model indiriliyor... (İlk seferde 1.5 GB indirebilir, lütfen bekleyin)...";
             
             engine = await webllm.CreateMLCEngine(
                 selectedModel,
@@ -61,13 +65,13 @@
                 }
             );
 
-            statusDiv.innerText = "✅ Yapay Zeka Hazır! Dilediğiniz soruyu sorabilirsiniz.";
+            statusDiv.innerText = "✅ Gelişmiş Yapay Zeka Hazır! Sorularınızı sorabilirsiniz.";
             statusDiv.style.background = "#d4edda";
             statusDiv.style.color = "#155724";
             
             inputField.disabled = false;
             sendBtn.disabled = false;
-            inputField.placeholder = "Bir şeyler sorun...";
+            inputField.placeholder = "Mersin nerede? veya Nasılsın?";
             inputField.focus();
         } catch (error) {
             statusDiv.innerText = "⚠️ Model yüklenirken hata oluştu: " + error.message;
@@ -76,20 +80,19 @@
         }
     }
 
-    // Modeli arka planda başlat
     initializeEngine();
 
-    // Mesaj gönderme fonksiyonu
     window.sendMessage = async function() {
         const inputField = document.getElementById('userInput');
         const messageText = inputField.value.trim();
         if (!messageText || !engine) return;
 
-        // Kullanıcı mesajını ekrana bas
         appendMessage(messageText, 'user-message');
         inputField.value = '';
 
-        // Bot için "Düşünüyor..." balonu ekle
+        // Kullanıcının mesajını hafızaya ekle
+        chatHistory.push({ role: "user", content: messageText });
+
         const chatMessages = document.getElementById('chatMessages');
         const botMessageDiv = document.createElement('div');
         botMessageDiv.className = 'message bot-message';
@@ -98,22 +101,21 @@
         chatMessages.scrollTop = chatMessages.scrollHeight;
 
         try {
-            // Yapay zekaya gönderilecek mesajlar
-            const messages = [
-                { role: "system", content: "Sen yardımcı, akıllı ve arkadaş canlısı bir yapay zeka asistanısın. Her zaman Türkçe yanıt ver." },
-                { role: "user", content: messageText }
-            ];
-
-            // Cevabı üret
-            const reply = await engine.chat.completions.create({ messages });
-            botMessageDiv.innerText = reply.choices[0].message.content;
+            // Hafızadaki TÜM sohbeti modele gönderiyoruz
+            const reply = await engine.chat.completions.create({ messages: chatHistory });
+            const botReply = reply.choices[0].message.content;
+            
+            // Botun cevabını da hafızaya ekle (Bir sonraki soruda hatırlaması için)
+            chatHistory.push({ role: "assistant", content: botReply });
+            
+            botMessageDiv.innerText = botReply;
         } catch (error) {
             botMessageDiv.innerText = "Üzgünüm, yanıt üretirken bir hata oluştu: " + error.message;
+            chatHistory.pop(); // Hata olursa son mesajı hafızadan sil
         }
         chatMessages.scrollTop = chatMessages.scrollHeight;
     };
 
-    // Ekrana mesaj ekleme yardımcı fonksiyonu
     function appendMessage(text, className) {
         const chatMessages = document.getElementById('chatMessages');
         const messageDiv = document.createElement('div');
@@ -123,7 +125,6 @@
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    // Enter tuşuna basınca gönder
     window.handleKeyPress = function(event) {
         if (event.key === 'Enter') {
             window.sendMessage();
