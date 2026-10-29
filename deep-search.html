@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Derin Araştırma Ajanı | AGENT-GELISTIRME</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --primary: #2563EB; --primary-hover: #1D4ED8; --bg: #F3F4F6;
+            --surface: #FFFFFF; --text-main: #111827; --text-muted: #6B7280;
+            --bot-bubble: #F9FAFB; --border: #E5E7EB; --radius: 16px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); display: flex; justify-content: center; align-items: center; height: 100vh; color: var(--text-main); }
+        
+        .chat-container {
+            width: 100%; max-width: 800px; height: 92vh; background: var(--surface);
+            border-radius: var(--radius); box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--border);
+        }
+        .chat-header {
+            padding: 16px 24px; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border); background: #FFF;
+        }
+        .header-info { display: flex; align-items: center; gap: 12px; }
+        .avatar-bot {
+            width: 44px; height: 44px; background: linear-gradient(135deg, #2563EB, #7C3AED);
+            border-radius: 12px; display: flex; justify-content: center; align-items: center;
+            color: white; font-size: 20px; box-shadow: 0 4px 10px rgba(37,99,235,0.3);
+        }
+        .header-text h2 { font-size: 17px; font-weight: 600; margin-bottom: 2px; }
+        .header-text p { font-size: 12px; color: #059669; display: flex; align-items: center; gap: 4px; font-weight: 500; }
+        .header-text p::before { content: ''; display: block; width: 8px; height: 8px; background: #059669; border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+        .clear-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
+        .clear-btn:hover { color: #DC2626; }
+        
+        .chat-messages { flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 24px; background: #F8FAFC; }
+        .message-row { display: flex; gap: 16px; max-width: 90%; animation: fadeIn 0.3s ease-out; }
+        .message-row.user { align-self: flex-end; flex-direction: row-reverse; }
+        .message-row.bot { align-self: flex-start; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .message-content { padding: 16px 20px; border-radius: 16px; font-size: 14px; line-height: 1.7; }
+        .user .message-content { background: var(--primary); color: white; border-top-right-radius: 4px; }
+        .bot .message-content { background: var(--bot-bubble); color: var(--text-main); border: 1px solid var(--border); border-top-left-radius: 4px; }
+
+        /* Deep Search Rapor Stilleri */
+        .bot .message-content h3 { font-size: 15px; font-weight: 600; margin: 12px 0 8px; color: #1E293B; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #E2E8F0; padding-bottom: 4px; }
+        .bot .message-content a { color: var(--primary); text-decoration: none; font-weight: 500; word-break: break-all; }
+        .bot .message-content a:hover { text-decoration: underline; }
+        .bot .message-content ul { margin: 8px 0; padding-left: 20px; }
+        .bot .message-content li { margin-bottom: 6px; }
+        .bot .message-content p { margin-bottom: 8px; }
+        .bot .message-content .source-tag { display: inline-block; background: #E0E7FF; color: #3730A3; font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 600; margin-right: 6px; }
+
+        /* Yükleniyor Animasyonu */
+        .loader-container { display: flex; align-items: center; gap: 12px; padding: 16px 20px; background: var(--bot-bubble); border: 1px solid var(--border); border-radius: 16px; border-top-left-radius: 4px; width: fit-content; }
+        .loader { display: flex; gap: 4px; }
+        .loader span { width: 6px; height: 6px; background: var(--primary); border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
+        .loader span:nth-child(1) { animation-delay: -0.32s; }
+        .loader span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+        .loader-text { font-size: 13px; color: var(--text-muted); font-weight: 500; }
+
+        .chat-input-area { padding: 20px 24px; background: #FFF; border-top: 1px solid var(--border); display: flex; gap: 12px; align-items: center; }
+        .input-wrapper { flex: 1; display: flex; align-items: center; background: #F1F5F9; border-radius: 24px; padding: 4px 8px; border: 1px solid transparent; transition: all 0.2s; }
+        .input-wrapper:focus-within { border-color: var(--primary); background: #FFF; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+        .chat-input-area input { flex: 1; border: none; background: transparent; padding: 12px 16px; font-size: 14px; outline: none; font-family: 'Inter', sans-serif; }
+        .send-btn { background: var(--primary); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s; }
+        .send-btn:hover { background: var(--primary-hover); transform: scale(1.05); }
+
+        .chat-messages::-webkit-scrollbar { width: 6px; }
+        .chat-messages::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
+        @media (max-width: 600px) { .chat-container { height: 100vh; border-radius: 0; } .message-row { max-width: 95%; } }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="chat-header">
+        <div class="header-info">
+            <div class="avatar-bot"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+            <div class="header-text">
+                <h2>Deep Search Agent</h2>
+                <p>Aktif & Derin Tarama Hazır</p>
+            </div>
+        </div>
+        <button class="clear-btn" onclick="clearChat()"><i class="fa-solid fa-rotate-right"></i> Sıfırla</button>
+    </div>
+    
+    <div class="chat-messages" id="chatMessages">
+        <div class="message-row bot">
+            <div class="avatar-bot" style="width:36px; height:36px; font-size:16px;"><i class="fa-solid fa-robot"></i></div>
+            <div class="message-content">
+                Merhaba! Ben <strong>Deep Search Ajanınızım</strong>.<br><br>
+                Bana herhangi bir konu hakkında soru sorabilirsiniz (örn: <em>"Kuantum bilgisayarların son durumu"</em> veya <em>"Yapay zeka hukuku makaleleri PDF"</em>). Ben saniyeler içinde web'i, Wikipedia'yı, akademik kaynakları ve geliştirici forumlarını tarayıp size <strong>mantıklı bir özet, maddeler ve doğrudan kaynak linkleri</strong> sunacağım.
+            </div>
+        </div>
+    </div>
+    
+    <div class="chat-input-area">
+        <div class="input-wrapper">
+            <input type="text" id="userInput" placeholder="Derinlemesine araştırmak istediğiniz konuyu yazın..." onkeypress="handleKeyPress(event)" autocomplete="off">
+        </div>
+        <button class="send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+    </div>
+</div>
+
+<script>
+    const chatMessages = document.getElementById('chatMessages');
+    const userInput = document.getElementById('userInput');
+
+    window.clearChat = function() {
+        if(confirm("Tüm araştırma geçmişi silinecek. Onaylıyor musunuz?")) {
+            chatMessages.innerHTML = `
+                <div class="message-row bot">
+                    <div class="avatar-bot" style="width:36px; height:36px; font-size:16px;"><i class="fa-solid fa-robot"></i></div>
+                    <div class="message-content">Sistem sıfırlandı. Yeni bir derin araştırma başlatabilirsiniz.</div>
+                </div>`;
+        }
+    }
+
+    window.sendMessage = async function() {
+        const query = userInput.value.trim();
+        if (!query) return;
+
+        addMessage(query, 'user');
+        userInput.value = '';
+
+        const loaderId = addLoader("Derin tarama başlatıldı...");
+
+        try {
+            const results = await deepSearch(query, loaderId);
+            const report = generateReport(query, results);
+            removeLoader(loaderId);
+            addMessage(report, 'bot');
+        } catch (error) {
+            removeLoader(loaderId);
+            addMessage(`⚠️ Arama sırasında bir hata oluştu: ${error.message}. Lütfen tekrar deneyin.`, 'bot');
+        }
+    };
+
+    async function deepSearch(query, loaderId) {
+        const results = { wiki: null, ddg: [], academic: [], dev: [] };
+        const updateStatus = (text) => { document.getElementById(loaderId).innerText = text; };
+
+        updateStatus("Wikipedia taranıyor...");
+        try {
+            const wikiSearch = await fetch(`https://tr.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&origin=*`).then(r => r.json());
+            if (wikiSearch.query.search.length > 0) {
+                const title = wikiSearch.query.search[0].title;
+                const content = await fetch(`https://tr.wikipedia.org/w/api.php?action=query&prop=extracts&exsentences=3&exlimit=1&titles=${encodeURIComponent(title)}&explaintext=1&format=json&origin=*`).then(r => r.json());
+                const pageId = Object.keys(content.query.pages)[0];
+                if (pageId !== "-1") {
+                    results.wiki = { title: title, extract: content.query.pages[pageId].extract, url: `https://tr.wikipedia.org/wiki/${encodeURIComponent(title)}` };
+                }
+            }
+        } catch (e) { console.warn("Wikipedia hatası:", e); }
+
+        updateStatus("DuckDuckGo taranıyor...");
+        try {
+            const ddgUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`;
+            const ddgData = await fetch(ddgUrl).then(r => r.json());
+            
+            if (ddgData.AbstractText) {
+                results.ddg.push({ title: ddgData.Heading || query, snippet: ddgData.AbstractText, url: ddgData.AbstractURL || `https://duckduckgo.com/?q=${encodeURIComponent(query)}`, source: "DuckDuckGo" });
+            }
+            if (ddgData.RelatedTopics && ddgData.RelatedTopics.length > 0) {
+                ddgData.RelatedTopics.slice(0, 3).forEach(topic => {
+                    if (topic.FirstURL && topic.Text) {
+                        results.ddg.push({ title: topic.Text.split(' - ')[0] || "İlgili Sonuç", snippet: topic.Text, url: topic.FirstURL, source: "DuckDuckGo" });
+                    }
+                });
+            }
+        } catch (e) { console.warn("DuckDuckGo hatası:", e); }
+
+        updateStatus("Akademik makaleler ve PDF'ler aranıyor...");
+        try {
+            const ssUrl = `https://api.semanticscholar.org/graph/v1/paper/search?query=${encodeURIComponent(query)}&limit=3&fields=title,abstract,year,openAccessPdf,url`;
+            const ssData = await fetch(ssUrl).then(r => r.json());
+            if (ssData.data && ssData.data.length > 0) {
+                results.academic = ssData.data.map(p => ({
+                    title: p.title,
+                    snippet: p.abstract ? p.abstract.substring(0, 150) + "..." : "Özet bulunamadı.",
+                    year: p.year || "Bilinmiyor",
+                    url: p.openAccessPdf ? p.openAccessPdf.url : p.url,
+                    isPdf: !!p.openAccessPdf
+                }));
+            }
+        } catch (e) { console.warn("Semantic Scholar hatası:", e); }
+
+        updateStatus("Teknik topluluklar taranıyor...");
+        try {
+            const hnUrl = `https://hn.algolia.com/api/v1/search?query=${encodeURIComponent(query)}&tags=story&hitsPerPage=2`;
+            const hnData = await fetch(hnUrl).then(r => r.json());
+            if (hnData.hits && hnData.hits.length > 0) {
+                results.dev = hnData.hits.map(h => ({
+                    title: h.title,
+                    snippet: `Tartışma: ${h.points || 0} puan, ${h.num_comments || 0} yorum.`,
+                    url: h.url || `https://news.ycombinator.com/item?id=${h.objectID}`
+                }));
+            }
+        } catch (e) { console.warn("Hacker News hatası:", e); }
+
+        updateStatus("Rapor oluşturuluyor...");
+        return results;
+    }
+
+    function generateReport(query, results) {
+        let md = `### 🔍 Derin Araştırma Raporu: "${query}"\n\n`;
+
+        if (results.wiki) {
+            md += `#### 📖 Genel Bakış ve Özet\n`;
+            md += `${results.wiki.extract}\n`;
+            md += `<span class="source-tag">Wikipedia</span> [Kaynağı Oku](${results.wiki.url})\n\n`;
+        }
+
+        if (results.ddg.length > 0) {
+            md += `#### 🌐 Web Özeti ve Öne Çıkanlar\n`;
+            results.ddg.forEach(item => {
+                md += `- **${item.title}**: ${item.snippet}\n  <span class="source-tag">${item.source}</span> [Bağlantıyı Aç](${item.url})\n`;
+            });
+            md += `\n`;
+        }
+
+        if (results.academic.length > 0) {
+            md += `#### 🎓 Akademik Kaynaklar ve PDF'ler\n`;
+            results.academic.forEach(paper => {
+                const pdfLabel = paper.isPdf ? "📄 **PDF İndir**" : "🔗 Makale Bağlantısı";
+                md += `- **${paper.title}** (${paper.year})\n  *Özet:* ${paper.snippet}\n  [${pdfLabel}](${paper.url})\n`;
+            });
+            md += `\n`;
+        }
+
+        if (results.dev.length > 0) {
+            md += `#### 💻 Teknoloji ve Topluluk Tartışmaları\n`;
+            results.dev.forEach(item => {
+                md += `- **[${item.title}](${item.url})**\n  ${item.snippet}\n`;
+            });
+            md += `\n`;
+        }
+
+        md += `#### 🧠 Ajanın Mantıksal Analizi\n`;
+        if (results.wiki || results.ddg.length > 0) {
+            md += `Toplanan verilere göre, **"${query}"** konusu birden fazla kaynakta yer alıyor. `;
+            if (results.academic.length > 0) {
+                md += `Konuyla ilgili akademik çalışmalar ve PDF'ler mevcut (yukarıdaki 🎓 bölümüne göz atın). `;
+            }
+            if (results.dev.length > 0) {
+                md += `Ayrıca yazılım ve teknoloji topluluklarında bu konu tartışılmış. `;
+            }
+            md += `Soruya en doğrudan yanıt yukarıdaki özetlerde sunulmuştur. Daha derin bir analiz için kaynak bağlantılarına tıklayabilirsiniz.`;
+        } else {
+            md += `Belirttiğiniz konu hakkında açık web kaynaklarında yeterince net veri bulunamadı. Lütfen farklı anahtar kelimeler kullanarak tekrar deneyin.`;
+        }
+
+        return md;
+    }
+
+    function addMessage(text, sender) {
+        const row = document.createElement('div');
+        row.className = `message-row ${sender}`;
+        let avatar = sender === 'bot' ? `<div class="avatar-bot" style="width:36px; height:36px; font-size:16px;"><i class="fa-solid fa-robot"></i></div>` : '';
+        let parsedText = sender === 'bot' ? marked.parse(text) : text;
+        row.innerHTML = `${avatar}<div class="message-content">${parsedText}</div>`;
+        chatMessages.appendChild(row);
+        scrollToBottom();
+    }
+
+    function addLoader(text) {
+        const id = 'loader-' + Date.now();
+        const row = document.createElement('div');
+        row.className = 'message-row bot';
+        row.id = id;
+        row.innerHTML = `
+            <div class="avatar-bot" style="width:36px; height:36px; font-size:16px;"><i class="fa-solid fa-robot"></i></div>
+            <div class="loader-container">
+                <div class="loader"><span></span><span></span><span></span></div>
+                <div class="loader-text" id="${id}-text">${text}</div>
+            </div>`;
+        chatMessages.appendChild(row);
+        scrollToBottom();
+        return `${id}-text`;
+    }
+
+    function removeLoader(textId) {
+        const el = document.getElementById(textId)?.closest('.message-row');
+        if (el) el.remove();
+    }
+
+    function scrollToBottom() {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    window.handleKeyPress = function(event) {
+        if (event.key === 'Enter') window.sendMessage();
+    }
+</script>
+
+</body>
+</html>
