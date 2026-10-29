@@ -6,27 +6,27 @@
     <title>Yapay Zeka Asistanım - Agent</title>
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .chat-container { width: 100%; max-width: 600px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow: hidden; }
+        .chat-container { width: 100%; max-width: 650px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow: hidden; }
         .chat-header { background: #24292e; color: white; padding: 15px; text-align: center; font-size: 18px; font-weight: bold; }
-        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; height: 400px; display: flex; flex-direction: column; gap: 10px; }
-        .message { padding: 10px 15px; border-radius: 8px; max-width: 80%; line-height: 1.4; }
+        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; height: 420px; display: flex; flex-direction: column; gap: 12px; }
+        .message { padding: 12px 16px; border-radius: 8px; max-width: 85%; line-height: 1.5; font-size: 14px; }
         .user-message { background: #0366d6; color: white; align-self: flex-end; }
         .bot-message { background: #eaecef; color: #24292e; align-self: flex-start; }
-        .chat-input-area { display: flex; border-top: 1px solid #eaecef; padding: 10px; background: #fafbfc; }
-        .chat-input-area input { flex: 1; padding: 10px; border: 1px solid #dfe2e5; border-radius: 6px; outline: none; font-size: 14px; }
-        .chat-input-area button { background: #28a745; color: white; border: none; padding: 10px 20px; margin-left: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .chat-input-area { display: flex; border-top: 1px solid #eaecef; padding: 12px; background: #fafbfc; }
+        .chat-input-area input { flex: 1; padding: 12px; border: 1px solid #dfe2e5; border-radius: 6px; outline: none; font-size: 14px; }
+        .chat-input-area button { background: #28a745; color: white; border: none; padding: 12px 22px; margin-left: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; }
         .chat-input-area button:hover { background: #218838; }
     </style>
 </head>
 <body>
 
 <div class="chat-container">
-    <div class="chat-header">🤖 AGENT-GELISTIRME Asistanı</div>
+    <div class="chat-header">🤖 AGENT-GELISTIRME Akıllı Asistanı</div>
     <div class="chat-messages" id="chatMessages">
-        <div class="message bot-message">👋 Merhaba! Ben senin GitHub tabanlı yapay zekanım. Bana "Saat kaç?", "Merhaba" veya "Hava durumu" yazabilirsin!</div>
+        <div class="message bot-message">👋 Merhaba! Ben senin gelişmiş yapay zeka asistanınım. Bana tarih/saat sorabilir, hava durumunu öğrenebilir, matematiksel işlemler yapabilir veya herhangi bir konuda soru sorabilirsin!</div>
     </div>
     <div class="chat-input-area">
-        <input type="text" id="userInput" placeholder="Mesajınızı yazın..." onkeypress="handleKeyPress(event)">
+        <input type="text" id="userInput" placeholder="Bir şeyler sorun veya komut yazın..." onkeypress="handleKeyPress(event)">
         <button onclick="sendMessage()">Gönder</button>
     </div>
 </div>
@@ -41,25 +41,56 @@
         inputField.value = '';
 
         setTimeout(() => {
-            let botReply = generateBotResponse(messageText);
+            let botReply = generateSmartResponse(messageText);
             appendMessage(botReply, 'bot-message');
-        }, 500);
+        }, 600);
     }
 
-    function generateBotResponse(command) {
-        const cmd = command.toLowerCase();
-        if (cmd.includes("saat")) {
+    function generateSmartResponse(input) {
+        const text = input.toLowerCase();
+
+        // 1. Selamlaşma
+        if (text.includes("merhaba") || text.includes("selam") || text.includes("hey")) {
+            return "👋 Merhaba! Bugün sana nasıl yardımcı olabilirim?";
+        }
+        
+        // 2. Saat ve Tarih
+        if (text.includes("saat kaç") || text.includes("tarih") || text.includes("günlerden ne")) {
             const now = new Date();
             return `📅 Güncel Tarih ve Saat: ${now.toLocaleString('tr-TR')}`;
-        } else if (cmd.includes("merhaba") || cmd.includes("selam")) {
-            return `👋 Merhaba Ahmet Faruk! AGENT-GELISTIRME sistemine hoş geldin.`;
-        } else if (cmd.includes("hava durumu")) {
-            return `🌤️ Mersin için Hava Durumu: Güneşli, sıcaklık 22°C, rüzgar hafif.`;
-        } else if (cmd.includes("analiz et")) {
-            return `📊 Metin Analizi -> Kelime: ${command.split(' ').length}, Karakter: ${command.length}`;
-        } else {
-            return `💡 Mesajınız alındı: '${command}'. Bu komut için henüz bir yetenek eklemedik ama dilediğimiz gibi geliştirebiliriz!`;
         }
+        
+        // 3. Hava Durumu
+        if (text.includes("hava durumu") || text.includes("hava nasıl")) {
+            return "🌤️ Mersin için Hava Durumu: Güneşli ve açık, sıcaklık 22°C. Rüzgar kuzeyden hafif esiyor.";
+        }
+        
+        // 4. Matematik ve Hesaplama (Örn: 5+5, 12*4)
+        if (/[\d\+\-\*\/\(\)]/.test(text) && (text.includes("+") || text.includes("-") || text.includes("*") || text.includes("/"))) {
+            try {
+                // Güvenli basit hesaplama
+                let temizMatematik = text.replace(/[^0-9\+\-\*\/\.\(\)]/g, '');
+                let sonuc = eval(temizMatematik);
+                if (!isNaN(sonuc)) {
+                    return `🔢 Hesaplama Sonucu: ${sonuc}`;
+                }
+            } catch (e) {
+                // Hata olursa normal devam etsin
+            }
+        }
+
+        // 5. Kodlama / GitHub / Ajan hakkında
+        if (text.includes("github") || text.includes("agent") || text.includes("proje")) {
+            return "🚀 Bu proje, harici API ücreti ödemeden tamamen GitHub altyapısı ve tarayıcı teknolojileriyle geliştirilen interaktif bir yapay zeka ajan sistemidir.";
+        }
+
+        // 6. Nasılsın / Hal hatır
+        if (text.includes("nasılsın") || text.includes("ne haber")) {
+            return "🤖 Harikayım! Sistemlerim tamamen aktif ve seninle sohbet etmeye hazırım. Sen nasılsın?";
+        }
+
+        // 7. Genel Akıllı Yanıt Simülasyonu (Esnek fallback)
+        return `💡 "${input}" sorunuz üzerine analiz yapıldı: Bu konu hakkında bilgi tabanım sürekli gelişiyor. GitHub tabanlı ajanım üzerinden bu komutu özel bir fonksiyona bağlayabilir veya dilediğin gibi özelleştirebilirsin!`;
     }
 
     function appendMessage(text, className) {
