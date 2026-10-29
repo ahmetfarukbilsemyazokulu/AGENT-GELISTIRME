@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ultimate Pro Reklam Stüdyosu | AGENT-GELISTIRME</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Montserrat:wght@300;600&family=Inter:wght@400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Montserrat:wght@300;400;600&family=Inter:wght@400&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; background: #0B1120; color: white; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         .header { text-align: center; margin-bottom: 20px; }
@@ -13,10 +13,12 @@
         
         .studio-container { width: 100%; max-width: 850px; background: #1E293B; border-radius: 20px; padding: 24px; box-shadow: 0 25px 60px rgba(0,0,0,0.6); border: 1px solid #334155; }
         
-        .prompt-area { display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
-        .prompt-area label { font-size: 14px; font-weight: 600; color: #E2E8F0; }
-        .prompt-area textarea { width: 100%; height: 70px; background: #0F172A; border: 1px solid #334155; border-radius: 10px; padding: 14px; color: white; font-family: 'Inter', sans-serif; resize: none; outline: none; transition: border 0.3s; }
-        .prompt-area textarea:focus { border-color: #38BDF8; }
+        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+        .input-group { display: flex; flex-direction: column; gap: 6px; }
+        .input-group label { font-size: 13px; font-weight: 600; color: #E2E8F0; }
+        .input-group input, .input-group textarea { width: 100%; background: #0F172A; border: 1px solid #334155; border-radius: 8px; padding: 12px; color: white; font-family: 'Inter', sans-serif; outline: none; transition: border 0.3s; box-sizing: border-box; }
+        .input-group input:focus, .input-group textarea:focus { border-color: #38BDF8; }
+        .input-group textarea { height: 80px; resize: none; }
 
         .creative-controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 15px; }
         .control-group { display: flex; flex-direction: column; gap: 5px; }
@@ -24,10 +26,14 @@
         .control-group select { background: #0F172A; color: #E2E8F0; border: 1px solid #334155; padding: 10px; border-radius: 8px; outline: none; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 13px; }
         .control-group select:focus { border-color: #A78BFA; }
 
-        .upload-area { display: flex; align-items: center; gap: 10px; background: #0F172A; padding: 12px 15px; border-radius: 10px; border: 1px dashed #475569; margin-bottom: 15px; transition: border 0.3s; }
+        .upload-area { display: flex; flex-direction: column; gap: 10px; background: #0F172A; padding: 15px; border-radius: 10px; border: 1px dashed #475569; margin-bottom: 15px; transition: border 0.3s; }
         .upload-area:hover { border-color: #38BDF8; }
-        .upload-area input { color: #94A3B8; font-size: 13px; width: 100%; cursor: pointer; }
-        .upload-area span { font-size: 12px; color: #10B981; display: none; font-weight: 600; white-space: nowrap; }
+        .upload-area input { color: #94A3B8; font-size: 13px; cursor: pointer; }
+        
+        /* Resim Önizleme Alanı */
+        .preview-container { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 5px; }
+        .preview-container img { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; border: 2px solid #334155; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+        .upload-status { font-size: 12px; color: #10B981; font-weight: 600; display: none; }
         
         .action-row { display: flex; gap: 10px; }
         .action-row button { flex: 1; background: linear-gradient(135deg, #38BDF8, #818CF8, #F472B6); background-size: 200% 200%; color: white; border: none; padding: 16px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s; animation: gradientBG 3s infinite; }
@@ -46,22 +52,36 @@
         .download-area a { display: inline-block; background: #10B981; color: white; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 15px; transition: background 0.2s; }
         .download-area a:hover { background: #059669; }
 
-        @media (max-width: 600px) { .creative-controls { grid-template-columns: 1fr; } }
+        @media (max-width: 600px) { .creative-controls, .input-row { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
     <div class="header">
         <h1>Ultimate Pro Stüdyo</h1>
-        <p>Çoklu görsel, zengin animasyonlar ve sinematik efektlerle tam donanımlı reklamcılık.</p>
+        <p>Çoklu görsel, manuel metin kontrolü ve sinematik efektler.</p>
     </div>
 
     <div class="studio-container">
-        <div class="prompt-area">
-            <label for="videoPrompt">Senaryo (Ne reklamı yapıyoruz?):</label>
+        
+        <!-- Senaryo ve Manuel Metin Girişi -->
+        <div class="input-group" style="margin-bottom: 12px;">
+            <label for="videoPrompt">Senaryo / Prompt (Yapay Zeka neye göre renk seçsin?):</label>
             <textarea id="videoPrompt" placeholder="Örnek: Kırmızı ve altın tonlarında lüks bir ruj reklamı."></textarea>
         </div>
 
+        <div class="input-row">
+            <div class="input-group">
+                <label for="manualTitle">Reklam Başlığı (İsteğe Bağlı)</label>
+                <input type="text" id="manualTitle" placeholder="Örn: LUXE BEAUTY (Boş bırakırsanız AI yazar)">
+            </div>
+            <div class="input-group">
+                <label for="manualSlogan">Slogan (İsteğe Bağlı)</label>
+                <input type="text" id="manualSlogan" placeholder="Örn: YENİ KOLEKSİYON (Boş bırakırsanız AI yazar)">
+            </div>
+        </div>
+
+        <!-- Kontroller -->
         <div class="creative-controls">
             <div class="control-group">
                 <label>Renk Paleti</label>
@@ -94,9 +114,12 @@
             </div>
         </div>
 
+        <!-- Çoklu Görsel Yükleme -->
         <div class="upload-area">
+            <label style="font-size: 13px; font-weight: 600; color: #E2E8F0;">Ürün Görselleri (Birden fazla seçmek için Ctrl/Cmd basılı tutun):</label>
             <input type="file" id="imageUpload" accept="image/*" multiple>
-            <span id="uploadStatus">✅ Görseller Yüklendi</span>
+            <div class="upload-status" id="uploadStatus">✅ Görseller Yüklendi</div>
+            <div class="preview-container" id="previewContainer"></div>
         </div>
 
         <div class="action-row">
@@ -111,7 +134,7 @@
         <div class="status" id="statusText">Model indiriliyor, lütfen bekleyin...</div>
 
         <div class="download-area" id="downloadArea">
-            <a id="downloadLink" download="ultimate_reklam.webm">📥 Reklam Filmini İndir (.webm)</a>
+            <a id="downloadLink" download="pro_reklam.webm">📥 Reklam Filmini İndir (.webm)</a>
         </div>
     </div>
 
@@ -129,38 +152,54 @@
         
         const imageUpload = document.getElementById('imageUpload');
         const uploadStatus = document.getElementById('uploadStatus');
+        const previewContainer = document.getElementById('previewContainer');
         const colorPalette = document.getElementById('colorPalette');
         const bgAnimation = document.getElementById('bgAnimation');
         const visualEffect = document.getElementById('visualEffect');
+        const manualTitle = document.getElementById('manualTitle');
+        const manualSlogan = document.getElementById('manualSlogan');
 
         let mediaRecorder;
         let recordedChunks = [];
         let animationId;
-        let uploadedImages = []; // Çoklu görseller için dizi
+        let uploadedImages = []; // Sıralı yüklenecek
 
-        // Çoklu Görsel Yükleme
-        imageUpload.addEventListener('change', function(e) {
-            const files = e.target.files;
-            uploadedImages = []; // Sıfırla
-            
-            if (files.length > 0) {
-                uploadStatus.innerText = `✅ ${files.length} Görsel Yüklendi`;
-                uploadStatus.style.display = 'inline';
-                
-                Array.from(files).forEach(file => {
+        // GÖRSEL YÜKLEME DÜZELTİLDİ (Asenkron ve Sıralı)
+        imageUpload.addEventListener('change', async function(e) {
+            const files = Array.from(e.target.files);
+            uploadedImages = [];
+            previewContainer.innerHTML = ''; // Önizlemeleri temizle
+
+            if (files.length === 0) {
+                uploadStatus.style.display = 'none';
+                return;
+            }
+
+            uploadStatus.style.display = 'block';
+            uploadStatus.innerText = `⏳ Yükleniyor (${files.length} resim)...`;
+
+            // Promise kullanarak resimlerin sırayla ve tam yüklenmesini sağlıyoruz
+            const loadPromises = files.map(file => {
+                return new Promise((resolve) => {
                     const reader = new FileReader();
-                    reader.onload = function(event) {
+                    reader.onload = (event) => {
                         const img = new Image();
-                        img.onload = function() {
-                            uploadedImages.push(img);
+                        img.onload = () => {
+                            // Önizleme oluştur
+                            const thumb = document.createElement('img');
+                            thumb.src = event.target.result;
+                            previewContainer.appendChild(thumb);
+                            resolve(img);
                         };
                         img.src = event.target.result;
                     };
                     reader.readAsDataURL(file);
                 });
-            } else {
-                uploadStatus.style.display = 'none';
-            }
+            });
+
+            // Tüm resimler yüklenene kadar bekle
+            uploadedImages = await Promise.all(loadPromises);
+            uploadStatus.innerText = `✅ ${uploadedImages.length} Görsel Başarıyla Yüklendi`;
         });
 
         // Modeli Başlat
@@ -189,6 +228,7 @@
             return null;
         }
 
+        // YEDEK PLAN
         function getFallbackDesign(prompt, palette) {
             const p = prompt.toLowerCase();
             if (palette === 'pastel' || p.includes('pastel')) return { title: "SOFT", subtitle: "PASTEL TONES", colors: ["#FDE68A", "#FBCFE8", "#E9D5FF"], textColor: "#4C1D95", particleColor: "rgba(255,255,255,0.8)", fontStyle: "serif" };
@@ -211,28 +251,20 @@
             try {
                 const reply = await engine.chat.completions.create({ messages, temperature: 0.1, max_tokens: 150 });
                 let design = extractJSON(reply.choices[0].message.content);
-                if (design && design.title && design.colors) return design;
+                if (design && design.colors) return design;
             } catch (e) {}
             return getFallbackDesign(prompt, palette);
         }
 
-        function getEmojisFromPrompt(prompt) {
-            const p = prompt.toLowerCase();
-            let emojis = [];
-            if (p.includes('ruj')) emojis.push('💄');
-            if (p.includes('parfüm')) emojis.push('🧴');
-            if (p.includes('araba')) emojis.push('🚗');
-            if (p.includes('saat')) emojis.push('⌚');
-            if (p.includes('kahve')) emojis.push('☕');
-            return emojis;
-        }
-
-        // ANA VİDEO ÜRETİM FONKSİYONU
         window.generateVideo = async function() {
             const prompt = document.getElementById('videoPrompt').value.trim() || "Modern bir reklam";
             const palette = colorPalette.value;
             const animType = bgAnimation.value;
             const effectType = visualEffect.value;
+            
+            // Manuel metinleri al
+            const mTitle = manualTitle.value.trim();
+            const mSlogan = manualSlogan.value.trim();
 
             generateBtn.disabled = true;
             downloadArea.style.display = 'none';
@@ -241,8 +273,11 @@
 
             try {
                 const design = await getVideoDesignFromAI(prompt, palette);
-                const emojis = getEmojisFromPrompt(prompt);
                 
+                // EĞER MANUEL METİN GİRİLDİYSE, YAPAY ZEKANINKİNİ EZ (OVERRIDE)
+                const finalTitle = mTitle !== "" ? mTitle : (design.title || "REKLAM");
+                const finalSubtitle = mSlogan !== "" ? mSlogan : (design.subtitle || "SİZİN İÇİN");
+
                 statusText.innerText = "🎬 Sinematik render başladı...";
                 canvas.style.display = 'block';
                 canvasContainer.querySelector('span').style.display = 'none';
@@ -265,60 +300,47 @@
                 mediaRecorder.start();
 
                 let startTime = Date.now();
-                const duration = 6000; // 6 Saniye
+                const duration = 6000; 
                 const centerX = canvas.width / 2;
                 const centerY = canvas.height / 2;
 
-                // Galaksi/Parçacık Hazırlığı
                 let particles = [];
                 for (let i = 0; i < 200; i++) {
                     particles.push({ 
                         x: Math.random() * canvas.width, 
                         y: Math.random() * canvas.height, 
-                        radius: Math.random() * 2 + 0.1, // Çok ince yıldızlar
+                        radius: Math.random() * 2 + 0.1, 
                         speedY: Math.random() * 2 + 0.5, 
                         alpha: Math.random() 
                     });
                 }
 
-                // Glitch Efekti İçin Görsel Kanalları
-                const glitchCanvas = document.createElement('canvas');
-                glitchCanvas.width = canvas.width; glitchCanvas.height = canvas.height;
-                const glitchCtx = glitchCanvas.getContext('2d');
-
                 function drawFrame() {
                     const time = Date.now() - startTime;
-                    const progress = time / duration; // 0 to 1
 
-                    // 1. ZENGİN ARKA PLANLAR
+                    // 1. ARKA PLANLAR
                     if (animType === 'aurora' || animType === 'gradient') {
                         ctx.fillStyle = design.colors[0];
                         ctx.fillRect(0, 0, canvas.width, canvas.height);
-                        
-                        // Aurora Bulutları (Üst üste binen devasa renk yumakları)
                         const t = time / 1000;
                         for (let i = 0; i < 3; i++) {
                             let x = centerX + Math.cos(t * 0.5 + i * 2) * 400;
                             let y = centerY + Math.sin(t * 0.7 + i * 2) * 300;
                             let radGrad = ctx.createRadialGradient(x, y, 0, x, y, 600);
-                            radGrad.addColorStop(0, design.colors[i] + "AA"); // Yarı saydam
-                            radGrad.addColorStop(1, design.colors[i] + "00"); // Şeffaf
+                            radGrad.addColorStop(0, design.colors[i] + "AA"); 
+                            radGrad.addColorStop(1, design.colors[i] + "00"); 
                             ctx.fillStyle = radGrad;
                             ctx.fillRect(0, 0, canvas.width, canvas.height);
                         }
                     } 
                     else if (animType === 'galaxy') {
-                        ctx.fillStyle = "#000000"; // Derin uzay
+                        ctx.fillStyle = "#000000"; 
                         ctx.fillRect(0, 0, canvas.width, canvas.height);
-                        
-                        // Nebula (Bulutsu) etkisi
                         let radGrad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 800);
                         radGrad.addColorStop(0, design.colors[1] + "44");
                         radGrad.addColorStop(1, "transparent");
                         ctx.fillStyle = radGrad;
                         ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                        // Yıldızlar
                         particles.forEach(p => {
                             ctx.beginPath();
                             ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
@@ -331,13 +353,10 @@
                     else if (animType === 'cyber') {
                         ctx.fillStyle = design.colors[0];
                         ctx.fillRect(0, 0, canvas.width, canvas.height);
-                        
-                        // Aşağıdan yukarı kayan ızgara çizgileri
                         ctx.strokeStyle = design.colors[1];
                         ctx.lineWidth = 1;
                         const gridSize = 80;
                         const offset = (time / 20) % gridSize;
-
                         ctx.globalAlpha = 0.3;
                         for (let x = 0; x < canvas.width; x += gridSize) {
                             ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
@@ -348,9 +367,8 @@
                         ctx.globalAlpha = 1;
                     }
 
-                    // 2. GÖRSEL VEYA EMOJİ (Çoklu Görsel Slaytı)
+                    // 2. ÇOKLU GÖRSELLER
                     let hasContent = false;
-                    
                     if (uploadedImages.length > 0) {
                         hasContent = true;
                         const totalImages = uploadedImages.length;
@@ -358,11 +376,8 @@
                         const currentIndex = Math.min(Math.floor(time / timePerImage), totalImages - 1);
                         const nextIndex = (currentIndex + 1) % totalImages;
                         const imageProgress = (time % timePerImage) / timePerImage;
-                        
-                        // Ken Burns (Yavaşça Yakınlaşma)
                         const scale = 1 + (imageProgress * 0.1); 
                         
-                        // Crossfade (Yumuşak Geçiş) Hesaplaması
                         let alphaCurrent = 1;
                         let alphaNext = 0;
                         if (imageProgress > 0.8 && totalImages > 1) {
@@ -381,32 +396,15 @@
                             ctx.translate(centerX, centerY); 
                             ctx.scale(scale, scale);
                             ctx.shadowColor = "rgba(0,0,0,0.8)"; ctx.shadowBlur = 40;
-                            // Görseli yuvarlak hatlı çerçeveye oturtmak için yuvarlak maske (isteğe bağlı, şimdilik dikdörtgen)
                             ctx.drawImage(img, -imgW/2, -imgH/2, imgW, imgH);
                             ctx.restore();
                         };
 
-                        // Mevcut görseli çiz
                         drawImg(uploadedImages[currentIndex], alphaCurrent);
-                        
-                        // Eğer geçiş zamanıysa sonraki görseli üstüne çiz
-                        if (alphaNext > 0) {
-                            drawImg(uploadedImages[nextIndex], alphaNext);
-                        }
-                    } 
-                    else if (emojis.length > 0) {
-                        hasContent = true;
-                        const pulse = 1 + Math.sin(time / 300) * 0.1;
-                        ctx.save();
-                        ctx.translate(centerX, centerY + Math.sin(time/400) * 30); // Havada süzülme
-                        ctx.scale(pulse, pulse);
-                        ctx.font = "200px Arial"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-                        ctx.shadowColor = design.colors[1]; ctx.shadowBlur = 50; // Emoji arkasına renkli ışıma
-                        ctx.fillText(emojis.join(' '), 0, 0);
-                        ctx.restore();
+                        if (alphaNext > 0) drawImg(uploadedImages[nextIndex], alphaNext);
                     }
 
-                    // 3. METİN ANİMASYONU
+                    // 3. YAZILAR
                     const textOpacity = Math.min(1, time / 1000);
                     ctx.save();
                     ctx.translate(centerX, centerY);
@@ -418,9 +416,8 @@
                     const fontStyle = design.fontStyle === 'serif' ? "'Playfair Display', serif" : "'Montserrat', sans-serif";
                     ctx.font = `600 80px ${fontStyle}`;
                     
-                    // Harf harf açılma efekti
-                    let letters = (design.title || "REKLAM").split('');
-                    let totalWidth = ctx.measureText(design.title || "REKLAM").width;
+                    let letters = finalTitle.split('');
+                    let totalWidth = ctx.measureText(finalTitle).width;
                     let startX = -totalWidth / 2;
                     
                     letters.forEach((letter, index) => {
@@ -434,24 +431,18 @@
                     ctx.globalAlpha = textOpacity;
                     ctx.shadowBlur = 15;
                     ctx.font = "400 32px 'Montserrat', sans-serif";
-                    ctx.fillStyle = design.colors[2] || "#CCCCCC"; // Alt başlık rengi
-                    ctx.fillText(design.subtitle || "SİZİN İÇİN", 0, yOffset + 70);
+                    ctx.fillStyle = design.colors[2] || "#CCCCCC"; 
+                    ctx.fillText(finalSubtitle, 0, yOffset + 70);
                     ctx.restore();
 
-                    // 4. GELİŞMİŞ SİNEMATİK EFEKTLER
+                    // 4. EFEKTLER
                     if (effectType === 'glitch') {
-                        // Rastgele aralıklarla ekranı kaydır (Glitch)
                         if (Math.random() > 0.9) {
                             let offsetX = (Math.random() - 0.5) * 40;
                             let offsetY = (Math.random() - 0.5) * 20;
-                            
-                            // Ekranın bir kısmını kes ve kaydır
                             let sliceY = Math.random() * canvas.height;
                             let sliceH = Math.random() * 100 + 20;
-                            
                             ctx.drawImage(canvas, 0, sliceY, canvas.width, sliceH, offsetX, sliceY + offsetY, canvas.width, sliceH);
-                            
-                            // RGB Renk kaymaları (Chromatic Aberration)
                             ctx.globalCompositeOperation = 'screen';
                             ctx.fillStyle = "rgba(255,0,0,0.2)";
                             ctx.fillRect(offsetX, 0, canvas.width, canvas.height);
@@ -461,11 +452,10 @@
                         }
                     } 
                     else if (effectType === 'bloom') {
-                        // Işıma efekti (Görüntünün aydınlık kısımlarını çoğaltıp bulanıklaştırarak ekleme)
                         ctx.globalCompositeOperation = 'screen';
                         ctx.globalAlpha = 0.4;
                         ctx.filter = 'blur(15px)';
-                        ctx.drawImage(canvas, 0, 0); // Kendini bulanık çiz
+                        ctx.drawImage(canvas, 0, 0); 
                         ctx.filter = 'none';
                         ctx.globalAlpha = 1;
                         ctx.globalCompositeOperation = 'source-over';
@@ -478,10 +468,9 @@
                         ctx.fillRect(0, 0, canvas.width, canvas.height);
                     } 
                     else if (effectType === 'grain') {
-                        // Hızlı Grain Efekti
                         const grainData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                         for (let i = 0; i < grainData.data.length; i += 4) {
-                            let noise = (Math.random() - 0.5) * 30; // Siyah/Beyaz gürültü
+                            let noise = (Math.random() - 0.5) * 30; 
                             grainData.data[i] += noise;
                             grainData.data[i+1] += noise;
                             grainData.data[i+2] += noise;
