@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Akıllı Asistan | AGENT-GELISTIRME</title>
+    <title>Doğal Yapay Zeka Asistanı | AGENT-GELISTIRME</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         :root {
-            --primary: #2563EB; --primary-hover: #1D4ED8; --bg: #F3F4F6;
+            --primary: #4F46E5; --primary-hover: #4338CA; --bg: #F3F4F6;
             --surface: #FFFFFF; --text-main: #111827; --text-muted: #6B7280;
             --bot-bubble: #F9FAFB; --border: #E5E7EB; --radius: 16px;
         }
@@ -28,9 +28,9 @@
         }
         .header-info { display: flex; align-items: center; gap: 12px; }
         .avatar-bot {
-            width: 44px; height: 44px; background: linear-gradient(135deg, #2563EB, #7C3AED);
+            width: 44px; height: 44px; background: linear-gradient(135deg, #4F46E5, #7C3AED);
             border-radius: 12px; display: flex; justify-content: center; align-items: center;
-            color: white; font-size: 20px; box-shadow: 0 4px 10px rgba(37,99,235,0.3);
+            color: white; font-size: 20px; box-shadow: 0 4px 10px rgba(79,70,229,0.3);
         }
         .header-text h2 { font-size: 17px; font-weight: 600; margin-bottom: 2px; }
         .header-text p { font-size: 12px; color: #059669; display: flex; align-items: center; gap: 4px; font-weight: 500; }
@@ -50,13 +50,14 @@
         .user .message-content { background: var(--primary); color: white; border-top-right-radius: 4px; }
         .bot .message-content { background: var(--bot-bubble); color: var(--text-main); border: 1px solid var(--border); border-top-left-radius: 4px; }
 
-        .bot .message-content h3 { font-size: 15px; font-weight: 600; margin: 12px 0 8px; color: #1E293B; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #E2E8F0; padding-bottom: 4px; }
+        .bot .message-content h3 { font-size: 15px; font-weight: 600; margin: 12px 0 8px; color: #1E293B; border-bottom: 1px solid #E2E8F0; padding-bottom: 4px; }
         .bot .message-content a { color: var(--primary); text-decoration: none; font-weight: 500; }
         .bot .message-content a:hover { text-decoration: underline; }
         .bot .message-content ul { margin: 8px 0; padding-left: 20px; }
-        .bot .message-content li { margin-bottom: 6px; }
-        .bot .message-content .source-tag { display: inline-block; background: #E0E7FF; color: #3730A3; font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 600; margin-right: 6px; }
-
+        .bot .message-content li { margin-bottom: 8px; }
+        .bot .message-content p { margin-bottom: 8px; }
+        .bot .message-content p:last-child { margin-bottom: 0; }
+        
         .loader-container { display: flex; align-items: center; gap: 12px; padding: 16px 20px; background: var(--bot-bubble); border: 1px solid var(--border); border-radius: 16px; border-top-left-radius: 4px; width: fit-content; }
         .loader { display: flex; gap: 4px; }
         .loader span { width: 6px; height: 6px; background: var(--primary); border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
@@ -67,10 +68,11 @@
 
         .chat-input-area { padding: 20px 24px; background: #FFF; border-top: 1px solid var(--border); display: flex; gap: 12px; align-items: center; }
         .input-wrapper { flex: 1; display: flex; align-items: center; background: #F1F5F9; border-radius: 24px; padding: 4px 8px; border: 1px solid transparent; transition: all 0.2s; }
-        .input-wrapper:focus-within { border-color: var(--primary); background: #FFF; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
-        .chat-input-area input { flex: 1; border: none; background: transparent; padding: 12px 16px; font-size: 14px; outline: none; }
+        .input-wrapper:focus-within { border-color: var(--primary); background: #FFF; box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
+        .chat-input-area input { flex: 1; border: none; background: transparent; padding: 12px 16px; font-size: 14px; outline: none; font-family: 'Inter', sans-serif; }
         .send-btn { background: var(--primary); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s; }
         .send-btn:hover { background: var(--primary-hover); transform: scale(1.05); }
+        .send-btn:disabled { background: #94A3B8; cursor: not-allowed; transform: none; }
 
         .chat-messages::-webkit-scrollbar { width: 6px; }
         .chat-messages::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
@@ -82,10 +84,10 @@
 <div class="chat-container">
     <div class="chat-header">
         <div class="header-info">
-            <div class="avatar-bot"><i class="fa-solid fa-user-astronaut"></i></div>
+            <div class="avatar-bot"><i class="fa-solid fa-brain"></i></div>
             <div class="header-text">
-                <h2>Akıllı Asistan</h2>
-                <p>Sohbet & Derin Araştırma Modu</p>
+                <h2>Doğal Yapay Zeka Asistanı</h2>
+                <p id="statusText">Model Yükleniyor... (İlk açılışta 4.5 GB indirilebilir)</p>
             </div>
         </div>
         <button class="clear-btn" onclick="clearChat()"><i class="fa-solid fa-rotate-right"></i> Sıfırla</button>
@@ -95,188 +97,190 @@
         <div class="message-row bot">
             <div class="avatar-bot" style="width:36px; height:36px; font-size:16px;"><i class="fa-solid fa-robot"></i></div>
             <div class="message-content">
-                Merhaba! Ben sizin akıllı asistanınızım. <br><br>
-                Benimle normal sohbet edebilirsiniz (örn: <em>"Nasılsın?", "Saat kaç?"</em>). <br>
-                Veya bana bir konu verip derinlemesine araştırmamı isteyebilirsiniz (örn: <em>"Yapay zeka ve hukuk makaleleri bul"</em>). Ben de saniyeler içinde Wikipedia, Semantic Scholar ve CrossRef (Akademik) veritabanlarını tarayıp size PDF ve linklerle rapor çıkarayım!
+                Merhaba! Ben tamamen tarayıcınızda çalışan gerçek bir yapay zeka modeliyim. 
+                Benimle her konuda doğal bir şekilde sohbet edebilirsiniz. 
+                Eğer güncel veya internette aramam gereken bir şey sorarsanız, ben de otomatik olarak web'de arama yapıp size en doğru cevabı vereceğim.
             </div>
         </div>
     </div>
     
     <div class="chat-input-area">
         <div class="input-wrapper">
-            <input type="text" id="userInput" placeholder="Sohbet edin veya araştırma yapın..." onkeypress="handleKeyPress(event)" autocomplete="off">
+            <input type="text" id="userInput" placeholder="Model yükleniyor, lütfen bekleyin..." onkeypress="handleKeyPress(event)" autocomplete="off" disabled>
         </div>
-        <button class="send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled><i class="fa-solid fa-paper-plane"></i></button>
     </div>
 </div>
 
-<script>
+<script type="module">
+    import * as webllm from "https://esm.run/@mlc-ai/web-llm";
+
+    let engine = null;
     const chatMessages = document.getElementById('chatMessages');
     const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const statusText = document.getElementById('statusText');
+
+    // Sohbet geçmişi (Hafıza)
+    let chatHistory = [
+        { role: "system", content: "Sen son derece zeki, doğal ve akıcı Türkçe konuşan bir yapay zeka asistanısın. Kullanıcının sorularına samimi, yardımcı ve bilgilendirici yanıtlar ver. Eğer bir konuda emin değilsen uydurma, 'Bilmiyorum' de veya 'İnternette aramamı ister misin?' diye sor. Eğer sana web arama sonuçları verilirse, bu sonuçları kullanarak kullanıcının sorusuna doğal bir yanıt oluştur." }
+    ];
+
+    // Modeli Başlat
+    async function initializeEngine() {
+        try {
+            const selectedModel = "Llama-3.1-8B-Instruct-q4f16_1-MLC"; // 8B model, yüksek kalite
+            
+            engine = await webllm.CreateMLCEngine(
+                selectedModel,
+                {
+                    initProgressCallback: (progress) => {
+                        statusText.innerText = progress.text;
+                    }
+                }
+            );
+
+            statusText.innerText = "✅ Yapay Zeka Hazır! Her şeyi sorabilirsiniz.";
+            statusText.style.color = "#059669";
+            userInput.disabled = false;
+            sendBtn.disabled = false;
+            userInput.placeholder = "Bir mesaj yazın...";
+            userInput.focus();
+
+        } catch (error) {
+            statusText.innerText = "⚠️ Model yüklenirken hata oluştu: " + error.message;
+            statusText.style.color = "#DC2626";
+        }
+    }
+
+    initializeEngine();
+
+    // Web Araması (DuckDuckGo HTML)
+    async function webSearch(query) {
+        try {
+            const proxyUrl = `https://api.allorigins.win/raw?url=`;
+            const ddgUrl = encodeURIComponent(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`);
+            const response = await fetch(proxyUrl + ddgUrl);
+            const htmlText = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlText, "text/html");
+            const results = doc.querySelectorAll('.result');
+
+            let searchResults = [];
+            let count = 0;
+            results.forEach((result) => {
+                if (count >= 3) return;
+                const titleEl = result.querySelector('.result__a');
+                const snippetEl = result.querySelector('.result__snippet');
+                if (titleEl && snippetEl) {
+                    const title = titleEl.innerText;
+                    const snippet = snippetEl.innerText;
+                    let rawUrl = titleEl.getAttribute('href');
+                    let realUrl = rawUrl;
+                    if(rawUrl && rawUrl.includes('uddg=')) {
+                        realUrl = decodeURIComponent(rawUrl.split('uddg=')[1].split('&')[0]);
+                    }
+                    searchResults.push(`- ${title}: ${snippet} (Kaynak: ${realUrl})`);
+                    count++;
+                }
+            });
+            return searchResults.join('\n');
+        } catch (e) {
+            console.warn("Web araması başarısız:", e);
+            return "";
+        }
+    }
+
+    // Mesaj Gönderme
+    window.sendMessage = async function() {
+        const messageText = userInput.value.trim();
+        if (!messageText || !engine) return;
+
+        // Kullanıcı mesajını ekle
+        addMessage(messageText, 'user');
+        userInput.value = '';
+        userInput.disabled = true;
+        sendBtn.disabled = true;
+
+        // Niyet Analizi (Web araması gerekli mi?)
+        const needsSearch = /(ara|bul|güncel|son|haber|internetten|web|kaynak|fiyat|hava durumu)/i.test(messageText);
+        
+        let context = "";
+        if (needsSearch) {
+            const loaderId = addLoader("İnternette güncel bilgi aranıyor...");
+            const searchResults = await webSearch(messageText);
+            removeLoader(loaderId);
+            
+            if (searchResults) {
+                context = `\n\nAşağıda internette bulduğum güncel bilgiler var. Bu bilgileri kullanarak kullanıcının sorusuna doğal bir yanıt ver:\n${searchResults}`;
+            }
+        }
+
+        // Model için mesaj geçmişini hazırla
+        const messages = [
+            ...chatHistory,
+            { role: "user", content: messageText + context }
+        ];
+
+        // Botun yanıt alanını oluştur (Akış için)
+        const botMessageDiv = addMessage("", 'bot');
+        const messageContentDiv = botMessageDiv.querySelector('.message-content');
+        messageContentDiv.innerHTML = '<div class="loader-container"><div class="loader"><span></span><span></span><span></span></div><div class="loader-text">Düşünüyor...</div></div>';
+
+        try {
+            // Modelden akışlı yanıt al
+            const chunks = await engine.chat.completions.create({
+                messages: messages,
+                stream: true,
+                temperature: 0.7,
+            });
+
+            let fullReply = "";
+            let isFirstChunk = true;
+
+            for await (const chunk of chunks) {
+                const delta = chunk.choices[0]?.delta?.content || "";
+                if (delta) {
+                    if (isFirstChunk) {
+                        messageContentDiv.innerHTML = ""; // Loader'ı kaldır
+                        isFirstChunk = false;
+                    }
+                    fullReply += delta;
+                    messageContentDiv.innerHTML = marked.parse(fullReply);
+                    scrollToBottom();
+                }
+            }
+
+            // Sohbet geçmişini güncelle
+            chatHistory.push({ role: "user", content: messageText });
+            chatHistory.push({ role: "assistant", content: fullReply });
+
+            // Geçmiş çok uzarsa kırp (son 10 mesaj)
+            if (chatHistory.length > 21) {
+                chatHistory = [chatHistory[0], ...chatHistory.slice(-20)];
+            }
+
+        } catch (error) {
+            messageContentDiv.innerText = "⚠️ Yanıt üretirken bir hata oluştu: " + error.message;
+        } finally {
+            userInput.disabled = false;
+            sendBtn.disabled = false;
+            userInput.focus();
+            scrollToBottom();
+        }
+    };
 
     window.clearChat = function() {
         if(confirm("Sohbet geçmişi temizlenecek. Onaylıyor musunuz?")) {
             chatMessages.innerHTML = `
                 <div class="message-row bot">
                     <div class="avatar-bot" style="width:36px; height:36px; font-size:16px;"><i class="fa-solid fa-robot"></i></div>
-                    <div class="message-content">Sistem sıfırlandı. Yeni bir sohbet veya araştırma başlatabilirsiniz.</div>
+                    <div class="message-content">Sistem sıfırlandı. Yeni bir sohbet başlatabilirsiniz.</div>
                 </div>`;
+            chatHistory = [
+                { role: "system", content: "Sen son derece zeki, doğal ve akıcı Türkçe konuşan bir yapay zeka asistanısın. Kullanıcının sorularına samimi, yardımcı ve bilgilendirici yanıtlar ver. Eğer bir konuda emin değilsen uydurma, 'Bilmiyorum' de veya 'İnternette aramamı ister misin?' diye sor. Eğer sana web arama sonuçları verilirse, bu sonuçları kullanarak kullanıcının sorusuna doğal bir yanıt oluştur." }
+            ];
         }
-    }
-
-    window.sendMessage = async function() {
-        const query = userInput.value.trim();
-        if (!query) return;
-
-        addMessage(query, 'user');
-        userInput.value = '';
-
-        // 1. AŞAMA: Niyet Analizi (Intent Router)
-        const textLower = query.toLowerCase();
-        
-        // Eğer sohbet veya basit soruysa doğrudan cevap ver
-        if (textLower.match(/^(merhaba|selam|hey|günaydın|iyi akşamlar)/)) {
-            simulateTyping("Merhaba! Size bugün nasıl yardımcı olabilirim? Bir konu hakkında derinlemesine araştırma yapmamı ister misiniz?");
-            return;
-        }
-        if (textLower.match(/nasılsın|naber|ne haber|keyifler/)) {
-            simulateTyping("Harikayım, teşekkür ederim! Sistemlerim tam kapasite çalışıyor. Siz nasılsınız? Bugün ne araştıralım?");
-            return;
-        }
-        if (textLower.match(/teşekkür|sağol|eyvallah/)) {
-            simulateTyping("Rica ederim! Başka bir konuda yardımcı olabilirsem her zaman buradayım. 😊");
-            return;
-        }
-        if (textLower.match(/kimsin|adın ne|ne yapabilirsin|özelliklerin/)) {
-            simulateTyping("Ben bir yapay zeka araştırma asistanıyım. Sizinle doğal bir şekilde sohbet edebilirim. Ayrıca akademik makaleler (PDF), Wikipedia özetleri ve web kaynakları üzerinden derinlemesine araştırmalar yapıp size raporlar sunabilirim.");
-            return;
-        }
-        if (textLower.includes("saat kaç")) {
-            simulateTyping(`⏰ Şu anki saat: **${new Date().toLocaleTimeString('tr-TR')}**`);
-            return;
-        }
-        if (textLower.includes("günlerden ne") || textLower.includes("bugün ayın kaçı")) {
-            simulateTyping(`📅 Bugün: **${new Date().toLocaleDateString('tr-TR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}**`);
-            return;
-        }
-        // Arslanköy özel kontrolü
-        if (textLower.includes("arslanköy")) {
-            simulateTyping("📍 **Arslanköy**, Mersin ilinin Toroslar ilçesine bağlı bir mahalledir. Deniz seviyesinden yaklaşık 1475 metre yükseklikte kurulmuş bir yörük köyüdür. Eski adı Efrenk'tir ve Kurtuluş Savaşı'ndaki direnişiyle bilinir.");
-            return;
-        }
-
-        // 2. AŞAMA: Derin Araştırma (Web, Wiki, Akademik)
-        // Eğer yukarıdaki sohbet kalıplarına uymuyorsa, arama yap
-        const loaderId = addLoader("Niyet analiz edildi: Araştırma başlatılıyor...");
-
-        try {
-            // Arama sorgusunu temizle (bana, bul, araştır, hakkında vb. kelimeleri çıkar)
-            let cleanQuery = query.replace(/(bana|bul|araştır|hakkında|bilgi ver|nedir|kimdir|nerede|\?|pdf|makale)/gi, '').trim();
-            if(cleanQuery.length < 2) cleanQuery = query; // Eğer çok kısaldıysa orijinali kullan
-
-            const results = await deepSearch(cleanQuery, loaderId);
-            const report = generateReport(query, results);
-            
-            removeLoader(loaderId);
-            addMessage(report, 'bot');
-        } catch (error) {
-            removeLoader(loaderId);
-            addMessage(`⚠️ Araştırma sırasında bir hata oluştu: ${error.message}. Lütfen tekrar deneyin.`, 'bot');
-        }
-    };
-
-    // Sohbet yanıtları için gecikmeli yazma efekti (Doğallık katar)
-    function simulateTyping(text) {
-        const loaderId = addLoader("Yazıyor...");
-        setTimeout(() => {
-            removeLoader(loaderId);
-            addMessage(text, 'bot');
-        }, 800);
-    }
-
-    async function deepSearch(query, loaderId) {
-        const results = { wiki: null, academic: [], web: [] };
-        const updateStatus = (text) => { document.getElementById(loaderId).innerText = text; };
-
-        // 1. Wikipedia
-        updateStatus("Wikipedia taranıyor...");
-        try {
-            const wikiSearch = await fetch(`https://tr.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&origin=*`).then(r => r.json());
-            if (wikiSearch.query.search.length > 0) {
-                const title = wikiSearch.query.search[0].title;
-                const content = await fetch(`https://tr.wikipedia.org/w/api.php?action=query&prop=extracts&exsentences=4&exlimit=1&titles=${encodeURIComponent(title)}&explaintext=1&format=json&origin=*`).then(r => r.json());
-                const pageId = Object.keys(content.query.pages)[0];
-                if (pageId !== "-1") {
-                    results.wiki = { title: title, extract: content.query.pages[pageId].extract, url: `https://tr.wikipedia.org/wiki/${encodeURIComponent(title)}` };
-                }
-            }
-        } catch (e) { console.warn("Wikipedia hatası:", e); }
-
-        // 2. Akademik Veritabanı (Semantic Scholar - PDF Odaklı)
-        updateStatus("Akademik makaleler ve PDF'ler aranıyor...");
-        try {
-            const ssUrl = `https://api.semanticscholar.org/graph/v1/paper/search?query=${encodeURIComponent(query)}&limit=3&fields=title,abstract,year,openAccessPdf,url`;
-            const ssData = await fetch(ssUrl).then(r => r.json());
-            if (ssData.data && ssData.data.length > 0) {
-                results.academic = ssData.data.map(p => ({
-                    title: p.title,
-                    snippet: p.abstract ? p.abstract.substring(0, 150) + "..." : "Özet bulunamadı.",
-                    year: p.year || "Bilinmiyor",
-                    url: p.openAccessPdf ? p.openAccessPdf.url : p.url,
-                    isPdf: !!p.openAccessPdf
-                }));
-            }
-        } catch (e) { console.warn("Semantic Scholar hatası:", e); }
-
-        // 3. Web / Teknik Kaynaklar (DuckDuckGo & HackerNews)
-        updateStatus("Web kaynakları taranıyor...");
-        try {
-            // DuckDuckGo
-            const ddgData = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`).then(r => r.json());
-            if (ddgData.AbstractText) {
-                results.web.push({ title: ddgData.Heading || query, snippet: ddgData.AbstractText, url: ddgData.AbstractURL || "#", source: "DuckDuckGo" });
-            }
-        } catch (e) { console.warn("DDG hatası:", e); }
-
-        updateStatus("Rapor oluşturuluyor...");
-        return results;
-    }
-
-    function generateReport(query, results) {
-        let md = `### 🔍 Araştırma Raporu: "${query}"\n\n`;
-        let hasResult = false;
-
-        if (results.wiki) {
-            hasResult = true;
-            md += `#### 📖 Genel Bakış (Wikipedia)\n`;
-            md += `${results.wiki.extract}\n`;
-            md += `[Kaynağı Oku](${results.wiki.url})\n\n`;
-        }
-
-        if (results.academic.length > 0) {
-            hasResult = true;
-            md += `#### 🎓 Akademik Kaynaklar ve PDF'ler\n`;
-            results.academic.forEach(paper => {
-                const pdfLabel = paper.isPdf ? "📄 **PDF İndir**" : "🔗 Makale Bağlantısı";
-                md += `- **${paper.title}** (${paper.year})\n  *Özet:* ${paper.snippet}\n  [${pdfLabel}](${paper.url})\n`;
-            });
-            md += `\n`;
-        }
-
-        if (results.web.length > 0) {
-            hasResult = true;
-            md += `#### 🌐 Web Bulguları\n`;
-            results.web.forEach(item => {
-                md += `- **${item.title}**: ${item.snippet}\n  <span class="source-tag">${item.source}</span> [Bağlantı](${item.url})\n`;
-            });
-            md += `\n`;
-        }
-
-        if (!hasResult) {
-            return `🤔 **"${query}"** hakkında sağlam bir kaynak bulamadım. Lütfen konuyu daha net belirterek tekrar sorun. (Örn: "Kuantum bilgisayarlar nedir?" veya "Yapay zeka etiği makaleleri")`;
-        }
-
-        return md;
     }
 
     // --- Yardımcı Fonksiyonlar ---
@@ -284,10 +288,11 @@
         const row = document.createElement('div');
         row.className = `message-row ${sender}`;
         let avatar = sender === 'bot' ? `<div class="avatar-bot" style="width:36px; height:36px; font-size:16px;"><i class="fa-solid fa-robot"></i></div>` : '';
-        let parsedText = sender === 'bot' ? marked.parse(text) : text;
+        let parsedText = sender === 'bot' && text ? marked.parse(text) : text;
         row.innerHTML = `${avatar}<div class="message-content">${parsedText}</div>`;
         chatMessages.appendChild(row);
         scrollToBottom();
+        return row;
     }
 
     function addLoader(text) {
@@ -299,15 +304,15 @@
             <div class="avatar-bot" style="width:36px; height:36px; font-size:16px;"><i class="fa-solid fa-robot"></i></div>
             <div class="loader-container">
                 <div class="loader"><span></span><span></span><span></span></div>
-                <div class="loader-text" id="${id}-text">${text}</div>
+                <div class="loader-text">${text}</div>
             </div>`;
         chatMessages.appendChild(row);
         scrollToBottom();
-        return `${id}-text`;
+        return id;
     }
 
-    function removeLoader(textId) {
-        const el = document.getElementById(textId)?.closest('.message-row');
+    function removeLoader(id) {
+        const el = document.getElementById(id);
         if (el) el.remove();
     }
 
@@ -316,7 +321,9 @@
     }
 
     window.handleKeyPress = function(event) {
-        if (event.key === 'Enter') window.sendMessage();
+        if (event.key === 'Enter' && !userInput.disabled) {
+            window.sendMessage();
+        }
     }
 </script>
 
