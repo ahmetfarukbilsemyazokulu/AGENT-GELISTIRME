@@ -99,11 +99,14 @@
         }
         initAI();
 
-        // KIRILMAZ JSON AYRIŞTIRICI
+        // KIRILMAZ JSON AYRIŞTIRICI (Yorum satırlarını da temizler)
         function extractJSON(text) {
             try {
-                // Bazen AI ```json ... ``` şeklinde çıktı verebilir, onları temizle
                 let cleanText = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+                
+                // Yorum satırlarını (// ...) ve (/* ... */) sil
+                cleanText = cleanText.replace(/\/\/.*$/gm, '').replace(/\/\*[\s\S]*?\*\//g, '');
+                
                 const match = cleanText.match(/\{[\s\S]*\}/);
                 
                 if (match) {
@@ -111,7 +114,7 @@
                     try {
                         return JSON.parse(jsonStr);
                     } catch (e) {
-                        // Eğer JSON'da tek tırnak veya sonda virgül kaldıysa düzelt
+                        // Sondaki virgülleri ve tek tırnakları düzelt
                         let fixedJson = jsonStr.replace(/'/g, '"').replace(/,\s*}/g, '}');
                         return JSON.parse(fixedJson);
                     }
@@ -122,7 +125,7 @@
             return null;
         }
 
-        // YEDEK PLAN (Eğer AI saçmalarsa, bu devreye girer ve videoyu yine de yapar)
+        // YEDEK PLAN
         function getFallbackDesign(prompt) {
             const p = prompt.toLowerCase();
             if (p.includes('makyaj') || p.includes('güzellik') || p.includes('lüks') || p.includes('altın')) {
@@ -134,7 +137,9 @@
             if (p.includes('doğa') || p.includes('kahve') || p.includes('organik')) {
                 return { title: "PURE", subtitle: "ORGANIC", colors: ["#064E3B", "#10B981", "#34D399"], textColor: "#ECFDF5", particleColor: "rgba(167,243,208,0.6)", fontStyle: "serif" };
             }
-            // Hiçbirine uymazsa varsayılan şık tasarım
+            if (p.includes('finans') || p.includes('yatırım') || p.includes('kurumsal') || p.includes('lacivert')) {
+                 return { title: "TRUST", subtitle: "INVEST IN FUTURE", colors: ["#0F172A", "#1E3A8A", "#334155"], textColor: "#F8FAFC", particleColor: "rgba(203,213,225,0.4)", fontStyle: "sans-serif" };
+            }
             return { title: "PREMIUM", subtitle: "DESIGN", colors: ["#111827", "#374151", "#1F2937"], textColor: "#F3F4F6", particleColor: "rgba(255,255,255,0.3)", fontStyle: "sans-serif" };
         }
 
@@ -143,7 +148,7 @@
             const messages = [
                 { 
                     role: "system", 
-                    content: `You are a JSON API. Output ONLY a valid JSON object. Do NOT use markdown blocks. Do NOT write explanations.
+                    content: `You are a JSON API. Output ONLY a valid JSON object. Do NOT use markdown blocks. Do NOT write comments (//). Do NOT write explanations.
                     Format: {"title": "SHORT TITLE", "subtitle": "SHORT SUBTITLE", "colors": ["#hex1", "#hex2", "#hex3"], "textColor": "#hex", "particleColor": "rgba(255,255,255,0.5)", "fontStyle": "serif"}
                     Analyze the user prompt and generate the design.` 
                 },
@@ -169,7 +174,6 @@
                 console.warn("AI üretim hatası:", e);
             }
             
-            // Eğer AI başarısız olursa yedek planı kullan
             return getFallbackDesign(prompt);
         }
 
