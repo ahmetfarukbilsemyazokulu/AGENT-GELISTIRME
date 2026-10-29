@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt ile Video Üretici | AGENT-GELISTIRME</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #0F172A; color: white; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { margin: 0; font-size: 28px; background: linear-gradient(90deg, #F472B6, #8B5CF6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header p { color: #94A3B8; font-size: 14px; margin-top: 5px; }
+        
+        .studio-container { width: 100%; max-width: 700px; background: #1E293B; border-radius: 16px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        
+        .prompt-area { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .prompt-area label { font-size: 14px; font-weight: 600; color: #CBD5E1; }
+        .prompt-area textarea { width: 100%; height: 80px; background: #0F172A; border: 1px solid #334155; border-radius: 8px; padding: 12px; color: white; font-family: 'Inter', sans-serif; resize: none; outline: none; }
+        .prompt-area textarea:focus { border-color: #8B5CF6; }
+        .prompt-area button { background: linear-gradient(90deg, #8B5CF6, #EC4899); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: transform 0.1s; }
+        .prompt-area button:active { transform: scale(0.98); }
+        .prompt-area button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .canvas-area { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; overflow: hidden; position: relative; display: flex; justify-content: center; align-items: center; margin-bottom: 20px; border: 2px dashed #334155; }
+        canvas { width: 100%; height: 100%; display: none; }
+        
+        .status { text-align: center; font-size: 14px; color: #94A3B8; margin-bottom: 15px; font-weight: 600; }
+        .status.recording { color: #EF4444; animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        .download-area { display: none; text-align: center; }
+        .download-area a { display: inline-block; background: #10B981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: 600; transition: background 0.2s; }
+        .download-area a:hover { background: #059669; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>AI Video Stüdyosu</h1>
+        <p>Prompt yazın, kod anında sizin için video (animasyon) oluştursun.</p>
+    </div>
+
+    <div class="studio-container">
+        <!-- Prompt Alanı -->
+        <div class="prompt-area">
+            <label for="videoPrompt">Ne tür bir video oluşturmak istiyorsunuz?</label>
+            <textarea id="videoPrompt" placeholder="Örnek: Göz alıcı, parlak ve lüks bir makyaj tanıtımı. Işıltılı efektler olsun."></textarea>
+            <button id="generateBtn" onclick="generateVideo()">✨ Videoyu Üret (5 Saniye)</button>
+        </div>
+
+        <!-- Video Önizleme Ekranı -->
+        <div class="canvas-area" id="canvasContainer">
+            <span style="color: #64748B;">Video burada oluşacak...</span>
+            <canvas id="videoCanvas" width="1280" height="720"></canvas>
+        </div>
+
+        <div class="status" id="statusText"></div>
+
+        <!-- İndirme Butonu -->
+        <div class="download-area" id="downloadArea">
+            <a id="downloadLink" download="ai_video.webm">📥 Videoyu İndir (.webm)</a>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('videoCanvas');
+        const ctx = canvas.getContext('2d');
+        const statusText = document.getElementById('statusText');
+        const downloadArea = document.getElementById('downloadArea');
+        const downloadLink = document.getElementById('downloadLink');
+        const generateBtn = document.getElementById('generateBtn');
+        const canvasContainer = document.getElementById('canvasContainer');
+
+        let mediaRecorder;
+        let recordedChunks = [];
+        let animationId;
+
+        // Prompt'a göre renk ve efekt seçen "Zeka"
+        function getPromptSettings(prompt) {
+            const p = prompt.toLowerCase();
+            
+            // Makyaj / Güzellik Teması
+            if (p.includes('makyaj') || p.includes('güzellik') || p.includes('ruj') || p.includes('parlak')) {
+                return { 
+                    theme: 'makeup',
+                    colors: ['#EC4899', '#8B5CF6', '#F472B6', '#FBBF24'], // Pembe, Mor, Altın
+                    bg: '#1A0B1A',
+                    text: "LUXURY BEAUTY\nYENİ KOLEKSİYON",
+                    particles: 'sparkles'
+                };
+            }
+            // Teknoloji Teması
+            if (p.includes('teknoloji') || p.includes('yazılım') || p.includes('gelecek')) {
+                return { 
+                    theme: 'tech',
+                    colors: ['#06B6D4', '#3B82F6', '#6366F1'],
+                    bg: '#020617',
+                    text: "GELECEĞİN TEKNOLOJİSİ\nYAPAY ZEKA",
+                    particles: 'grid'
+                };
+            }
+            // Doğa / Dinlendirici Tema
+            if (p.includes('doğa') || p.includes('orman') || p.includes('deniz')) {
+                return { 
+                    theme: 'nature',
+                    colors: ['#10B981', '#34D399', '#059669'],
+                    bg: '#064E3B',
+                    text: "DOĞANIN GÜCÜ\nKEŞFET",
+                    particles: 'bubbles'
+                };
+            }
+            // Varsayılan Tema
+            return { 
+                theme: 'default',
+                colors: ['#8B5CF6', '#EC4899', '#3B82F6'],
+                bg: '#0F172A',
+                text: "VİDEO OLUŞTURULDU\nPROMPT: " + prompt.toUpperCase().substring(0, 20),
+                particles: 'circles'
+            };
+        }
+
+        async function generateVideo() {
+            const prompt = document.getElementById('videoPrompt').value || "Güzel bir video";
+            const settings = getPromptSettings(prompt);
+            
+            // Arayüzü sıfırla
+            generateBtn.disabled = true;
+            downloadArea.style.display = 'none';
+            canvas.style.display = 'block';
+            canvasContainer.querySelector('span').style.display = 'none';
+            statusText.innerText = "🎬 Video oluşturuluyor, lütfen bekleyin...";
+            statusText.className = "status recording";
+            recordedChunks = [];
+
+            // MediaRecorder'ı başlat (Tarayıcı ekranını videoya çevirir)
+            const stream = canvas.captureStream(30); // 30 FPS
+            mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9' });
+            
+            mediaRecorder.ondataavailable = (event) => {
+                if (event.data.size > 0) recordedChunks.push(event.data);
+            };
+
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                downloadLink.href = url;
+                downloadArea.style.display = 'block';
+                statusText.innerText = "✅ Video Hazır! İndirebilirsiniz.";
+                statusText.className = "status";
+                generateBtn.disabled = false;
+                cancelAnimationFrame(animationId);
+            };
+
+            mediaRecorder.start();
+
+            // Animasyon Döngüsü
+            let startTime = Date.now();
+            const duration = 5000; // 5 Saniyelik video
+            let particles = [];
+
+            // Parçacıkları (Particles) oluştur
+            for (let i = 0; i < 100; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 5 + 1,
+                    speed: Math.random() * 3 + 1,
+                    color: settings.colors[Math.floor(Math.random() * settings.colors.length)]
+                });
+            }
+
+            function drawFrame() {
+                const elapsed = Date.now() - startTime;
+                
+                // Arka plan temizle
+                ctx.fillStyle = settings.bg;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Parçacıkları çiz
+                particles.forEach(p => {
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.globalAlpha = 0.6;
+                    ctx.fill();
+                    
+                    // Hareket
+                    p.y -= p.speed;
+                    if (p.y < 0) p.y = canvas.height;
+                });
+                ctx.globalAlpha = 1;
+
+                // Ortadaki Metni Çiz
+                const textLines = settings.text.split('\n');
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                
+                // Metin animasyonu (yavaşça belir ve parla)
+                let opacity = Math.min(1, elapsed / 1000); 
+                ctx.globalAlpha = opacity;
+                
+                // Gölge (Glow efekti)
+                ctx.shadowColor = settings.colors[0];
+                ctx.shadowBlur = 20;
+                
+                ctx.fillStyle = "#FFFFFF";
+                ctx.font = "bold 60px 'Inter', sans-serif";
+                ctx.fillText(textLines[0], canvas.width / 2, canvas.height / 2 - 40);
+                
+                if(textLines[1]) {
+                    ctx.font = "bold 30px 'Inter', sans-serif";
+                    ctx.fillStyle = settings.colors[0];
+                    ctx.fillText(textLines[1], canvas.width / 2, canvas.height / 2 + 40);
+                }
+                
+                ctx.shadowBlur = 0;
+                ctx.globalAlpha = 1;
+
+                // 5 Saniye dolduysa kaydı durdur
+                if (elapsed >= duration) {
+                    mediaRecorder.stop();
+                } else {
+                    animationId = requestAnimationFrame(drawFrame);
+                }
+            }
+
+            drawFrame();
+        }
+    </script>
+</body>
+</html>
