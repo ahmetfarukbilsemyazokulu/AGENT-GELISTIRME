@@ -6,11 +6,12 @@
     <title>Süper Hızlı Yapay Zeka Asistanı</title>
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .chat-container { width: 100%; max-width: 650px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow: hidden; height: 85vh; }
+        .chat-container { width: 100%; max-width: 650px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow: hidden; height: 88vh; }
         .chat-header { background: #24292e; color: white; padding: 15px; text-align: center; font-size: 18px; font-weight: bold; }
-        .key-bar { background: #fff3cd; padding: 10px 15px; display: flex; gap: 10px; border-bottom: 1px solid #ffeeba; align-items: center; }
-        .key-bar input { flex: 1; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 13px; }
-        .key-bar button { padding: 8px 12px; background: #ffc107; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px; }
+        .settings-bar { background: #fff3cd; padding: 10px 15px; display: flex; flex-direction: column; gap: 8px; border-bottom: 1px solid #ffeeba; }
+        .settings-row { display: flex; gap: 8px; align-items: center; }
+        .settings-row input { flex: 1; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 13px; }
+        .settings-row button { padding: 8px 14px; background: #ffc107; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px; }
         .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
         .message { padding: 12px 16px; border-radius: 8px; max-width: 85%; line-height: 1.5; font-size: 14px; word-break: break-word; white-space: pre-wrap; }
         .user-message { background: #0366d6; color: white; align-self: flex-end; }
@@ -26,43 +27,61 @@
 <div class="chat-container">
     <div class="chat-header">⚡ Gerçek Yapay Zeka Asistanı</div>
     
-    <div class="key-bar">
-        <input type="password" id="apiKeyInput" placeholder="Groq API Key'inizi buraya yapıştırın (gsk_...)">
-        <button onclick="saveApiKey()">Kaydet</button>
+    <!-- Ayarlar Çubuğu (API Key ve Model Adı) -->
+    <div class="settings-bar">
+        <div class="settings-row">
+            <input type="password" id="apiKeyInput" placeholder="Groq API Key (gsk_...)">
+        </div>
+        <div class="settings-row">
+            <input type="text" id="modelInput" value="llama-3.3-70b-versatile" placeholder="Model Adı (örn: llama3-8b-8192)">
+            <button onclick="saveSettings()">Ayarları Kaydet</button>
+        </div>
     </div>
 
     <div class="chat-messages" id="chatMessages">
-        <div class="message bot-message">👋 Merhaba! Üstteki kutuya Groq API anahtarınızı girip "Kaydet" deyin, ardından dilediğiniz gibi sohbet edelim!</div>
+        <div class="message bot-message">👋 Merhaba! Yukarıdaki alanlara API anahtarınızı girip "Ayarları Kaydet" butonuna basın, hemen sohbet edelim!</div>
     </div>
     
     <div class="chat-input-area">
-        <input type="text" id="userInput" placeholder="Önce API anahtarınızı girin..." disabled onkeypress="handleKeyPress(event)">
+        <input type="text" id="userInput" placeholder="Önce ayarları kaydedin..." disabled onkeypress="handleKeyPress(event)">
         <button id="sendBtn" disabled onclick="sendMessage()">Gönder</button>
     </div>
 </div>
 
 <script>
     let GROQ_API_KEY = localStorage.getItem("groq_key") || "";
+    let GROQ_MODEL = localStorage.getItem("groq_model") || "llama-3.3-70b-versatile";
     
     if (GROQ_API_KEY) {
         document.getElementById("apiKeyInput").value = GROQ_API_KEY;
+        document.getElementById("modelInput").value = GROQ_MODEL;
         document.getElementById("userInput").disabled = false;
         document.getElementById("sendBtn").disabled = false;
         document.getElementById("userInput").placeholder = "Mesajınızı yazın...";
     }
 
-    function saveApiKey() {
+    function saveSettings() {
         const key = document.getElementById("apiKeyInput").value.trim();
+        const model = document.getElementById("modelInput").value.trim();
+
         if (!key.startsWith("gsk_")) {
             alert("Geçersiz API anahtarı! Groq anahtarları 'gsk_' ile başlar.");
             return;
         }
+        if (!model) {
+            alert("Lütfen bir model adı girin!");
+            return;
+        }
+
         localStorage.setItem("groq_key", key);
+        localStorage.setItem("groq_model", model);
         GROQ_API_KEY = key;
+        GROQ_MODEL = model;
+
         document.getElementById("userInput").disabled = false;
         document.getElementById("sendBtn").disabled = false;
         document.getElementById("userInput").placeholder = "Mesajınızı yazın...";
-        alert("API Anahtarı başarıyla kaydedildi! Şimdi sohbet edebilirsiniz.");
+        alert("Ayarlar başarıyla kaydedildi! Şimdi sohbet edebilirsiniz.");
     }
 
     let chatHistory = [
@@ -94,7 +113,7 @@
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    model: "llama3-8b-8192",
+                    model: GROQ_MODEL,
                     messages: chatHistory,
                     temperature: 0.7
                 })
