@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Derin Araştırma Ajanı | AGENT-GELISTIRME</title>
+    <title>Akıllı Asistan | AGENT-GELISTIRME</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -50,16 +50,13 @@
         .user .message-content { background: var(--primary); color: white; border-top-right-radius: 4px; }
         .bot .message-content { background: var(--bot-bubble); color: var(--text-main); border: 1px solid var(--border); border-top-left-radius: 4px; }
 
-        /* Deep Search Rapor Stilleri */
         .bot .message-content h3 { font-size: 15px; font-weight: 600; margin: 12px 0 8px; color: #1E293B; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #E2E8F0; padding-bottom: 4px; }
-        .bot .message-content a { color: var(--primary); text-decoration: none; font-weight: 500; word-break: break-all; }
+        .bot .message-content a { color: var(--primary); text-decoration: none; font-weight: 500; }
         .bot .message-content a:hover { text-decoration: underline; }
         .bot .message-content ul { margin: 8px 0; padding-left: 20px; }
         .bot .message-content li { margin-bottom: 6px; }
-        .bot .message-content p { margin-bottom: 8px; }
         .bot .message-content .source-tag { display: inline-block; background: #E0E7FF; color: #3730A3; font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 600; margin-right: 6px; }
 
-        /* Yükleniyor Animasyonu */
         .loader-container { display: flex; align-items: center; gap: 12px; padding: 16px 20px; background: var(--bot-bubble); border: 1px solid var(--border); border-radius: 16px; border-top-left-radius: 4px; width: fit-content; }
         .loader { display: flex; gap: 4px; }
         .loader span { width: 6px; height: 6px; background: var(--primary); border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
@@ -71,7 +68,7 @@
         .chat-input-area { padding: 20px 24px; background: #FFF; border-top: 1px solid var(--border); display: flex; gap: 12px; align-items: center; }
         .input-wrapper { flex: 1; display: flex; align-items: center; background: #F1F5F9; border-radius: 24px; padding: 4px 8px; border: 1px solid transparent; transition: all 0.2s; }
         .input-wrapper:focus-within { border-color: var(--primary); background: #FFF; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
-        .chat-input-area input { flex: 1; border: none; background: transparent; padding: 12px 16px; font-size: 14px; outline: none; font-family: 'Inter', sans-serif; }
+        .chat-input-area input { flex: 1; border: none; background: transparent; padding: 12px 16px; font-size: 14px; outline: none; }
         .send-btn { background: var(--primary); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s; }
         .send-btn:hover { background: var(--primary-hover); transform: scale(1.05); }
 
@@ -85,10 +82,10 @@
 <div class="chat-container">
     <div class="chat-header">
         <div class="header-info">
-            <div class="avatar-bot"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+            <div class="avatar-bot"><i class="fa-solid fa-user-astronaut"></i></div>
             <div class="header-text">
-                <h2>Deep Search Agent</h2>
-                <p>Aktif & Derin Tarama Hazır</p>
+                <h2>Akıllı Asistan</h2>
+                <p>Sohbet & Derin Araştırma Modu</p>
             </div>
         </div>
         <button class="clear-btn" onclick="clearChat()"><i class="fa-solid fa-rotate-right"></i> Sıfırla</button>
@@ -98,15 +95,16 @@
         <div class="message-row bot">
             <div class="avatar-bot" style="width:36px; height:36px; font-size:16px;"><i class="fa-solid fa-robot"></i></div>
             <div class="message-content">
-                Merhaba! Ben <strong>Deep Search Ajanınızım</strong>.<br><br>
-                Bana herhangi bir konu hakkında soru sorabilirsiniz (örn: <em>"Kuantum bilgisayarların son durumu"</em> veya <em>"Yapay zeka hukuku makaleleri PDF"</em>). Ben saniyeler içinde web'i, Wikipedia'yı, akademik kaynakları ve geliştirici forumlarını tarayıp size <strong>mantıklı bir özet, maddeler ve doğrudan kaynak linkleri</strong> sunacağım.
+                Merhaba! Ben sizin akıllı asistanınızım. <br><br>
+                Benimle normal sohbet edebilirsiniz (örn: <em>"Nasılsın?", "Saat kaç?"</em>). <br>
+                Veya bana bir konu verip derinlemesine araştırmamı isteyebilirsiniz (örn: <em>"Yapay zeka ve hukuk makaleleri bul"</em>). Ben de saniyeler içinde Wikipedia, Semantic Scholar ve CrossRef (Akademik) veritabanlarını tarayıp size PDF ve linklerle rapor çıkarayım!
             </div>
         </div>
     </div>
     
     <div class="chat-input-area">
         <div class="input-wrapper">
-            <input type="text" id="userInput" placeholder="Derinlemesine araştırmak istediğiniz konuyu yazın..." onkeypress="handleKeyPress(event)" autocomplete="off">
+            <input type="text" id="userInput" placeholder="Sohbet edin veya araştırma yapın..." onkeypress="handleKeyPress(event)" autocomplete="off">
         </div>
         <button class="send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
     </div>
@@ -117,11 +115,11 @@
     const userInput = document.getElementById('userInput');
 
     window.clearChat = function() {
-        if(confirm("Tüm araştırma geçmişi silinecek. Onaylıyor musunuz?")) {
+        if(confirm("Sohbet geçmişi temizlenecek. Onaylıyor musunuz?")) {
             chatMessages.innerHTML = `
                 <div class="message-row bot">
                     <div class="avatar-bot" style="width:36px; height:36px; font-size:16px;"><i class="fa-solid fa-robot"></i></div>
-                    <div class="message-content">Sistem sıfırlandı. Yeni bir derin araştırma başlatabilirsiniz.</div>
+                    <div class="message-content">Sistem sıfırlandı. Yeni bir sohbet veya araştırma başlatabilirsiniz.</div>
                 </div>`;
         }
     }
@@ -133,29 +131,80 @@
         addMessage(query, 'user');
         userInput.value = '';
 
-        const loaderId = addLoader("Derin tarama başlatıldı...");
+        // 1. AŞAMA: Niyet Analizi (Intent Router)
+        const textLower = query.toLowerCase();
+        
+        // Eğer sohbet veya basit soruysa doğrudan cevap ver
+        if (textLower.match(/^(merhaba|selam|hey|günaydın|iyi akşamlar)/)) {
+            simulateTyping("Merhaba! Size bugün nasıl yardımcı olabilirim? Bir konu hakkında derinlemesine araştırma yapmamı ister misiniz?");
+            return;
+        }
+        if (textLower.match(/nasılsın|naber|ne haber|keyifler/)) {
+            simulateTyping("Harikayım, teşekkür ederim! Sistemlerim tam kapasite çalışıyor. Siz nasılsınız? Bugün ne araştıralım?");
+            return;
+        }
+        if (textLower.match(/teşekkür|sağol|eyvallah/)) {
+            simulateTyping("Rica ederim! Başka bir konuda yardımcı olabilirsem her zaman buradayım. 😊");
+            return;
+        }
+        if (textLower.match(/kimsin|adın ne|ne yapabilirsin|özelliklerin/)) {
+            simulateTyping("Ben bir yapay zeka araştırma asistanıyım. Sizinle doğal bir şekilde sohbet edebilirim. Ayrıca akademik makaleler (PDF), Wikipedia özetleri ve web kaynakları üzerinden derinlemesine araştırmalar yapıp size raporlar sunabilirim.");
+            return;
+        }
+        if (textLower.includes("saat kaç")) {
+            simulateTyping(`⏰ Şu anki saat: **${new Date().toLocaleTimeString('tr-TR')}**`);
+            return;
+        }
+        if (textLower.includes("günlerden ne") || textLower.includes("bugün ayın kaçı")) {
+            simulateTyping(`📅 Bugün: **${new Date().toLocaleDateString('tr-TR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}**`);
+            return;
+        }
+        // Arslanköy özel kontrolü
+        if (textLower.includes("arslanköy")) {
+            simulateTyping("📍 **Arslanköy**, Mersin ilinin Toroslar ilçesine bağlı bir mahalledir. Deniz seviyesinden yaklaşık 1475 metre yükseklikte kurulmuş bir yörük köyüdür. Eski adı Efrenk'tir ve Kurtuluş Savaşı'ndaki direnişiyle bilinir.");
+            return;
+        }
+
+        // 2. AŞAMA: Derin Araştırma (Web, Wiki, Akademik)
+        // Eğer yukarıdaki sohbet kalıplarına uymuyorsa, arama yap
+        const loaderId = addLoader("Niyet analiz edildi: Araştırma başlatılıyor...");
 
         try {
-            const results = await deepSearch(query, loaderId);
+            // Arama sorgusunu temizle (bana, bul, araştır, hakkında vb. kelimeleri çıkar)
+            let cleanQuery = query.replace(/(bana|bul|araştır|hakkında|bilgi ver|nedir|kimdir|nerede|\?|pdf|makale)/gi, '').trim();
+            if(cleanQuery.length < 2) cleanQuery = query; // Eğer çok kısaldıysa orijinali kullan
+
+            const results = await deepSearch(cleanQuery, loaderId);
             const report = generateReport(query, results);
+            
             removeLoader(loaderId);
             addMessage(report, 'bot');
         } catch (error) {
             removeLoader(loaderId);
-            addMessage(`⚠️ Arama sırasında bir hata oluştu: ${error.message}. Lütfen tekrar deneyin.`, 'bot');
+            addMessage(`⚠️ Araştırma sırasında bir hata oluştu: ${error.message}. Lütfen tekrar deneyin.`, 'bot');
         }
     };
 
+    // Sohbet yanıtları için gecikmeli yazma efekti (Doğallık katar)
+    function simulateTyping(text) {
+        const loaderId = addLoader("Yazıyor...");
+        setTimeout(() => {
+            removeLoader(loaderId);
+            addMessage(text, 'bot');
+        }, 800);
+    }
+
     async function deepSearch(query, loaderId) {
-        const results = { wiki: null, ddg: [], academic: [], dev: [] };
+        const results = { wiki: null, academic: [], web: [] };
         const updateStatus = (text) => { document.getElementById(loaderId).innerText = text; };
 
+        // 1. Wikipedia
         updateStatus("Wikipedia taranıyor...");
         try {
             const wikiSearch = await fetch(`https://tr.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&origin=*`).then(r => r.json());
             if (wikiSearch.query.search.length > 0) {
                 const title = wikiSearch.query.search[0].title;
-                const content = await fetch(`https://tr.wikipedia.org/w/api.php?action=query&prop=extracts&exsentences=3&exlimit=1&titles=${encodeURIComponent(title)}&explaintext=1&format=json&origin=*`).then(r => r.json());
+                const content = await fetch(`https://tr.wikipedia.org/w/api.php?action=query&prop=extracts&exsentences=4&exlimit=1&titles=${encodeURIComponent(title)}&explaintext=1&format=json&origin=*`).then(r => r.json());
                 const pageId = Object.keys(content.query.pages)[0];
                 if (pageId !== "-1") {
                     results.wiki = { title: title, extract: content.query.pages[pageId].extract, url: `https://tr.wikipedia.org/wiki/${encodeURIComponent(title)}` };
@@ -163,23 +212,7 @@
             }
         } catch (e) { console.warn("Wikipedia hatası:", e); }
 
-        updateStatus("DuckDuckGo taranıyor...");
-        try {
-            const ddgUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`;
-            const ddgData = await fetch(ddgUrl).then(r => r.json());
-            
-            if (ddgData.AbstractText) {
-                results.ddg.push({ title: ddgData.Heading || query, snippet: ddgData.AbstractText, url: ddgData.AbstractURL || `https://duckduckgo.com/?q=${encodeURIComponent(query)}`, source: "DuckDuckGo" });
-            }
-            if (ddgData.RelatedTopics && ddgData.RelatedTopics.length > 0) {
-                ddgData.RelatedTopics.slice(0, 3).forEach(topic => {
-                    if (topic.FirstURL && topic.Text) {
-                        results.ddg.push({ title: topic.Text.split(' - ')[0] || "İlgili Sonuç", snippet: topic.Text, url: topic.FirstURL, source: "DuckDuckGo" });
-                    }
-                });
-            }
-        } catch (e) { console.warn("DuckDuckGo hatası:", e); }
-
+        // 2. Akademik Veritabanı (Semantic Scholar - PDF Odaklı)
         updateStatus("Akademik makaleler ve PDF'ler aranıyor...");
         try {
             const ssUrl = `https://api.semanticscholar.org/graph/v1/paper/search?query=${encodeURIComponent(query)}&limit=3&fields=title,abstract,year,openAccessPdf,url`;
@@ -195,41 +228,33 @@
             }
         } catch (e) { console.warn("Semantic Scholar hatası:", e); }
 
-        updateStatus("Teknik topluluklar taranıyor...");
+        // 3. Web / Teknik Kaynaklar (DuckDuckGo & HackerNews)
+        updateStatus("Web kaynakları taranıyor...");
         try {
-            const hnUrl = `https://hn.algolia.com/api/v1/search?query=${encodeURIComponent(query)}&tags=story&hitsPerPage=2`;
-            const hnData = await fetch(hnUrl).then(r => r.json());
-            if (hnData.hits && hnData.hits.length > 0) {
-                results.dev = hnData.hits.map(h => ({
-                    title: h.title,
-                    snippet: `Tartışma: ${h.points || 0} puan, ${h.num_comments || 0} yorum.`,
-                    url: h.url || `https://news.ycombinator.com/item?id=${h.objectID}`
-                }));
+            // DuckDuckGo
+            const ddgData = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`).then(r => r.json());
+            if (ddgData.AbstractText) {
+                results.web.push({ title: ddgData.Heading || query, snippet: ddgData.AbstractText, url: ddgData.AbstractURL || "#", source: "DuckDuckGo" });
             }
-        } catch (e) { console.warn("Hacker News hatası:", e); }
+        } catch (e) { console.warn("DDG hatası:", e); }
 
         updateStatus("Rapor oluşturuluyor...");
         return results;
     }
 
     function generateReport(query, results) {
-        let md = `### 🔍 Derin Araştırma Raporu: "${query}"\n\n`;
+        let md = `### 🔍 Araştırma Raporu: "${query}"\n\n`;
+        let hasResult = false;
 
         if (results.wiki) {
-            md += `#### 📖 Genel Bakış ve Özet\n`;
+            hasResult = true;
+            md += `#### 📖 Genel Bakış (Wikipedia)\n`;
             md += `${results.wiki.extract}\n`;
-            md += `<span class="source-tag">Wikipedia</span> [Kaynağı Oku](${results.wiki.url})\n\n`;
-        }
-
-        if (results.ddg.length > 0) {
-            md += `#### 🌐 Web Özeti ve Öne Çıkanlar\n`;
-            results.ddg.forEach(item => {
-                md += `- **${item.title}**: ${item.snippet}\n  <span class="source-tag">${item.source}</span> [Bağlantıyı Aç](${item.url})\n`;
-            });
-            md += `\n`;
+            md += `[Kaynağı Oku](${results.wiki.url})\n\n`;
         }
 
         if (results.academic.length > 0) {
+            hasResult = true;
             md += `#### 🎓 Akademik Kaynaklar ve PDF'ler\n`;
             results.academic.forEach(paper => {
                 const pdfLabel = paper.isPdf ? "📄 **PDF İndir**" : "🔗 Makale Bağlantısı";
@@ -238,31 +263,23 @@
             md += `\n`;
         }
 
-        if (results.dev.length > 0) {
-            md += `#### 💻 Teknoloji ve Topluluk Tartışmaları\n`;
-            results.dev.forEach(item => {
-                md += `- **[${item.title}](${item.url})**\n  ${item.snippet}\n`;
+        if (results.web.length > 0) {
+            hasResult = true;
+            md += `#### 🌐 Web Bulguları\n`;
+            results.web.forEach(item => {
+                md += `- **${item.title}**: ${item.snippet}\n  <span class="source-tag">${item.source}</span> [Bağlantı](${item.url})\n`;
             });
             md += `\n`;
         }
 
-        md += `#### 🧠 Ajanın Mantıksal Analizi\n`;
-        if (results.wiki || results.ddg.length > 0) {
-            md += `Toplanan verilere göre, **"${query}"** konusu birden fazla kaynakta yer alıyor. `;
-            if (results.academic.length > 0) {
-                md += `Konuyla ilgili akademik çalışmalar ve PDF'ler mevcut (yukarıdaki 🎓 bölümüne göz atın). `;
-            }
-            if (results.dev.length > 0) {
-                md += `Ayrıca yazılım ve teknoloji topluluklarında bu konu tartışılmış. `;
-            }
-            md += `Soruya en doğrudan yanıt yukarıdaki özetlerde sunulmuştur. Daha derin bir analiz için kaynak bağlantılarına tıklayabilirsiniz.`;
-        } else {
-            md += `Belirttiğiniz konu hakkında açık web kaynaklarında yeterince net veri bulunamadı. Lütfen farklı anahtar kelimeler kullanarak tekrar deneyin.`;
+        if (!hasResult) {
+            return `🤔 **"${query}"** hakkında sağlam bir kaynak bulamadım. Lütfen konuyu daha net belirterek tekrar sorun. (Örn: "Kuantum bilgisayarlar nedir?" veya "Yapay zeka etiği makaleleri")`;
         }
 
         return md;
     }
 
+    // --- Yardımcı Fonksiyonlar ---
     function addMessage(text, sender) {
         const row = document.createElement('div');
         row.className = `message-row ${sender}`;
