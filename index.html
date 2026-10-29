@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tarayıcı İçi AI Asistanı</title>
+    <title>Tarayıcı İçi Gerçek AI Sohbet Asistanı</title>
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; height: 100vh; }
         .chat-container { width: 100%; max-width: 650px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow: hidden; height: 80vh; }
-        .chat-header { background: #24292e; color: white; padding: 15px; text-align: center; font-size: 18px; font-weight: bold; }
+        .chat-header { background: #0366d6; color: white; padding: 15px; text-align: center; font-size: 18px; font-weight: bold; }
         .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
         .message { padding: 12px 16px; border-radius: 8px; max-width: 85%; line-height: 1.5; font-size: 14px; word-break: break-word; white-space: pre-wrap; }
         .user-message { background: #0366d6; color: white; align-self: flex-end; }
@@ -22,13 +22,13 @@
 <body>
 
 <div class="chat-container">
-    <div class="chat-header">🤖 Tarayıcı İçi AI Asistanı</div>
-    <div id="status">Kararlı AI motoru yükleniyor, lütfen bekleyin...</div>
+    <div class="chat-header">🤖 Tarayıcı İçi AI Sohbet Asistanı</div>
+    <div id="status">Tarayıcı içi sohbet modeli yükleniyor, lütfen bekleyin...</div>
     <div class="chat-messages" id="chatMessages">
-        <div class="message bot-message">👋 Merhaba! Tarayıcı motorumuz hazır olduğunda mesaj yazabilirsiniz.</div>
+        <div class="message bot-message">👋 Merhaba! Ben tarayıcında çalışan özgür bir yapay zeka modeliyim. Model hazır olduğunda sohbet edebiliriz!</div>
     </div>
     <div class="chat-input-area">
-        <input type="text" id="userInput" placeholder="Yükleniyor..." disabled onkeypress="handleKeyPress(event)">
+        <input type="text" id="userInput" placeholder="Model yükleniyor..." disabled onkeypress="handleKeyPress(event)">
         <button id="sendBtn" disabled onclick="sendMessage()">Gönder</button>
     </div>
 </div>
@@ -38,27 +38,27 @@
 
     env.allowLocalModels = false;
 
-    let classifier = null;
+    let generator = null;
     const statusDiv = document.getElementById("status");
     const inputField = document.getElementById("userInput");
     const sendBtn = document.getElementById("sendBtn");
 
     async function loadModel() {
         try {
-            statusDiv.innerText = "Duygu analizi ve metin işleme modeli yükleniyor...";
+            statusDiv.innerText = "Kararlı sohbet modeli indiriliyor (DistilGPT-2)...";
             
-            // Tarayıcıda %100 kararlı çalışan ve dosya yolu hatası vermeyen model
-            classifier = await pipeline('sentiment-analysis', 'Xenova/distilbert-base-uncased-finetuned-sst-2-english');
+            // Tarayıcı ile %100 uyumlu, dosya yolu hatası vermeyen hafif metin üretim modeli
+            generator = await pipeline('text-generation', 'Xenova/distilgpt2');
 
-            statusDiv.innerText = "✅ Model Hazır! Dilediğiniz cümleyi yazabilirsiniz.";
+            statusDiv.innerText = "✅ Model Hazır! Özgürce sohbet edebilirsiniz.";
             statusDiv.style.background = "#d4edda";
             statusDiv.style.color = "#155724";
 
             inputField.disabled = false;
             sendBtn.disabled = false;
-            inputField.placeholder = "İngilizce bir cümle yazın (örn: I love this tool)...";
+            inputField.placeholder = "Mesajınızı yazın...";
         } catch (error) {
-            statusDiv.innerText = "⚠️ Model hatası: " + error.message;
+            statusDiv.innerText = "⚠️ Model yükleme hatası: " + error.message;
             statusDiv.style.background = "#f8d7da";
             statusDiv.style.color = "#721c24";
         }
@@ -68,7 +68,7 @@
 
     window.sendMessage = async function() {
         const messageText = inputField.value.trim();
-        if (!messageText || !classifier) return;
+        if (!messageText || !generator) return;
 
         appendMessage(messageText, 'user-message');
         inputField.value = '';
@@ -76,18 +76,28 @@
         const chatMessages = document.getElementById('chatMessages');
         const botMessageDiv = document.createElement('div');
         botMessageDiv.className = 'message bot-message';
-        botMessageDiv.innerText = "Analiz ediliyor...";
+        botMessageDiv.innerText = "Düşünüyor...";
         chatMessages.appendChild(botMessageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
 
         try {
-            const result = await classifier(messageText);
-            if (result && result[0]) {
-                const label = result[0].label;
-                const score = (result[0].score * 100).toFixed(1);
-                botMessageDiv.innerText = `🔍 Model Analizi:\nSonuç: ${label} (Doğruluk Oranı: %${score})`;
+            // Kullanıcının girdisine göre akıllı metin üretimi
+            const output = await generator(messageText, { 
+                max_new_tokens: 60, 
+                temperature: 0.7,
+                do_sample: true,
+                repetition_penalty: 1.2
+            });
+            
+            if (output && output[0] && output[0].generated_text) {
+                let responseText = output[0].generated_text;
+                // Kullanıcının yazdığı kısmı baştan kırparak sadece asistanın devamını gösterelim
+                if (responseText.startsWith(messageText)) {
+                    responseText = responseText.slice(messageText.length).trim();
+                }
+                botMessageDiv.innerText = responseText || "Yanıt oluşturuldu ancak boş döndü.";
             } else {
-                botMessageDiv.innerText = "Analiz tamamlandı ancak sonuç alınamadı.";
+                botMessageDiv.innerText = "Yanıt üretilemedi.";
             }
         } catch (error) {
             botMessageDiv.innerText = "Hata oluştu: " + error.message;
