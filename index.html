@@ -8,9 +8,9 @@
         body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; height: 100vh; }
         .chat-container { width: 100%; max-width: 650px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow: hidden; height: 88vh; }
         .chat-header { background: #24292e; color: white; padding: 15px; text-align: center; font-size: 18px; font-weight: bold; }
-        .settings-bar { background: #fff3cd; padding: 10px 15px; display: flex; flex-direction: column; gap: 8px; border-bottom: 1px solid #ffeeba; }
+        .settings-bar { background: #fff3cd; padding: 12px 15px; display: flex; flex-direction: column; gap: 8px; border-bottom: 1px solid #ffeeba; }
         .settings-row { display: flex; gap: 8px; align-items: center; }
-        .settings-row input { flex: 1; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 13px; }
+        .settings-row input, .settings-row select { flex: 1; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 13px; }
         .settings-row button { padding: 8px 14px; background: #ffc107; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px; }
         .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
         .message { padding: 12px 16px; border-radius: 8px; max-width: 85%; line-height: 1.5; font-size: 14px; word-break: break-word; white-space: pre-wrap; }
@@ -32,13 +32,18 @@
             <input type="password" id="apiKeyInput" placeholder="Groq API Key (gsk_...)">
         </div>
         <div class="settings-row">
-            <input type="text" id="modelInput" value="llama-3.3-70b-versatile" placeholder="Model Adı">
+            <select id="modelSelect">
+                <option value="llama-3.1-8b-instant">Llama 3.1 8B Instant (Önerilen)</option>
+                <option value="llama-3.3-70b-versatile">Llama 3.3 70B Versatile</option>
+                <option value="gemma2-9b-it">Gemma 2 9B IT</option>
+                <option value="mixtral-8x7b-32768">Mixtral 8x7B</option>
+            </select>
             <button onclick="saveSettings()">Ayarları Kaydet</button>
         </div>
     </div>
 
     <div class="chat-messages" id="chatMessages">
-        <div class="message bot-message">👋 Merhaba! API anahtarınızı girip "Ayarları Kaydet" butonuna basın, hemen sohbet edelim!</div>
+        <div class="message bot-message">👋 Merhaba! API anahtarınızı girip model seçerek "Ayarları Kaydet" butonuna basın.</div>
     </div>
     
     <div class="chat-input-area">
@@ -49,11 +54,11 @@
 
 <script>
     let GROQ_API_KEY = localStorage.getItem("groq_key") || "";
-    let GROQ_MODEL = localStorage.getItem("groq_model") || "llama-3.3-70b-versatile";
+    let GROQ_MODEL = localStorage.getItem("groq_model") || "llama-3.1-8b-instant";
     
     if (GROQ_API_KEY) {
         document.getElementById("apiKeyInput").value = GROQ_API_KEY;
-        document.getElementById("modelInput").value = GROQ_MODEL;
+        document.getElementById("modelSelect").value = GROQ_MODEL;
         document.getElementById("userInput").disabled = false;
         document.getElementById("sendBtn").disabled = false;
         document.getElementById("userInput").placeholder = "Mesajınızı yazın...";
@@ -61,7 +66,7 @@
 
     function saveSettings() {
         const key = document.getElementById("apiKeyInput").value.trim();
-        const model = document.getElementById("modelInput").value.trim();
+        const model = document.getElementById("modelSelect").value;
 
         if (!key.startsWith("gsk_")) {
             alert("Geçersiz API anahtarı! Groq anahtarları 'gsk_' ile başlar.");
@@ -76,7 +81,7 @@
         document.getElementById("userInput").disabled = false;
         document.getElementById("sendBtn").disabled = false;
         document.getElementById("userInput").placeholder = "Mesajınızı yazın...";
-        alert("Ayarlar başarıyla kaydedildi! Şimdi sohbet edebilirsiniz.");
+        alert("Ayarlar başarıyla kaydedildi! Model: " + model);
     }
 
     let chatHistory = [
