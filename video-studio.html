@@ -45,7 +45,7 @@
     <div class="studio-container">
         <div class="prompt-area">
             <label for="videoPrompt">Nasıl bir reklam filmi istiyorsunuz?</label>
-            <textarea id="videoPrompt" placeholder="Örnek: Fütüristik bir elektrikli araba reklamı. Karanlık, neon mavi detaylar ve hız hissi olsun."></textarea>
+            <textarea id="videoPrompt" placeholder="Örnek: Karanlık temalı, altın sarısı detaylara sahip lüks bir saat reklamı."></textarea>
             <div class="action-row">
                 <button id="generateBtn" onclick="generateVideo()" disabled>Yapay Zeka Yükleniyor...</button>
             </div>
@@ -63,7 +63,6 @@
         </div>
     </div>
 
-    <!-- WebLLM Yapay Zeka Kütüphanesi -->
     <script type="module">
         import * as webllm from "https://esm.run/@mlc-ai/web-llm";
 
@@ -80,7 +79,7 @@
         let recordedChunks = [];
         let animationId;
 
-        // 1. YAPAY ZEKAYI BAŞLAT (Hafif ve Hızlı Model: Llama-3.2-1B)
+        // YAPAY ZEKAYI BAŞLAT
         async function initAI() {
             try {
                 const selectedModel = "Llama-3.2-1B-Instruct-q4f32_1-MLC";
@@ -100,47 +99,81 @@
         }
         initAI();
 
-        // 2. YAPAY ZEKADAN VİDEO TASARIMI (JSON) AL
+        // KIRILMAZ JSON AYRIŞTIRICI
+        function extractJSON(text) {
+            try {
+                // Bazen AI ```json ... ``` şeklinde çıktı verebilir, onları temizle
+                let cleanText = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+                const match = cleanText.match(/\{[\s\S]*\}/);
+                
+                if (match) {
+                    let jsonStr = match[0];
+                    try {
+                        return JSON.parse(jsonStr);
+                    } catch (e) {
+                        // Eğer JSON'da tek tırnak veya sonda virgül kaldıysa düzelt
+                        let fixedJson = jsonStr.replace(/'/g, '"').replace(/,\s*}/g, '}');
+                        return JSON.parse(fixedJson);
+                    }
+                }
+            } catch (err) {
+                console.warn("JSON parse hatası, yedek plana geçiliyor.");
+            }
+            return null;
+        }
+
+        // YEDEK PLAN (Eğer AI saçmalarsa, bu devreye girer ve videoyu yine de yapar)
+        function getFallbackDesign(prompt) {
+            const p = prompt.toLowerCase();
+            if (p.includes('makyaj') || p.includes('güzellik') || p.includes('lüks') || p.includes('altın')) {
+                return { title: "LUXE", subtitle: "GOLD COLLECTION", colors: ["#1A0B1A", "#4C1D95", "#831843"], textColor: "#FDF2F8", particleColor: "rgba(251,207,232,0.6)", fontStyle: "serif" };
+            }
+            if (p.includes('teknoloji') || p.includes('araba') || p.includes('neon') || p.includes('gelecek')) {
+                return { title: "FUTURE", subtitle: "TECHNOLOGY", colors: ["#020617", "#1E3A8A", "#06B6D4"], textColor: "#38BDF8", particleColor: "rgba(56,189,248,0.6)", fontStyle: "sans-serif" };
+            }
+            if (p.includes('doğa') || p.includes('kahve') || p.includes('organik')) {
+                return { title: "PURE", subtitle: "ORGANIC", colors: ["#064E3B", "#10B981", "#34D399"], textColor: "#ECFDF5", particleColor: "rgba(167,243,208,0.6)", fontStyle: "serif" };
+            }
+            // Hiçbirine uymazsa varsayılan şık tasarım
+            return { title: "PREMIUM", subtitle: "DESIGN", colors: ["#111827", "#374151", "#1F2937"], textColor: "#F3F4F6", particleColor: "rgba(255,255,255,0.3)", fontStyle: "sans-serif" };
+        }
+
+        // YAPAY ZEKADAN TASARIM İSTEME
         async function getVideoDesignFromAI(prompt) {
             const messages = [
                 { 
                     role: "system", 
-                    content: `Sen profesyonel bir sanat yönetmeni ve video tasarımcısısın. Kullanıcının verdiği prompt'a göre 6 saniyelik bir reklam filmi için tasarım parametreleri üreteceksin. 
-                    SADECE geçerli bir JSON objesi döndür. Asla açıklama yazma, asla kod bloğu (\`\`\`) kullanma.
-                    Format tam olarak şöyle olmalı:
-                    {
-                      "title": "En fazla 15 karakterlik çarpıcı ana başlık",
-                      "subtitle": "En fazla 25 karakterlik alt slogan",
-                      "colors": ["#hexRenk1", "#hexRenk2", "#hexRenk3"],
-                      "textColor": "#hexRenk",
-                      "particleColor": "rgba(r,g,b,0.5)",
-                      "fontStyle": "serif veya sans-serif"
-                    }
-                    Renkler prompt'un havasına uygun (lüks ise altın/koyu, teknoloji ise neon/mavi, doğa ise pastel yeşil vb.) olmalı.` 
+                    content: `You are a JSON API. Output ONLY a valid JSON object. Do NOT use markdown blocks. Do NOT write explanations.
+                    Format: {"title": "SHORT TITLE", "subtitle": "SHORT SUBTITLE", "colors": ["#hex1", "#hex2", "#hex3"], "textColor": "#hex", "particleColor": "rgba(255,255,255,0.5)", "fontStyle": "serif"}
+                    Analyze the user prompt and generate the design.` 
                 },
                 { 
                     role: "user", 
-                    content: `Şu reklam için tasarım üret: "${prompt}"` 
+                    content: `Design for: "${prompt}"` 
                 }
             ];
 
-            const reply = await engine.chat.completions.create({ 
-                messages: messages,
-                temperature: 0.2, // Daha tutarlı JSON çıktısı için düşük tutuyoruz
-                max_tokens: 200
-            });
+            try {
+                const reply = await engine.chat.completions.create({ 
+                    messages: messages,
+                    temperature: 0.1, 
+                    max_tokens: 150
+                });
 
-            let responseText = reply.choices[0].message.content.trim();
-            
-            // AI bazen JSON dışında metin yazabilir, sadece { ... } arasındaki kısmı alalım
-            const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-            if (jsonMatch) {
-                return JSON.parse(jsonMatch[0]);
+                let parsedDesign = extractJSON(reply.choices[0].message.content);
+                
+                if (parsedDesign && parsedDesign.title && parsedDesign.colors) {
+                    return parsedDesign;
+                }
+            } catch (e) {
+                console.warn("AI üretim hatası:", e);
             }
-            throw new Error("Yapay zeka geçerli bir tasarım üretemedi.");
+            
+            // Eğer AI başarısız olursa yedek planı kullan
+            return getFallbackDesign(prompt);
         }
 
-        // 3. VİDEO ÜRETİM FONKSİYONU
+        // VİDEO ÜRETİM FONKSİYONU
         window.generateVideo = async function() {
             const prompt = document.getElementById('videoPrompt').value.trim();
             if (!prompt) {
@@ -150,20 +183,17 @@
             
             generateBtn.disabled = true;
             downloadArea.style.display = 'none';
-            statusText.innerText = "🧠 Yapay Zeka senaryonuzu tasarlıyor...";
+            statusText.innerText = "🧠 Yapay Zeka tasarımı oluşturuyor...";
             statusText.className = "status recording";
 
             try {
-                // Yapay zekadan tasarımı al
                 const design = await getVideoDesignFromAI(prompt);
-                statusText.innerText = "🎬 Tasarım hazır! Video render ediliyor...";
+                statusText.innerText = "🎬 Video render ediliyor...";
 
-                // Canvas'ı göster
                 canvas.style.display = 'block';
                 canvasContainer.querySelector('span').style.display = 'none';
                 recordedChunks = [];
 
-                // Video Kaydını Başlat
                 const stream = canvas.captureStream(60);
                 mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9' });
                 
@@ -186,12 +216,10 @@
 
                 mediaRecorder.start();
 
-                // Animasyon Döngüsü (6 Saniye)
                 let startTime = Date.now();
                 const duration = 6000;
                 let particles = [];
 
-                // Parçacıkları hazırla (Tasarımdan gelen renklerle)
                 for (let i = 0; i < 100; i++) {
                     particles.push({
                         x: Math.random() * canvas.width,
@@ -206,7 +234,6 @@
                 function drawFrame() {
                     const time = Date.now() - startTime;
                     
-                    // 1. ARKA PLAN (Animasyonlu Gradient)
                     const gradient = ctx.createLinearGradient(
                         canvas.width/2 + Math.sin(time/1000) * 500, 
                         0, 
@@ -222,7 +249,6 @@
                     ctx.fillStyle = gradient;
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                    // 2. IŞILTILAR (Bokeh)
                     particles.forEach(p => {
                         ctx.beginPath();
                         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
@@ -243,9 +269,8 @@
                     ctx.globalAlpha = 1;
                     ctx.shadowBlur = 0;
 
-                    // 3. METİN ANİMASYONU (Yapay zekanın verdiği yazılar)
                     const textOpacity = Math.min(1, time / 1000);
-                    const textScale = 1 + Math.sin(time / 2000) * 0.03; // Nefes alma efekti
+                    const textScale = 1 + Math.sin(time / 2000) * 0.03;
                     
                     ctx.save();
                     ctx.translate(canvas.width / 2, canvas.height / 2);
@@ -254,18 +279,15 @@
                     ctx.textBaseline = "middle";
                     ctx.globalAlpha = textOpacity;
 
-                    // Gölge
                     ctx.shadowColor = "rgba(0,0,0,0.6)";
                     ctx.shadowBlur = 15;
                     ctx.shadowOffsetY = 5;
 
-                    // Ana Başlık
                     ctx.fillStyle = design.textColor || "#FFFFFF";
                     const fontStyle = design.fontStyle === 'serif' ? "'Playfair Display', serif" : "'Montserrat', sans-serif";
                     ctx.font = `600 80px ${fontStyle}`;
                     ctx.fillText(design.title || "REKLAM", 0, -30);
 
-                    // Alt Başlık
                     ctx.shadowBlur = 5;
                     ctx.font = "300 28px 'Montserrat', sans-serif";
                     ctx.fillText(design.subtitle || "SİZİN İÇİN", 0, 50);
