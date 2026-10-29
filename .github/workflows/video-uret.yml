@@ -24,14 +24,16 @@ jobs:
           node -e '
           const puppeteer = require("puppeteer");
           (async () => {
-            const browser = await puppeteer.launch();
+            const browser = await puppeteer.launch({
+              args: ["--no-sandbox", "--disable-setuid-sandbox"]
+            });
             const page = await browser.newPage();
             await page.setViewport({ width: 1920, height: 1080 });
             await page.goto("file://" + process.cwd() + "/index.html");
-            await new Promise(r => setTimeout(r, 3000)); // 3 saniye bekle
+            await new Promise(r => setTimeout(r, 3000));
             await page.screenshot({ path: "video-kare.png" });
             await browser.close();
-            console.log("Ekran goruntusu alindi!");
+            console.log("Ekran goruntusu basariyla alindi!");
           })();
           '
 
