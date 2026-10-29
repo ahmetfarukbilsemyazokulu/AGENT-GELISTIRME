@@ -34,8 +34,8 @@
 </div>
 
 <script>
-    // Yeni aldığınız Groq API anahtarınızı buraya yazın
-    const GROQ_API_KEY = "YENİ_GROQ_API_KEY_BURAYA";
+    // API anahtarınızı tırnak içine tam ve boşluksuz yapıştırın
+    const GROQ_API_KEY = "BURAYA_YENI_API_KEY_YAZ";
 
     let chatHistory = [
         { role: "system", content: "Sen yardımcı, akıllı, samimi ve Türkçe konuşan profesyonel bir yapay zeka asistanısın." }
@@ -62,7 +62,7 @@
             const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                 method: "POST",
                 headers: {
-                    "Authorization": `Bearer ${GROQ_API_KEY}`,
+                    "Authorization": "Bearer " + GROQ_API_KEY.trim(),
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
