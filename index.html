@@ -4,11 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Özgür Transformers.js AI Asistanı</title>
-    <!-- Transformers.js Kütüphanesi -->
-    <script type="module">
-        import { pipeline } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.0';
-        window.transformersPipeline = pipeline;
-    </script>
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; height: 100vh; }
         .chat-container { width: 100%; max-width: 650px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow: hidden; height: 80vh; }
@@ -28,9 +23,9 @@
 
 <div class="chat-container">
     <div class="chat-header">🔥 Özgür Transformers.js AI Asistanı</div>
-    <div id="status">Model yükleniyor, lütfen bekleyin (İlk yüklemede birkaç saniye sürebilir)...</div>
+    <div id="status">Hugging Face modeli yükleniyor, lütfen bekleyin...</div>
     <div class="chat-messages" id="chatMessages">
-        <div class="message bot-message">👋 Merhaba! Ben tarayıcınızda çalışan özgür ve bağımsız bir yapay zeka modeliyim. Model hazır olduğunda yazmaya başlayabilirsin!</div>
+        <div class="message bot-message">👋 Merhaba! Ben doğrudan tarayıcınızda çalışan özgür bir yapay zeka modeliyim. Yükleme tamamlandığında mesaj yazabilirsiniz.</div>
     </div>
     <div class="chat-input-area">
         <input type="text" id="userInput" placeholder="Model yükleniyor..." disabled onkeypress="handleKeyPress(event)">
@@ -39,7 +34,10 @@
 </div>
 
 <script type="module">
-    import { pipeline } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.0';
+    import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.0';
+
+    // CDN üzerinden model indirimlerini güvenli hale getirelim
+    env.allowLocalModels = false;
 
     let generator = null;
     const statusDiv = document.getElementById("status");
@@ -48,12 +46,12 @@
 
     async function loadModel() {
         try {
-            statusDiv.innerText = "Hugging Face modeli indiriliyor ve başlatılıyor...";
+            statusDiv.innerText = "Kararlı Hugging Face modeli indiriliyor (Xenova/gpt2)...";
             
-            // Tarayıcı için optimize edilmiş hafif metin üretim modeli
-            generator = await pipeline('text-generation', 'Xenova/Qwen1.5-0.5B-Chat');
+            // Transformers.js üzerinde 100% uyumlu çalışan resmi model
+            generator = await pipeline('text-generation', 'Xenova/gpt2');
 
-            statusDiv.innerText = "✅ Model Hazır! Özgürce soru sorabilirsiniz.";
+            statusDiv.innerText = "✅ Model Başarıyla Yüklendi! Özgürce yazabilirsiniz.";
             statusDiv.style.background = "#d4edda";
             statusDiv.style.color = "#155724";
 
@@ -79,29 +77,24 @@
         const chatMessages = document.getElementById('chatMessages');
         const botMessageDiv = document.createElement('div');
         botMessageDiv.className = 'message bot-message';
-        botMessageDiv.innerText = "Düşünüyor...";
+        botMessageDiv.innerText = "Üretiliyor...";
         chatMessages.appendChild(botMessageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
 
         try {
-            const messages = [
-                { role: "system", content: "Sen yardımcı bir yapay zeka asistanısın." },
-                { role: "user", content: messageText }
-            ];
-
-            const output = await generator(messages, { max_new_tokens: 128, temperature: 0.7 });
-            let reply = output[0].generated_text;
+            const output = await generator(messageText, { 
+                max_new_tokens: 50, 
+                temperature: 0.7,
+                do_sample: true 
+            });
             
-            // Model çıktısını düzenleyelim
-            if (Array.isArray(reply)) {
-                botMessageDiv.innerText = reply[reply.length - 1].content || JSON.stringify(reply);
-            } else if (typeof reply === 'string') {
-                botMessageDiv.innerText = reply;
+            if (output && output[0] && output[0].generated_text) {
+                botMessageDiv.innerText = output[0].generated_text;
             } else {
-                botMessageDiv.innerText = "Yanıt üretildi ancak biçimlendirilemedi.";
+                botMessageDiv.innerText = "Yanıt üretildi ancak metin alınamadı.";
             }
         } catch (error) {
-            botMessageDiv.innerText = "Hata oluştu: " + error.message;
+            botMessageDiv.innerText = "Üretim hatası: " + error.message;
         }
         chatMessages.scrollTop = chatMessages.scrollHeight;
     };
