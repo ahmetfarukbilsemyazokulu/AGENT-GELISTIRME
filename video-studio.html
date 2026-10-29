@@ -3,38 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro Reklam Stüdyosu | AGENT-GELISTIRME</title>
+    <title>Ultimate Pro Reklam Stüdyosu | AGENT-GELISTIRME</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Montserrat:wght@300;600&family=Inter:wght@400&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background: #0F172A; color: white; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        body { font-family: 'Inter', sans-serif; background: #0B1120; color: white; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         .header { text-align: center; margin-bottom: 20px; }
-        .header h1 { margin: 0; font-family: 'Playfair Display', serif; font-size: 32px; background: linear-gradient(90deg, #38BDF8, #A78BFA); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .header p { color: #94A3B8; font-size: 13px; margin-top: 5px; }
+        .header h1 { margin: 0; font-family: 'Playfair Display', serif; font-size: 34px; background: linear-gradient(90deg, #38BDF8, #A78BFA, #F472B6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header p { color: #94A3B8; font-size: 14px; margin-top: 5px; }
         
-        .studio-container { width: 100%; max-width: 850px; background: #1E293B; border-radius: 20px; padding: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid #334155; }
+        .studio-container { width: 100%; max-width: 850px; background: #1E293B; border-radius: 20px; padding: 24px; box-shadow: 0 25px 60px rgba(0,0,0,0.6); border: 1px solid #334155; }
         
         .prompt-area { display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
         .prompt-area label { font-size: 14px; font-weight: 600; color: #E2E8F0; }
         .prompt-area textarea { width: 100%; height: 70px; background: #0F172A; border: 1px solid #334155; border-radius: 10px; padding: 14px; color: white; font-family: 'Inter', sans-serif; resize: none; outline: none; transition: border 0.3s; }
         .prompt-area textarea:focus { border-color: #38BDF8; }
 
-        /* Yaratıcı Kontrol Paneli */
         .creative-controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 15px; }
         .control-group { display: flex; flex-direction: column; gap: 5px; }
-        .control-group label { font-size: 12px; color: #94A3B8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-        .control-group select { background: #0F172A; color: white; border: 1px solid #334155; padding: 10px; border-radius: 8px; outline: none; cursor: pointer; font-family: 'Inter', sans-serif; }
+        .control-group label { font-size: 11px; color: #94A3B8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .control-group select { background: #0F172A; color: #E2E8F0; border: 1px solid #334155; padding: 10px; border-radius: 8px; outline: none; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 13px; }
         .control-group select:focus { border-color: #A78BFA; }
 
-        .upload-area { display: flex; align-items: center; gap: 10px; background: #0F172A; padding: 10px 15px; border-radius: 10px; border: 1px dashed #475569; margin-bottom: 15px; }
-        .upload-area input { color: #94A3B8; font-size: 13px; width: 100%; }
+        .upload-area { display: flex; align-items: center; gap: 10px; background: #0F172A; padding: 12px 15px; border-radius: 10px; border: 1px dashed #475569; margin-bottom: 15px; transition: border 0.3s; }
+        .upload-area:hover { border-color: #38BDF8; }
+        .upload-area input { color: #94A3B8; font-size: 13px; width: 100%; cursor: pointer; }
         .upload-area span { font-size: 12px; color: #10B981; display: none; font-weight: 600; white-space: nowrap; }
         
         .action-row { display: flex; gap: 10px; }
-        .action-row button { flex: 1; background: linear-gradient(135deg, #38BDF8, #818CF8); color: white; border: none; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-        .action-row button:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(56,189,248,0.3); }
-        .action-row button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; background: #475569; }
+        .action-row button { flex: 1; background: linear-gradient(135deg, #38BDF8, #818CF8, #F472B6); background-size: 200% 200%; color: white; border: none; padding: 16px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s; animation: gradientBG 3s infinite; }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .action-row button:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(56,189,248,0.4); }
+        .action-row button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; animation: none; background: #475569; }
 
-        .canvas-area { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; position: relative; display: flex; justify-content: center; align-items: center; margin-bottom: 15px; margin-top: 20px; border: 2px solid #334155; box-shadow: inset 0 0 20px rgba(0,0,0,0.8); }
+        .canvas-area { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; position: relative; display: flex; justify-content: center; align-items: center; margin-bottom: 15px; margin-top: 20px; border: 2px solid #334155; box-shadow: inset 0 0 30px rgba(0,0,0,0.9); }
         canvas { width: 100%; height: 100%; display: none; }
         
         .status { text-align: center; font-size: 13px; color: #94A3B8; margin-bottom: 10px; font-weight: 600; }
@@ -42,7 +43,7 @@
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
         .download-area { display: none; text-align: center; margin-top: 10px; }
-        .download-area a { display: inline-block; background: #10B981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 10px; font-weight: 600; transition: background 0.2s; }
+        .download-area a { display: inline-block; background: #10B981; color: white; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 15px; transition: background 0.2s; }
         .download-area a:hover { background: #059669; }
 
         @media (max-width: 600px) { .creative-controls { grid-template-columns: 1fr; } }
@@ -51,8 +52,8 @@
 <body>
 
     <div class="header">
-        <h1>Pro Reklam Stüdyosu</h1>
-        <p>Yapay zeka ile tasarla, yaratıcı efektlerle süsle.</p>
+        <h1>Ultimate Pro Stüdyo</h1>
+        <p>Çoklu görsel, zengin animasyonlar ve sinematik efektlerle tam donanımlı reklamcılık.</p>
     </div>
 
     <div class="studio-container">
@@ -61,7 +62,6 @@
             <textarea id="videoPrompt" placeholder="Örnek: Kırmızı ve altın tonlarında lüks bir ruj reklamı."></textarea>
         </div>
 
-        <!-- Yeni Yaratıcı Kontroller -->
         <div class="creative-controls">
             <div class="control-group">
                 <label>Renk Paleti</label>
@@ -74,28 +74,29 @@
                 </select>
             </div>
             <div class="control-group">
-                <label>Arka Plan Animasyonu</label>
+                <label>Zengin Arka Plan</label>
                 <select id="bgAnimation">
-                    <option value="gradient">Renk Geçişi (Gradient)</option>
-                    <option value="particles">Parıltılar (Bokeh)</option>
-                    <option value="geometric">Geometrik Şekiller</option>
-                    <option value="waves">Sinematik Dalgalar</option>
+                    <option value="aurora">Aurora (Kutup Işıkları)</option>
+                    <option value="galaxy">Galaksi (Yıldız Tozu)</option>
+                    <option value="cyber">Cyberpunk Izgara</option>
+                    <option value="gradient">Sıvı Renk Geçişi</option>
                 </select>
             </div>
             <div class="control-group">
                 <label>Sinematik Efekt</label>
                 <select id="visualEffect">
-                    <option value="none">Efekt Yok</option>
+                    <option value="none">Efekt Yok (Sade)</option>
+                    <option value="glitch">Glitch (Teknoloji)</option>
+                    <option value="bloom">Bloom (Işıma/Taşma)</option>
                     <option value="vignette">Vignette (Kenar Karartma)</option>
-                    <option value="grain">Film Greni (Grain)</option>
-                    <option value="lightleak">Işık Sızması</option>
+                    <option value="grain">Film Greni</option>
                 </select>
             </div>
         </div>
 
         <div class="upload-area">
-            <input type="file" id="imageUpload" accept="image/*">
-            <span id="uploadStatus">✅ Görsel Yüklendi</span>
+            <input type="file" id="imageUpload" accept="image/*" multiple>
+            <span id="uploadStatus">✅ Görseller Yüklendi</span>
         </div>
 
         <div class="action-row">
@@ -110,7 +111,7 @@
         <div class="status" id="statusText">Model indiriliyor, lütfen bekleyin...</div>
 
         <div class="download-area" id="downloadArea">
-            <a id="downloadLink" download="pro_reklam.webm">📥 Reklam Filmini İndir (.webm)</a>
+            <a id="downloadLink" download="ultimate_reklam.webm">📥 Reklam Filmini İndir (.webm)</a>
         </div>
     </div>
 
@@ -135,24 +136,29 @@
         let mediaRecorder;
         let recordedChunks = [];
         let animationId;
-        let uploadedImage = null;
+        let uploadedImages = []; // Çoklu görseller için dizi
 
-        // Görsel Yükleme
+        // Çoklu Görsel Yükleme
         imageUpload.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const img = new Image();
-                    img.onload = function() {
-                        uploadedImage = img;
-                        uploadStatus.style.display = 'inline';
+            const files = e.target.files;
+            uploadedImages = []; // Sıfırla
+            
+            if (files.length > 0) {
+                uploadStatus.innerText = `✅ ${files.length} Görsel Yüklendi`;
+                uploadStatus.style.display = 'inline';
+                
+                Array.from(files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const img = new Image();
+                        img.onload = function() {
+                            uploadedImages.push(img);
+                        };
+                        img.src = event.target.result;
                     };
-                    img.src = event.target.result;
-                };
-                reader.readAsDataURL(file);
+                    reader.readAsDataURL(file);
+                });
             } else {
-                uploadedImage = null;
                 uploadStatus.style.display = 'none';
             }
         });
@@ -167,14 +173,13 @@
                 statusText.innerText = "✅ Sistem Hazır!";
                 statusText.style.color = "#10B981";
                 generateBtn.disabled = false;
-                generateBtn.innerText = "✨ Profesyonel Reklamı Üret";
+                generateBtn.innerText = "✨ Ultra Reklamı Üret";
             } catch (e) {
                 statusText.innerText = "⚠️ Model hatası: " + e.message;
             }
         }
         initAI();
 
-        // JSON Temizleyici
         function extractJSON(text) {
             try {
                 let clean = text.replace(/```json/gi, '').replace(/```/g, '').replace(/\/\/.*$/gm, '').trim();
@@ -184,7 +189,6 @@
             return null;
         }
 
-        // Yedek Plan (Seçimlere göre)
         function getFallbackDesign(prompt, palette) {
             const p = prompt.toLowerCase();
             if (palette === 'pastel' || p.includes('pastel')) return { title: "SOFT", subtitle: "PASTEL TONES", colors: ["#FDE68A", "#FBCFE8", "#E9D5FF"], textColor: "#4C1D95", particleColor: "rgba(255,255,255,0.8)", fontStyle: "serif" };
@@ -193,7 +197,6 @@
             return { title: "PREMIUM", subtitle: "DESIGN", colors: ["#111827", "#374151", "#1F2937"], textColor: "#F3F4F6", particleColor: "rgba(255,255,255,0.3)", fontStyle: "sans-serif" };
         }
 
-        // AI'dan Tasarım İsteme
         async function getVideoDesignFromAI(prompt, palette) {
             const messages = [
                 { 
@@ -213,7 +216,6 @@
             return getFallbackDesign(prompt, palette);
         }
 
-        // Emojiler
         function getEmojisFromPrompt(prompt) {
             const p = prompt.toLowerCase();
             let emojis = [];
@@ -222,11 +224,10 @@
             if (p.includes('araba')) emojis.push('🚗');
             if (p.includes('saat')) emojis.push('⌚');
             if (p.includes('kahve')) emojis.push('☕');
-            if (p.includes('telefon')) emojis.push('📱');
             return emojis;
         }
 
-        // VİDEO ÜRETİM
+        // ANA VİDEO ÜRETİM FONKSİYONU
         window.generateVideo = async function() {
             const prompt = document.getElementById('videoPrompt').value.trim() || "Modern bir reklam";
             const palette = colorPalette.value;
@@ -242,7 +243,7 @@
                 const design = await getVideoDesignFromAI(prompt, palette);
                 const emojis = getEmojisFromPrompt(prompt);
                 
-                statusText.innerText = "🎬 Video render ediliyor...";
+                statusText.innerText = "🎬 Sinematik render başladı...";
                 canvas.style.display = 'block';
                 canvasContainer.querySelector('span').style.display = 'none';
                 recordedChunks = [];
@@ -254,109 +255,153 @@
                     const blob = new Blob(recordedChunks, { type: 'video/webm' });
                     downloadLink.href = URL.createObjectURL(blob);
                     downloadArea.style.display = 'block';
-                    statusText.innerText = "✅ Reklam Filmi Hazır!";
+                    statusText.innerText = "✅ Ultra Reklam Filmi Hazır!";
                     statusText.className = "status";
                     generateBtn.disabled = false;
-                    generateBtn.innerText = "✨ Profesyonel Reklamı Üret";
+                    generateBtn.innerText = "✨ Ultra Reklamı Üret";
                     cancelAnimationFrame(animationId);
                 };
 
                 mediaRecorder.start();
 
                 let startTime = Date.now();
-                const duration = 6000;
+                const duration = 6000; // 6 Saniye
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+
+                // Galaksi/Parçacık Hazırlığı
                 let particles = [];
-                for (let i = 0; i < 100; i++) {
-                    particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, radius: Math.random() * 3 + 0.5, speedX: (Math.random() - 0.5) * 1.5, speedY: (Math.random() - 0.5) * 1.5 - 0.5, alpha: Math.random() * 0.5 + 0.1 });
+                for (let i = 0; i < 200; i++) {
+                    particles.push({ 
+                        x: Math.random() * canvas.width, 
+                        y: Math.random() * canvas.height, 
+                        radius: Math.random() * 2 + 0.1, // Çok ince yıldızlar
+                        speedY: Math.random() * 2 + 0.5, 
+                        alpha: Math.random() 
+                    });
                 }
 
-                // Geçici (Offscreen) tuval - Film Grain için
-                const grainCanvas = document.createElement('canvas');
-                grainCanvas.width = 100; grainCanvas.height = 100;
-                const grainCtx = grainCanvas.getContext('2d');
+                // Glitch Efekti İçin Görsel Kanalları
+                const glitchCanvas = document.createElement('canvas');
+                glitchCanvas.width = canvas.width; glitchCanvas.height = canvas.height;
+                const glitchCtx = glitchCanvas.getContext('2d');
 
                 function drawFrame() {
                     const time = Date.now() - startTime;
-                    const centerX = canvas.width / 2;
-                    const centerY = canvas.height / 2;
+                    const progress = time / duration; // 0 to 1
 
-                    // 1. ARKA PLAN SEÇENEKLERİ
-                    if (animType === 'gradient') {
-                        const gradient = ctx.createLinearGradient(centerX + Math.sin(time/1000) * 500, 0, centerX - Math.sin(time/1000) * 500, canvas.height);
-                        gradient.addColorStop(0, design.colors[0]);
-                        gradient.addColorStop(0.5, design.colors[1]);
-                        gradient.addColorStop(1, design.colors[2]);
-                        ctx.fillStyle = gradient;
+                    // 1. ZENGİN ARKA PLANLAR
+                    if (animType === 'aurora' || animType === 'gradient') {
+                        ctx.fillStyle = design.colors[0];
                         ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        
+                        // Aurora Bulutları (Üst üste binen devasa renk yumakları)
+                        const t = time / 1000;
+                        for (let i = 0; i < 3; i++) {
+                            let x = centerX + Math.cos(t * 0.5 + i * 2) * 400;
+                            let y = centerY + Math.sin(t * 0.7 + i * 2) * 300;
+                            let radGrad = ctx.createRadialGradient(x, y, 0, x, y, 600);
+                            radGrad.addColorStop(0, design.colors[i] + "AA"); // Yarı saydam
+                            radGrad.addColorStop(1, design.colors[i] + "00"); // Şeffaf
+                            ctx.fillStyle = radGrad;
+                            ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        }
                     } 
-                    else if (animType === 'particles') {
-                        ctx.fillStyle = design.colors[0]; // Koyu baz renk
+                    else if (animType === 'galaxy') {
+                        ctx.fillStyle = "#000000"; // Derin uzay
                         ctx.fillRect(0, 0, canvas.width, canvas.height);
-                        // Parçacıklar
+                        
+                        // Nebula (Bulutsu) etkisi
+                        let radGrad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 800);
+                        radGrad.addColorStop(0, design.colors[1] + "44");
+                        radGrad.addColorStop(1, "transparent");
+                        ctx.fillStyle = radGrad;
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                        // Yıldızlar
                         particles.forEach(p => {
                             ctx.beginPath();
                             ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                            ctx.fillStyle = design.particleColor;
-                            ctx.globalAlpha = p.alpha * (0.5 + Math.sin(time/500 + p.x) * 0.5);
-                            ctx.shadowColor = "white"; ctx.shadowBlur = 15; ctx.fill();
-                            p.x += p.speedX; p.y += p.speedY;
-                            if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
-                            if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+                            ctx.fillStyle = `rgba(255,255,255,${p.alpha})`;
+                            ctx.fill();
+                            p.y -= p.speedY;
+                            if (p.y < 0) { p.y = canvas.height; p.x = Math.random() * canvas.width; }
                         });
-                        ctx.globalAlpha = 1; ctx.shadowBlur = 0;
                     }
-                    else if (animType === 'geometric') {
+                    else if (animType === 'cyber') {
                         ctx.fillStyle = design.colors[0];
                         ctx.fillRect(0, 0, canvas.width, canvas.height);
-                        ctx.save();
-                        ctx.translate(centerX, centerY);
-                        for(let i=0; i<5; i++) {
-                            ctx.rotate(time / 2000 + i);
-                            ctx.beginPath();
-                            ctx.rect(-150 - i*50, -150 - i*50, 300 + i*100, 300 + i*100);
-                            ctx.strokeStyle = design.colors[i % 3];
-                            ctx.lineWidth = 2;
-                            ctx.globalAlpha = 0.3;
-                            ctx.stroke();
+                        
+                        // Aşağıdan yukarı kayan ızgara çizgileri
+                        ctx.strokeStyle = design.colors[1];
+                        ctx.lineWidth = 1;
+                        const gridSize = 80;
+                        const offset = (time / 20) % gridSize;
+
+                        ctx.globalAlpha = 0.3;
+                        for (let x = 0; x < canvas.width; x += gridSize) {
+                            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
                         }
-                        ctx.restore();
+                        for (let y = -gridSize; y < canvas.height; y += gridSize) {
+                            ctx.beginPath(); ctx.moveTo(0, y + offset); ctx.lineTo(canvas.width, y + offset); ctx.stroke();
+                        }
                         ctx.globalAlpha = 1;
                     }
-                    else if (animType === 'waves') {
-                        ctx.fillStyle = design.colors[0];
-                        ctx.fillRect(0, 0, canvas.width, canvas.height);
-                        for(let i=0; i<3; i++) {
-                            ctx.beginPath();
-                            ctx.moveTo(0, canvas.height);
-                            for(let x=0; x<=canvas.width; x+=20) {
-                                let y = centerY + Math.sin(x/200 + time/1000 + i) * 100;
-                                ctx.lineTo(x, y);
-                            }
-                            ctx.lineTo(canvas.width, canvas.height);
-                            ctx.fillStyle = design.colors[i] + "80"; // %50 saydamlık
-                            ctx.fill();
-                        }
-                    }
 
-                    // 2. MERKEZ GÖRSEL VEYA EMOJİ
-                    const pulse = 1 + Math.sin(time / 500) * 0.05;
-                    if (uploadedImage) {
-                        ctx.save();
-                        ctx.translate(centerX, centerY); ctx.scale(pulse, pulse);
-                        let imgW = uploadedImage.width, imgH = uploadedImage.height, maxSize = 350;
-                        if (imgW > maxSize || imgH > maxSize) {
-                            if (imgW > imgH) { imgH = (maxSize / imgW) * imgH; imgW = maxSize; }
-                            else { imgW = (maxSize / imgH) * imgW; imgH = maxSize; }
+                    // 2. GÖRSEL VEYA EMOJİ (Çoklu Görsel Slaytı)
+                    let hasContent = false;
+                    
+                    if (uploadedImages.length > 0) {
+                        hasContent = true;
+                        const totalImages = uploadedImages.length;
+                        const timePerImage = duration / totalImages;
+                        const currentIndex = Math.min(Math.floor(time / timePerImage), totalImages - 1);
+                        const nextIndex = (currentIndex + 1) % totalImages;
+                        const imageProgress = (time % timePerImage) / timePerImage;
+                        
+                        // Ken Burns (Yavaşça Yakınlaşma)
+                        const scale = 1 + (imageProgress * 0.1); 
+                        
+                        // Crossfade (Yumuşak Geçiş) Hesaplaması
+                        let alphaCurrent = 1;
+                        let alphaNext = 0;
+                        if (imageProgress > 0.8 && totalImages > 1) {
+                            alphaCurrent = 1 - ((imageProgress - 0.8) / 0.2);
+                            alphaNext = (imageProgress - 0.8) / 0.2;
                         }
-                        ctx.shadowColor = "rgba(0,0,0,0.8)"; ctx.shadowBlur = 40;
-                        ctx.drawImage(uploadedImage, -imgW/2, -imgH/2, imgW, imgH);
-                        ctx.restore();
-                    } else if (emojis.length > 0) {
+
+                        const drawImg = (img, alpha) => {
+                            let imgW = img.width, imgH = img.height, maxSize = 500;
+                            if (imgW > maxSize || imgH > maxSize) {
+                                if (imgW > imgH) { imgH = (maxSize / imgW) * imgH; imgW = maxSize; }
+                                else { imgW = (maxSize / imgH) * imgW; imgH = maxSize; }
+                            }
+                            ctx.save();
+                            ctx.globalAlpha = alpha;
+                            ctx.translate(centerX, centerY); 
+                            ctx.scale(scale, scale);
+                            ctx.shadowColor = "rgba(0,0,0,0.8)"; ctx.shadowBlur = 40;
+                            // Görseli yuvarlak hatlı çerçeveye oturtmak için yuvarlak maske (isteğe bağlı, şimdilik dikdörtgen)
+                            ctx.drawImage(img, -imgW/2, -imgH/2, imgW, imgH);
+                            ctx.restore();
+                        };
+
+                        // Mevcut görseli çiz
+                        drawImg(uploadedImages[currentIndex], alphaCurrent);
+                        
+                        // Eğer geçiş zamanıysa sonraki görseli üstüne çiz
+                        if (alphaNext > 0) {
+                            drawImg(uploadedImages[nextIndex], alphaNext);
+                        }
+                    } 
+                    else if (emojis.length > 0) {
+                        hasContent = true;
+                        const pulse = 1 + Math.sin(time / 300) * 0.1;
                         ctx.save();
-                        ctx.translate(centerX, centerY + Math.sin(time/300) * 20);
+                        ctx.translate(centerX, centerY + Math.sin(time/400) * 30); // Havada süzülme
                         ctx.scale(pulse, pulse);
-                        ctx.font = "150px Arial"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-                        ctx.shadowColor = "rgba(0,0,0,0.6)"; ctx.shadowBlur = 30;
+                        ctx.font = "200px Arial"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+                        ctx.shadowColor = design.colors[1]; ctx.shadowBlur = 50; // Emoji arkasına renkli ışıma
                         ctx.fillText(emojis.join(' '), 0, 0);
                         ctx.restore();
                     }
@@ -366,46 +411,82 @@
                     ctx.save();
                     ctx.translate(centerX, centerY);
                     ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.globalAlpha = textOpacity;
-                    ctx.shadowColor = "rgba(0,0,0,0.9)"; ctx.shadowBlur = 20; ctx.shadowOffsetY = 5;
+                    ctx.shadowColor = "rgba(0,0,0,1)"; ctx.shadowBlur = 25; ctx.shadowOffsetY = 5;
 
-                    let yOffset = uploadedImage ? 250 : -120; 
+                    let yOffset = hasContent ? 280 : -50; 
                     ctx.fillStyle = design.textColor || "#FFFFFF";
                     const fontStyle = design.fontStyle === 'serif' ? "'Playfair Display', serif" : "'Montserrat', sans-serif";
-                    ctx.font = `600 70px ${fontStyle}`;
-                    ctx.fillText(design.title || "REKLAM", 0, yOffset);
+                    ctx.font = `600 80px ${fontStyle}`;
+                    
+                    // Harf harf açılma efekti
+                    let letters = (design.title || "REKLAM").split('');
+                    let totalWidth = ctx.measureText(design.title || "REKLAM").width;
+                    let startX = -totalWidth / 2;
+                    
+                    letters.forEach((letter, index) => {
+                        let letterDelay = index * 0.05;
+                        let letterOpacity = Math.max(0, Math.min(1, (time/1000 - letterDelay) * 2));
+                        ctx.globalAlpha = textOpacity * letterOpacity;
+                        ctx.fillText(letter, startX, yOffset);
+                        startX += ctx.measureText(letter).width;
+                    });
 
-                    ctx.shadowBlur = 10;
-                    ctx.font = "300 28px 'Montserrat', sans-serif";
-                    ctx.fillText(design.subtitle || "SİZİN İÇİN", 0, yOffset + 60);
+                    ctx.globalAlpha = textOpacity;
+                    ctx.shadowBlur = 15;
+                    ctx.font = "400 32px 'Montserrat', sans-serif";
+                    ctx.fillStyle = design.colors[2] || "#CCCCCC"; // Alt başlık rengi
+                    ctx.fillText(design.subtitle || "SİZİN İÇİN", 0, yOffset + 70);
                     ctx.restore();
 
-                    // 4. SİNEMATİK EFEKTLER (Overlay)
-                    if (effectType === 'vignette') {
-                        const vignette = ctx.createRadialGradient(centerX, centerY, canvas.height * 0.3, centerX, centerY, canvas.height * 0.8);
+                    // 4. GELİŞMİŞ SİNEMATİK EFEKTLER
+                    if (effectType === 'glitch') {
+                        // Rastgele aralıklarla ekranı kaydır (Glitch)
+                        if (Math.random() > 0.9) {
+                            let offsetX = (Math.random() - 0.5) * 40;
+                            let offsetY = (Math.random() - 0.5) * 20;
+                            
+                            // Ekranın bir kısmını kes ve kaydır
+                            let sliceY = Math.random() * canvas.height;
+                            let sliceH = Math.random() * 100 + 20;
+                            
+                            ctx.drawImage(canvas, 0, sliceY, canvas.width, sliceH, offsetX, sliceY + offsetY, canvas.width, sliceH);
+                            
+                            // RGB Renk kaymaları (Chromatic Aberration)
+                            ctx.globalCompositeOperation = 'screen';
+                            ctx.fillStyle = "rgba(255,0,0,0.2)";
+                            ctx.fillRect(offsetX, 0, canvas.width, canvas.height);
+                            ctx.fillStyle = "rgba(0,255,255,0.2)";
+                            ctx.fillRect(-offsetX, 0, canvas.width, canvas.height);
+                            ctx.globalCompositeOperation = 'source-over';
+                        }
+                    } 
+                    else if (effectType === 'bloom') {
+                        // Işıma efekti (Görüntünün aydınlık kısımlarını çoğaltıp bulanıklaştırarak ekleme)
+                        ctx.globalCompositeOperation = 'screen';
+                        ctx.globalAlpha = 0.4;
+                        ctx.filter = 'blur(15px)';
+                        ctx.drawImage(canvas, 0, 0); // Kendini bulanık çiz
+                        ctx.filter = 'none';
+                        ctx.globalAlpha = 1;
+                        ctx.globalCompositeOperation = 'source-over';
+                    }
+                    else if (effectType === 'vignette') {
+                        const vignette = ctx.createRadialGradient(centerX, centerY, canvas.height * 0.2, centerX, centerY, canvas.height * 0.9);
                         vignette.addColorStop(0, "rgba(0,0,0,0)");
-                        vignette.addColorStop(1, "rgba(0,0,0,0.8)");
+                        vignette.addColorStop(1, "rgba(0,0,0,0.9)");
                         ctx.fillStyle = vignette;
                         ctx.fillRect(0, 0, canvas.width, canvas.height);
                     } 
                     else if (effectType === 'grain') {
-                        // Rastgele gürültü oluştur
-                        const grainData = grainCtx.createImageData(100, 100);
+                        // Hızlı Grain Efekti
+                        const grainData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                         for (let i = 0; i < grainData.data.length; i += 4) {
-                            let val = Math.random() * 255;
-                            grainData.data[i] = val; grainData.data[i+1] = val; grainData.data[i+2] = val; grainData.data[i+3] = 30; // Düşük saydamlık
+                            let noise = (Math.random() - 0.5) * 30; // Siyah/Beyaz gürültü
+                            grainData.data[i] += noise;
+                            grainData.data[i+1] += noise;
+                            grainData.data[i+2] += noise;
                         }
-                        grainCtx.putImageData(grainData, 0, 0);
-                        // Ana tuvale gerilerek çiz
-                        ctx.drawImage(grainCanvas, 0, 0, canvas.width, canvas.height);
-                    }
-                    else if (effectType === 'lightleak') {
-                        const leakX = centerX + Math.sin(time / 1500) * 600;
-                        const leakY = centerY + Math.cos(time / 2000) * 300;
-                        const leak = ctx.createRadialGradient(leakX, leakY, 0, leakX, leakY, 400);
-                        leak.addColorStop(0, "rgba(255, 200, 100, 0.3)"); // Turuncu/Sıcak ışık
-                        leak.addColorStop(1, "rgba(255, 200, 100, 0)");
-                        ctx.fillStyle = leak;
-                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        ctx.putImageData(grainData, 0, 0);
                     }
 
                     if (time >= duration) { mediaRecorder.stop(); } 
@@ -417,7 +498,7 @@
             } catch (error) {
                 statusText.innerText = "⚠️ Hata: " + error.message;
                 generateBtn.disabled = false;
-                generateBtn.innerText = "✨ Profesyonel Reklamı Üret";
+                generateBtn.innerText = "✨ Ultra Reklamı Üret";
             }
         };
     </script>
