@@ -27,19 +27,18 @@
 <div class="chat-container">
     <div class="chat-header">⚡ Gerçek Yapay Zeka Asistanı</div>
     
-    <!-- Ayarlar Çubuğu (API Key ve Model Adı) -->
     <div class="settings-bar">
         <div class="settings-row">
             <input type="password" id="apiKeyInput" placeholder="Groq API Key (gsk_...)">
         </div>
         <div class="settings-row">
-            <input type="text" id="modelInput" value="llama-3.3-70b-versatile" placeholder="Model Adı (örn: llama3-8b-8192)">
+            <input type="text" id="modelInput" value="llama-3.3-70b-versatile" placeholder="Model Adı">
             <button onclick="saveSettings()">Ayarları Kaydet</button>
         </div>
     </div>
 
     <div class="chat-messages" id="chatMessages">
-        <div class="message bot-message">👋 Merhaba! Yukarıdaki alanlara API anahtarınızı girip "Ayarları Kaydet" butonuna basın, hemen sohbet edelim!</div>
+        <div class="message bot-message">👋 Merhaba! API anahtarınızı girip "Ayarları Kaydet" butonuna basın, hemen sohbet edelim!</div>
     </div>
     
     <div class="chat-input-area">
@@ -66,10 +65,6 @@
 
         if (!key.startsWith("gsk_")) {
             alert("Geçersiz API anahtarı! Groq anahtarları 'gsk_' ile başlar.");
-            return;
-        }
-        if (!model) {
-            alert("Lütfen bir model adı girin!");
             return;
         }
 
