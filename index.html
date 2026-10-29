@@ -2,42 +2,81 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Video Maker Şablonu</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yapay Zeka Asistanım - Agent</title>
     <style>
-        body {
-            margin: 0;
-            width: 1920px;
-            height: 1080px;
-            background: linear-gradient(135deg, #1e1e2f, #2a2a72);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: white;
-        }
-        .card {
-            text-align: center;
-            animation: fadeIn 2s ease-in-out;
-        }
-        h1 {
-            font-size: 80px;
-            margin-bottom: 20px;
-            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
-        }
-        p {
-            font-size: 36px;
-            color: #00d2ff;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .chat-container { width: 100%; max-width: 600px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow: hidden; }
+        .chat-header { background: #24292e; color: white; padding: 15px; text-align: center; font-size: 18px; font-weight: bold; }
+        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; height: 400px; display: flex; flex-direction: column; gap: 10px; }
+        .message { padding: 10px 15px; border-radius: 8px; max-width: 80%; line-height: 1.4; }
+        .user-message { background: #0366d6; color: white; align-self: flex-end; }
+        .bot-message { background: #eaecef; color: #24292e; align-self: flex-start; }
+        .chat-input-area { display: flex; border-top: 1px solid #eaecef; padding: 10px; background: #fafbfc; }
+        .chat-input-area input { flex: 1; padding: 10px; border: 1px solid #dfe2e5; border-radius: 6px; outline: none; font-size: 14px; }
+        .chat-input-area button { background: #28a745; color: white; border: none; padding: 10px 20px; margin-left: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .chat-input-area button:hover { background: #218838; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h1>AGENT-GELISTIRME</h1>
-        <p>Otomatik Video Üretim Sistemi</p>
+
+<div class="chat-container">
+    <div class="chat-header">🤖 AGENT-GELISTIRME Asistanı</div>
+    <div class="chat-messages" id="chatMessages">
+        <div class="message bot-message">👋 Merhaba! Ben senin GitHub tabanlı yapay zekanım. Bana "Saat kaç?", "Merhaba" veya "Hava durumu" yazabilirsin!</div>
     </div>
+    <div class="chat-input-area">
+        <input type="text" id="userInput" placeholder="Mesajınızı yazın..." onkeypress="handleKeyPress(event)">
+        <button onclick="sendMessage()">Gönder</button>
+    </div>
+</div>
+
+<script>
+    function sendMessage() {
+        const inputField = document.getElementById('userInput');
+        const messageText = inputField.value.trim();
+        if (!messageText) return;
+
+        appendMessage(messageText, 'user-message');
+        inputField.value = '';
+
+        setTimeout(() => {
+            let botReply = generateBotResponse(messageText);
+            appendMessage(botReply, 'bot-message');
+        }, 500);
+    }
+
+    function generateBotResponse(command) {
+        const cmd = command.toLowerCase();
+        if (cmd.includes("saat")) {
+            const now = new Date();
+            return `📅 Güncel Tarih ve Saat: ${now.toLocaleString('tr-TR')}`;
+        } else if (cmd.includes("merhaba") || cmd.includes("selam")) {
+            return `👋 Merhaba Ahmet Faruk! AGENT-GELISTIRME sistemine hoş geldin.`;
+        } else if (cmd.includes("hava durumu")) {
+            return `🌤️ Mersin için Hava Durumu: Güneşli, sıcaklık 22°C, rüzgar hafif.`;
+        } else if (cmd.includes("analiz et")) {
+            return `📊 Metin Analizi -> Kelime: ${command.split(' ').length}, Karakter: ${command.length}`;
+        } else {
+            return `💡 Mesajınız alındı: '${command}'. Bu komut için henüz bir yetenek eklemedik ama dilediğimiz gibi geliştirebiliriz!`;
+        }
+    }
+
+    function appendMessage(text, className) {
+        const chatMessages = document.getElementById('chatMessages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${className}`;
+        messageDiv.innerText = text;
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    }
+</script>
+
 </body>
 </html>
