@@ -26,7 +26,6 @@
 <div class="chat-container">
     <div class="chat-header">⚡ Gerçek Yapay Zeka Asistanı</div>
     
-    <!-- API Anahtarı için Güvenli Alan -->
     <div class="key-bar">
         <input type="password" id="apiKeyInput" placeholder="Groq API Key'inizi buraya yapıştırın (gsk_...)">
         <button onclick="saveApiKey()">Kaydet</button>
@@ -95,7 +94,7 @@
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    model: "llama-3.1-8b-instant",
+                    model: "llama3-8b-8192",
                     messages: chatHistory,
                     temperature: 0.7
                 })
