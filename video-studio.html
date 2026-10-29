@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sınırsız Nesne Tanıma Stüdyosu | AGENT-GELISTIRME</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Montserrat:wght@300;400;600&family=Inter:wght@400&display=swap" rel="stylesheet">
+    <title>Sinematik Prodüksiyon Stüdyosu | AGENT-GELISTIRME</title>
+    <!-- Google Fontlar (Yazı Stilleri için) -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=Montserrat:wght@400;600;800&family=Caveat:wght@700&family=Cinzel:wght@700&family=Inter:wght@400&family=Courier+Prime:wght@700&display=swap" rel="stylesheet">
+    
     <style>
         body { font-family: 'Inter', sans-serif; background: #0B1120; color: white; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         .header { text-align: center; margin-bottom: 20px; }
         .header h1 { margin: 0; font-family: 'Playfair Display', serif; font-size: 34px; background: linear-gradient(90deg, #38BDF8, #A78BFA, #F472B6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        .studio-container { width: 100%; max-width: 950px; background: #1E293B; border-radius: 20px; padding: 24px; box-shadow: 0 25px 60px rgba(0,0,0,0.6); border: 1px solid #334155; }
+        .studio-container { width: 100%; max-width: 1000px; background: #1E293B; border-radius: 20px; padding: 24px; box-shadow: 0 25px 60px rgba(0,0,0,0.6); border: 1px solid #334155; }
         
         .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
         .input-group { display: flex; flex-direction: column; gap: 6px; }
@@ -19,16 +21,17 @@
         .input-group textarea { height: 70px; resize: none; }
         .input-group input:focus, .input-group textarea:focus { border-color: #38BDF8; }
 
-        .controls-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 15px; }
-        .control-box { background: #0F172A; padding: 12px; border-radius: 10px; border: 1px solid #334155; display: flex; flex-direction: column; gap: 8px; }
-        .control-box label { font-size: 11px; color: #94A3B8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        .control-box select { background: #1E293B; color: #E2E8F0; border: 1px solid #334155; padding: 10px; border-radius: 8px; outline: none; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 13px; width: 100%; }
+        /* Genişletilmiş Kontrol Panelleri */
+        .controls-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
+        .control-box { background: #0F172A; padding: 10px; border-radius: 10px; border: 1px solid #334155; display: flex; flex-direction: column; gap: 6px; }
+        .control-box label { font-size: 10px; color: #94A3B8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .control-box select { background: #1E293B; color: #E2E8F0; border: 1px solid #334155; padding: 8px; border-radius: 6px; outline: none; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 12px; width: 100%; }
         .control-box select:focus { border-color: #A78BFA; }
         
         .color-picker-row { display: flex; gap: 10px; align-items: center; justify-content: space-around; padding-top: 5px; }
         .color-picker-group { display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .color-picker-group span { font-size: 10px; color: #94A3B8; }
-        .color-picker-group input[type="color"] { -webkit-appearance: none; border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; padding: 0; background: none; }
+        .color-picker-group input[type="color"] { -webkit-appearance: none; border: none; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; padding: 0; background: none; }
         .color-picker-group input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
         .color-picker-group input[type="color"]::-webkit-color-swatch { border: 2px solid #475569; border-radius: 50%; }
 
@@ -54,21 +57,22 @@
         .download-area { display: none; text-align: center; margin-top: 10px; }
         .download-area a { display: inline-block; background: #10B981; color: white; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 15px; }
         
-        @media (max-width: 700px) { .controls-grid, .input-row { grid-template-columns: 1fr; } }
+        @media (max-width: 800px) { .controls-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 500px) { .controls-grid, .input-row { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>Sınırsız Nesne Stüdyosu</h1>
-        <p>Ne yazarsanız onu bulur, resim yoksa emoji olarak çizer.</p>
+        <h1>Sinematik Prodüksiyon Stüdyosu</h1>
+        <p>Sınırsız efekt, gelişmiş animasyonlar ve tam kontrol.</p>
     </div>
 
     <div class="studio-container">
         
         <div class="input-group" style="margin-bottom: 12px;">
             <label for="videoPrompt">Senaryo (Hangi nesneyi canlandıralım?):</label>
-            <textarea id="videoPrompt" placeholder="Örnek: Uzayda uçan bir roket. Veya: Masada duran sıcak bir kahve."></textarea>
+            <textarea id="videoPrompt" placeholder="Örnek: Kırmızı ruj reklamı. Veya: Uzayda uçan bir roket."></textarea>
         </div>
 
         <div class="input-row">
@@ -83,6 +87,7 @@
         </div>
 
         <div class="controls-grid">
+            <!-- RENK -->
             <div class="control-box">
                 <label>🎨 Renk Teması</label>
                 <select id="colorPalette">
@@ -98,66 +103,103 @@
                     <div class="color-picker-group"><input type="color" id="color1" value="#FF007F"><span>Arka 1</span></div>
                     <div class="color-picker-group"><input type="color" id="color2" value="#00F0FF"><span>Arka 2</span></div>
                 </div>
-                <div class="color-picker-row" style="margin-top: 5px; border-top: 1px solid #334155; padding-top: 10px;">
-                    <div class="color-picker-group"><input type="color" id="textColorPicker" value="#FFFFFF"><span style="font-weight: 600; color: #E2E8F0;">Özel Yazı Rengi</span></div>
+                <div class="color-picker-row" style="margin-top: 5px; border-top: 1px solid #334155; padding-top: 5px;">
+                    <div class="color-picker-group"><input type="color" id="textColorPicker" value="#FFFFFF"><span style="font-weight: 600; color: #E2E8F0;">Yazı Rengi</span></div>
                 </div>
             </div>
 
+            <!-- ARKA PLAN -->
             <div class="control-box">
-                <label>🖼️ Görsel Stili & Hareketi</label>
-                <select id="imageStyle">
-                    <option value="glass">Cam Efekti (Şeffaf)</option>
-                    <option value="normal">Normal</option>
-                </select>
-                <select id="imageAnimType">
-                    <option value="float">Süzülme (Yukarı-Aşağı)</option>
-                    <option value="pulse">Nefes Alma</option>
-                    <option value="rotate">Hafif Dönme</option>
-                </select>
-            </div>
-
-            <div class="control-box">
-                <label>🌌 Arka Plan & Parçacık</label>
+                <label>🌌 Arka Plan</label>
                 <select id="bgAnimation">
                     <option value="aurora">Aurora (Kutup Işıkları)</option>
-                    <option value="galaxy">Galaksi</option>
+                    <option value="galaxy">Galaksi (Yıldız Tozu)</option>
                     <option value="cyber">Cyberpunk Izgara</option>
-                    <option value="matrix">Matrix</option>
+                    <option value="matrix">Matrix Yağmuru</option>
+                    <option value="waves">Sinematik Dalgalar</option>
+                    <option value="tunnel">Sonsuzluk Tüneli</option>
+                    <option value="bokeh">Bokeh (Işık Küreleri)</option>
+                    <option value="gradient">Sıvı Renk Geçişi</option>
                 </select>
+                <label style="margin-top: 4px;">✨ Parçacık Efekti</label>
                 <select id="particleEffect">
                     <option value="golden_dust" selected>Altın Tozu</option>
                     <option value="none">Parçacık Yok</option>
                     <option value="snow">Kar Yağışı</option>
                     <option value="confetti">Konfeti</option>
+                    <option value="fireflies">Ateş Böcekleri</option>
                 </select>
             </div>
 
-            <div class="control-box" style="grid-column: span 3; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                <div>
-                    <label>🔠 Yazı Animasyonu</label>
-                    <select id="textAnimation">
-                        <option value="typewriter">Daktilo</option>
-                        <option value="slide_in">Yandan Kayma</option>
-                        <option value="neon_pulse">Neon Nabız</option>
-                        <option value="bounce">Zıplayan</option>
-                        <option value="color_cycle">Renk Değiştiren</option>
-                    </select>
-                </div>
-                <div>
-                    <label>🎬 Sinematik Görüntü Efekti</label>
-                    <select id="visualEffect">
-                        <option value="bloom">Bloom (Işıma)</option>
-                        <option value="none">Sade</option>
-                        <option value="glitch">Glitch</option>
-                        <option value="vignette">Vignette</option>
-                        <option value="grain">Film Greni</option>
-                    </select>
-                </div>
+            <!-- GÖRSEL STİLİ VE HAREKETİ -->
+            <div class="control-box">
+                <label>🖼️ Görsel Stili</label>
+                <select id="imageStyle">
+                    <option value="glass">Cam Efekti (Yuvarlak)</option>
+                    <option value="normal">Normal (Keskin Kenar)</option>
+                    <option value="circle">Tam Yuvarlak (Çember)</option>
+                    <option value="polaroid">Polaroid Çerçeve</option>
+                    <option value="neon_border">Neon Işıklı Çerçeve</option>
+                    <option value="shadow">Derin Renkli Gölge</option>
+                </select>
+                <label style="margin-top: 4px;">🎞️ Görsel Hareketi</label>
+                <select id="imageAnimType">
+                    <option value="float">Süzülme (Yukarı-Aşağı)</option>
+                    <option value="pulse">Nefes Alma</option>
+                    <option value="rotate">Hafif Dönme</option>
+                    <option value="zoom_in">Yavaşça Yaklaşma (Ken Burns)</option>
+                    <option value="swing">Sallanma (Pendulum)</option>
+                    <option value="slide_side">Yanlardan Giriş</option>
+                    <option value="3d_tilt">3D Eğilme</option>
+                </select>
+            </div>
+
+            <!-- YAZI ANİMASYONU VE STİLİ -->
+            <div class="control-box">
+                <label>🔠 Yazı Stili (Font)</label>
+                <select id="textStyle">
+                    <option value="modern">Modern (Montserrat)</option>
+                    <option value="classic">Klasik & Şık (Playfair)</option>
+                    <option value="elegant">Lüks & Antik (Cinzel)</option>
+                    <option value="impact">Vurucu & Kalın (Impact)</option>
+                    <option value="handwriting">El Yazısı (Caveat)</option>
+                    <option value="mono">Teknik & Kod (Courier)</option>
+                </select>
+                <label style="margin-top: 4px;">🎬 Yazı Animasyonu</label>
+                <select id="textAnimation">
+                    <option value="typewriter">Daktilo (Harf Harf)</option>
+                    <option value="slide_in">Yandan Kayma</option>
+                    <option value="neon_pulse">Neon Nabız (Işıma)</option>
+                    <option value="bounce">Zıplayan / Süzülen</option>
+                    <option value="color_cycle">Renk Değiştiren</option>
+                    <option value="fade_up">Aşağıdan Süzülerek Gelme</option>
+                    <option value="zoom_in">İçeri Doğru Büyüme</option>
+                    <option value="shake">Titreşim (Shake)</option>
+                    <option value="split">Ortadan Ayrılarak Gelme</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="controls-grid" style="grid-template-columns: 1fr;">
+            <!-- SİNEMATİK EFEKTLER -->
+            <div class="control-box">
+                <label>🎥 Sinematik Görüntü Efektleri (Overlay)</label>
+                <select id="visualEffect">
+                    <option value="none">Efekt Yok (Sade)</option>
+                    <option value="bloom">Bloom (Işıma/Taşma)</option>
+                    <option value="glitch">Glitch (Teknoloji/Bozulma)</option>
+                    <option value="vignette">Vignette (Kenar Karartma)</option>
+                    <option value="grain">Film Greni (Eski Sinema)</option>
+                    <option value="scanlines">CRT Tarama Çizgileri (Eski TV)</option>
+                    <option value="chromatic">Kromatik Renk Kayması (3D)</option>
+                    <option value="lightleak">Işık Sızması (Leak)</option>
+                    <option value="retro">Retro / Sepya</option>
+                </select>
             </div>
         </div>
 
         <div class="upload-area">
-            <label style="font-size: 13px; font-weight: 600; color: #E2E8F0;">Kendi Ürününüz (Resim yüklemezseniz prompttaki nesneyi emoji olarak çizer):</label>
+            <label style="font-size: 13px; font-weight: 600; color: #E2E8F0;">Kendi Ürününüz (Boş bırakırsanız prompttaki nesneyi emoji olarak çizer):</label>
             <input type="file" id="imageUpload" accept="image/*" multiple>
             <div class="upload-status" id="uploadStatus">✅ Görseller Yüklendi</div>
             <div class="preview-container" id="previewContainer"></div>
@@ -201,10 +243,11 @@
         const color2 = document.getElementById('color2');
         const textColorPicker = document.getElementById('textColorPicker');
         
-        const imageStyle = document.getElementById('imageStyle');
-        const imageAnimType = document.getElementById('imageAnimType');
         const bgAnimation = document.getElementById('bgAnimation');
         const particleEffect = document.getElementById('particleEffect');
+        const imageStyle = document.getElementById('imageStyle');
+        const imageAnimType = document.getElementById('imageAnimType');
+        const textStyle = document.getElementById('textStyle');
         const textAnimation = document.getElementById('textAnimation');
         const visualEffect = document.getElementById('visualEffect');
         const manualTitle = document.getElementById('manualTitle');
@@ -274,22 +317,17 @@
             return null;
         }
 
-        // --- DEVASA YEREL SÖZLÜK (Yedek Plan) ---
+        // YEREL ZEKA (Yedek Plan ve Nesne Tanıma)
         function getLocalPromptDesign(prompt) {
             const p = prompt.toLowerCase();
             
-            // Yüzlerce nesne ve emoji eşleşmesi
             const emojiMap = {
                 'ruj': '💄', 'parfüm': '🧴', 'koku': '🧴', 'ağaç': '🌳', 'orman': '🌲', 'kalem': '✏️', 
-                'araba': '🚗', 'otomobil': '🚗', 'saat': '⌚', 'kahve': '☕', 'çiçek': '🌸', 'gül': '🌹',
-                'kitap': '📚', 'telefon': '📱', 'gözlük': '🕶️', 'ayakkabı': '👠', 'yiyecek': '🍔', 'yemek': '🍔',
-                'müzik': '🎵', 'elmas': '💎', 'mücevher': '💎', 'roket': '🚀', 'uzay': '🌌', 'gezegen': '🪐',
-                'bilgisayar': '💻', 'yazılım': '🖥️', 'yapay zeka': '🤖', 'robot': '🤖', 'oyun': '🎮', 'konsol': '🎮',
-                'pizza': '🍕', 'hamburger': '🍔', 'dondurma': '🍦', 'elma': '🍎', 'çilek': '🍓', 'pasta': '🎂',
-                'kedi': '🐱', 'köpek': '🐶', 'kuş': '🐦', 'aslan': '🦁', 'kaplan': '🐯', 'balık': '🐟',
-                'elbise': '👗', 'çanta': '👜', 'şapka': '👒', 'güneş': '☀️', 'ay': '🌙', 'yıldız': '⭐',
-                'deniz': '🌊', 'okyanus': '🌊', 'gitar': '🎸', 'piyano': '🎹', 'futbol': '⚽', 'basketbol': '🏀',
-                'uçak': '✈️', 'gemi': '🚢', 'bisiklet': '🚲', 'ev': '🏠', 'bina': '🏢', 'kalp': '❤️', 'aşk': '❤️'
+                'araba': '🚗', 'saat': '⌚', 'kahve': '☕', 'çiçek': '🌸', 'gül': '🌹', 'kitap': '📚', 
+                'telefon': '📱', 'gözlük': '🕶️', 'ayakkabı': '👠', 'yiyecek': '🍔', 'müzik': '🎵', 
+                'elmas': '💎', 'roket': '🚀', 'uzay': '🌌', 'bilgisayar': '💻', 'robot': '🤖', 
+                'oyun': '🎮', 'pizza': '🍕', 'dondurma': '🍦', 'kedi': '🐱', 'köpek': '🐶', 'kuş': '🐦',
+                'deniz': '🌊', 'gitar': '🎸', 'futbol': '⚽', 'uçak': '✈️', 'ev': '🏠', 'kalp': '❤️'
             };
 
             let foundEmoji = "";
@@ -299,33 +337,31 @@
 
             let colors = ["#111827", "#374151", "#1F2937"];
             let textColor = "#FFFFFF";
-            let fontStyle = "sans-serif";
 
             if (p.includes('ruj') || p.includes('aşk') || p.includes('güzellik') || p.includes('kırmızı')) {
-                colors = ["#4C0519", "#BE123C", "#FDA4AF"]; textColor = "#FFF1F2"; fontStyle = "serif";
+                colors = ["#4C0519", "#BE123C", "#FDA4AF"]; textColor = "#FFF1F2";
             } else if (p.includes('doğa') || p.includes('ağaç') || p.includes('yeşil') || p.includes('orman')) {
-                colors = ["#064E3B", "#10B981", "#A7F3D0"]; textColor = "#ECFDF5"; fontStyle = "serif";
+                colors = ["#064E3B", "#10B981", "#A7F3D0"]; textColor = "#ECFDF5";
             } else if (p.includes('parfüm') || p.includes('lüks') || p.includes('altın')) {
-                colors = ["#1A0B1A", "#4C1D95", "#FBBF24"]; textColor = "#FEF3C7"; fontStyle = "serif";
+                colors = ["#1A0B1A", "#4C1D95", "#FBBF24"]; textColor = "#FEF3C7";
             } else if (p.includes('teknoloji') || p.includes('neon') || p.includes('uzay') || p.includes('roket')) {
-                colors = ["#020617", "#1D4ED8", "#06B6D4"]; textColor = "#E0F2FE"; fontStyle = "sans-serif";
+                colors = ["#020617", "#1D4ED8", "#06B6D4"]; textColor = "#E0F2FE";
             } else if (p.includes('kahve') || p.includes('yemek') || p.includes('sıcak')) {
-                colors = ["#451A03", "#92400E", "#FDE68A"]; textColor = "#FFFBEB"; fontStyle = "serif";
+                colors = ["#451A03", "#92400E", "#FDE68A"]; textColor = "#FFFBEB";
             }
 
-            return { emoji: foundEmoji, colors, textColor, fontStyle };
+            return { emoji: foundEmoji, colors, textColor };
         }
 
         async function getVideoDesignFromAI(prompt, palette) {
             const localDesign = getLocalPromptDesign(prompt);
             
-            // Yapay zekaya gönderilecek sistem komutu (Emoji istemeyi de ekledik)
             const messages = [
                 { 
                     role: "system", 
                     content: `You are a JSON API. Output ONLY valid JSON. No markdown.
-                    Format: {"title": "TITLE", "subtitle": "SUBTITLE", "colors": ["#hex1", "#hex2", "#hex3"], "fontStyle": "serif", "emoji": "SINGLE_EMOJI"}
-                    Analyze the user prompt. Include an 'emoji' key with the single most relevant Unicode emoji representing the core subject (e.g., 💄 for lipstick, 🚗 for car).` 
+                    Format: {"title": "TITLE", "subtitle": "SUBTITLE", "colors": ["#hex1", "#hex2", "#hex3"], "emoji": "SINGLE_EMOJI"}
+                    Analyze the user prompt. Include an 'emoji' key with the single most relevant Unicode emoji.` 
                 },
                 { role: "user", content: `Design for: "${prompt}"` }
             ];
@@ -336,38 +372,42 @@
             try {
                 const reply = await engine.chat.completions.create({ messages, temperature: 0.1, max_tokens: 150 });
                 aiDesign = extractJSON(reply.choices[0].message.content);
-                
-                // Eğer Yapay Zeka emoji ürettiyse al
-                if (aiDesign && aiDesign.emoji && aiDesign.emoji.length <= 5) {
-                    aiEmoji = aiDesign.emoji;
-                }
+                if (aiDesign && aiDesign.emoji && aiDesign.emoji.length <= 5) aiEmoji = aiDesign.emoji;
             } catch (e) {}
 
-            // Eğer promptta özel bir palet seçilmediyse veya AI renk bulamadıysa yerel zekayı kullan
             if (palette !== 'custom') {
                 if (aiDesign && aiDesign.colors) {
-                    // Yapay zekanın emojisi varsa onu, yoksa yerel sözlükten geleni kullan
                     aiDesign.emoji = aiEmoji || localDesign.emoji;
                     return aiDesign;
                 }
             }
 
-            // Her şey başarısız olursa tamamen yerel zekaya dön
             return { 
                 title: "PREMIUM", subtitle: "DESIGN", 
                 colors: localDesign.colors, textColor: localDesign.textColor, 
-                fontStyle: localDesign.fontStyle, emoji: aiEmoji || localDesign.emoji
+                emoji: aiEmoji || localDesign.emoji
             };
+        }
+
+        // YAZI FONTLARINI SEÇME
+        function getFontFamily(style) {
+            if (style === 'classic') return "'Playfair Display', serif";
+            if (style === 'elegant') return "'Cinzel', serif";
+            if (style === 'impact') return "Impact, 'Arial Black', sans-serif";
+            if (style === 'handwriting') return "'Caveat', cursive";
+            if (style === 'mono') return "'Courier Prime', monospace";
+            return "'Montserrat', sans-serif"; // modern
         }
 
         window.generateVideo = async function() {
             const prompt = document.getElementById('videoPrompt').value.trim() || "Modern bir reklam";
             const palette = colorPalette.value;
+            const bgType = bgAnimation.value;
+            const partType = particleEffect.value;
             const imgStyle = imageStyle.value;
             const imgAnim = imageAnimType.value;
-            const animType = bgAnimation.value;
-            const partType = particleEffect.value;
-            const textAnimType = textAnimation.value;
+            const txtStyle = textStyle.value;
+            const txtAnim = textAnimation.value;
             const effectType = visualEffect.value;
             
             const mTitle = manualTitle.value.trim();
@@ -376,20 +416,19 @@
 
             generateBtn.disabled = true;
             downloadArea.style.display = 'none';
-            statusText.innerText = "🧠 Yapay Zeka nesneyi analiz ediyor...";
+            statusText.innerText = "🧠 Yapay Zeka sahneyi kuruyor...";
             statusText.className = "status recording";
 
             try {
                 const design = await getVideoDesignFromAI(prompt, palette);
                 
                 let finalColors = design.colors;
-                if (palette === 'custom') {
-                    finalColors = [color1.value, color2.value, color1.value];
-                }
+                if (palette === 'custom') finalColors = [color1.value, color2.value, color1.value];
 
                 const finalTitle = mTitle !== "" ? mTitle : (design.title || "REKLAM");
                 const finalSubtitle = mSlogan !== "" ? mSlogan : (design.subtitle || "SİZİN İÇİN");
                 const promptEmoji = design.emoji || ""; 
+                const selectedFont = getFontFamily(txtStyle);
 
                 statusText.innerText = "🎬 Sinematik render başladı...";
                 canvas.style.display = 'block';
@@ -417,36 +456,33 @@
                 const centerX = canvas.width / 2;
                 const centerY = canvas.height / 2;
 
+                // Parçacık Hazırlığı
                 let particles = [];
-                const pCount = partType === 'golden_dust' ? 300 : 150;
+                const pCount = partType === 'golden_dust' ? 300 : (partType === 'fireflies' ? 50 : 150);
                 for (let i = 0; i < pCount; i++) {
                     let pColor = "rgba(255,255,255," + Math.random() + ")";
                     let pRadius = Math.random() * 2 + 0.5;
-                    let pSpeedX = (Math.random() - 0.5) * 1;
-                    let pSpeedY = (Math.random() - 0.5) * 1;
+                    let pSpeedX = (Math.random() - 0.5) * 2;
+                    let pSpeedY = (Math.random() - 0.5) * 2;
 
                     if (partType === 'golden_dust') {
-                        pColor = `rgba(255, 215, 0, ${Math.random() * 0.8 + 0.2})`;
-                        pRadius = Math.random() * 2.5 + 0.5;
-                        pSpeedY = -(Math.random() * 1.5 + 0.5);
+                        pColor = `rgba(255, 215, 0, ${Math.random() * 0.8 + 0.2})`; pRadius = Math.random() * 2.5 + 0.5; pSpeedY = -(Math.random() * 1.5 + 0.5);
                     } else if (partType === 'snow') {
-                        pColor = `rgba(255, 255, 255, ${Math.random() * 0.8 + 0.2})`;
-                        pRadius = Math.random() * 3 + 1;
-                        pSpeedY = Math.random() * 2 + 1;
+                        pColor = `rgba(255, 255, 255, ${Math.random() * 0.8 + 0.2})`; pRadius = Math.random() * 3 + 1; pSpeedY = Math.random() * 2 + 1;
                     } else if (partType === 'confetti') {
-                        pColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                        pRadius = Math.random() * 4 + 2;
-                        pSpeedY = Math.random() * 2 + 1;
+                        pColor = `hsl(${Math.random() * 360}, 100%, 50%)`; pRadius = Math.random() * 4 + 2; pSpeedY = Math.random() * 2 + 1;
+                    } else if (partType === 'fireflies') {
+                        pColor = `rgba(200, 255, 100, ${Math.random() * 0.6 + 0.2})`; pRadius = Math.random() * 4 + 1; 
                     }
-                    particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, radius: pRadius, speedX: pSpeedX, speedY: pSpeedY, color: pColor, rotation: Math.random() * Math.PI });
+                    particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, radius: pRadius, speedX: pSpeedX, speedY: pSpeedY, color: pColor, rotation: Math.random() * Math.PI, phase: Math.random() * Math.PI * 2 });
                 }
 
                 function drawFrame() {
                     const time = Date.now() - startTime;
                     const progress = time / duration;
 
-                    // 1. ARKA PLANLAR
-                    if (animType === 'aurora' || animType === 'gradient') {
+                    // === 1. ARKA PLANLAR ===
+                    if (bgType === 'aurora' || bgType === 'gradient') {
                         ctx.fillStyle = finalColors[0];
                         ctx.fillRect(0, 0, canvas.width, canvas.height);
                         const t = time / 1000;
@@ -455,34 +491,65 @@
                             let y = centerY + Math.sin(t * 0.7 + i * 2) * 300;
                             let radGrad = ctx.createRadialGradient(x, y, 0, x, y, 600);
                             let c = finalColors[i] || finalColors[0];
-                            radGrad.addColorStop(0, c + "AA"); 
-                            radGrad.addColorStop(1, c + "00"); 
-                            ctx.fillStyle = radGrad;
-                            ctx.fillRect(0, 0, canvas.width, canvas.height);
+                            radGrad.addColorStop(0, c + "AA"); radGrad.addColorStop(1, c + "00"); 
+                            ctx.fillStyle = radGrad; ctx.fillRect(0, 0, canvas.width, canvas.height);
                         }
                     } 
-                    else if (animType === 'galaxy') {
-                        ctx.fillStyle = "#000000"; 
-                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    else if (bgType === 'galaxy') {
+                        ctx.fillStyle = "#000000"; ctx.fillRect(0, 0, canvas.width, canvas.height);
                         let radGrad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 800);
-                        radGrad.addColorStop(0, (finalColors[1] || "#333") + "44");
-                        radGrad.addColorStop(1, "transparent");
-                        ctx.fillStyle = radGrad;
-                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        radGrad.addColorStop(0, (finalColors[1] || "#333") + "44"); radGrad.addColorStop(1, "transparent");
+                        ctx.fillStyle = radGrad; ctx.fillRect(0, 0, canvas.width, canvas.height);
                     }
-                    else if (animType === 'matrix') {
-                        ctx.fillStyle = "#000000";
-                        ctx.fillRect(0, 0, canvas.width, canvas.height);
-                        ctx.fillStyle = "#00FF41";
-                        ctx.font = "20px monospace";
+                    else if (bgType === 'matrix') {
+                        ctx.fillStyle = "#000000"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        ctx.fillStyle = finalColors[1] || "#00FF41"; ctx.font = "20px monospace";
                         for(let i=0; i<canvas.width; i+=30) {
                             for(let j=0; j<canvas.height; j+=30) {
                                 if(Math.random() > 0.95) ctx.fillText(Math.random().toString(36).substring(2,3), i, j + (time/10)%30);
                             }
                         }
                     }
+                    else if (bgType === 'waves') {
+                        ctx.fillStyle = finalColors[0]; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        for (let i = 0; i < 3; i++) {
+                            ctx.beginPath();
+                            ctx.moveTo(0, canvas.height);
+                            for (let x = 0; x <= canvas.width; x += 20) {
+                                let y = centerY + Math.sin(x / 200 + time / 1000 + i) * 100;
+                                ctx.lineTo(x, y);
+                            }
+                            ctx.lineTo(canvas.width, canvas.height);
+                            ctx.fillStyle = (finalColors[i] || "#333") + "66"; // Saydam dalgalar
+                            ctx.fill();
+                        }
+                    }
+                    else if (bgType === 'tunnel') {
+                        ctx.fillStyle = "#000"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        for (let i = 10; i > 0; i--) {
+                            let size = (i * 100 + (time / 10) % 100);
+                            ctx.beginPath();
+                            ctx.roundRect(centerX - size, centerY - size/2, size*2, size, 20);
+                            ctx.strokeStyle = finalColors[i % 3] + "80";
+                            ctx.lineWidth = 3;
+                            ctx.stroke();
+                        }
+                    }
+                    else if (bgType === 'bokeh') {
+                        ctx.fillStyle = finalColors[0]; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        for (let i = 0; i < 30; i++) {
+                            let bX = (Math.sin(i * 99 + time / 2000) * 0.5 + 0.5) * canvas.width;
+                            let bY = (Math.cos(i * 77 + time / 3000) * 0.5 + 0.5) * canvas.height;
+                            let bR = 50 + Math.sin(i) * 40;
+                            let radGrad = ctx.createRadialGradient(bX, bY, 0, bX, bY, bR);
+                            radGrad.addColorStop(0, finalColors[i % 3] + "33"); 
+                            radGrad.addColorStop(1, "transparent");
+                            ctx.fillStyle = radGrad;
+                            ctx.beginPath(); ctx.arc(bX, bY, bR, 0, Math.PI*2); ctx.fill();
+                        }
+                    }
 
-                    // 2. PARÇACIKLAR
+                    // === 2. PARÇACIKLAR ===
                     if (partType !== 'none') {
                         particles.forEach(p => {
                             ctx.save();
@@ -493,29 +560,41 @@
                                 ctx.fillStyle = p.color;
                                 ctx.fillRect(-p.radius, -p.radius, p.radius*2, p.radius*2);
                             } else {
-                                ctx.arc(0, 0, p.radius, 0, Math.PI * 2);
+                                let currentRadius = p.radius;
+                                if (partType === 'fireflies') currentRadius = p.radius + Math.sin(time/200 + p.phase) * 2;
+                                ctx.arc(0, 0, currentRadius, 0, Math.PI * 2);
                                 ctx.fillStyle = p.color;
                                 if (partType === 'golden_dust') { ctx.shadowColor = "gold"; ctx.shadowBlur = 10; }
+                                if (partType === 'fireflies') { ctx.shadowColor = "yellow"; ctx.shadowBlur = 15; }
                                 ctx.fill();
                             }
                             ctx.restore();
+                            
+                            // Hareket
                             p.x += p.speedX; p.y += p.speedY;
+                            if(partType === 'fireflies') {
+                                p.x += Math.sin(time/1000 + p.phase) * 1.5;
+                                p.y += Math.cos(time/1200 + p.phase) * 1.5;
+                            }
                             if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
                             if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
                         });
                     }
 
-                    // 3. MERKEZ İÇERİK
+                    // === 3. MERKEZ İÇERİK (GÖRSEL VEYA EMOJİ) ===
                     let hasContent = false;
-                    let imgYOffset = 0;
-                    let imgScale = 1;
-                    let imgRotation = 0;
+                    let imgYOffset = 0, imgScale = 1, imgRotation = 0, imgXOffset = 0;
+                    
+                    // Görsel Hareket Mantığı
                     if (imgAnim === 'float') imgYOffset = Math.sin(time / 300) * 20;
                     if (imgAnim === 'pulse') imgScale = 1 + Math.sin(time / 200) * 0.05;
                     if (imgAnim === 'rotate') imgRotation = Math.sin(time / 500) * 0.05;
+                    if (imgAnim === 'zoom_in') imgScale = 1 + (progress * 0.2);
+                    if (imgAnim === 'swing') imgRotation = Math.sin(time / 300) * 0.15;
+                    if (imgAnim === 'slide_side') imgXOffset = Math.max(0, (1000 - time) * 0.5);
+                    if (imgAnim === '3d_tilt') { imgRotation = Math.sin(time/1000)*0.1; imgScale = 1 + Math.cos(time/1000)*0.05; }
 
                     if (uploadedImages.length > 0) {
-                        // RESİM VARSA
                         hasContent = true;
                         const totalImages = uploadedImages.length;
                         const timePerImage = duration / totalImages;
@@ -538,28 +617,45 @@
                             }
                             ctx.save();
                             ctx.globalAlpha = alpha;
-                            ctx.translate(centerX, centerY + imgYOffset); 
+                            ctx.translate(centerX + imgXOffset, centerY + imgYOffset); 
                             ctx.rotate(imgRotation);
                             ctx.scale(imgScale, imgScale);
-                            ctx.shadowColor = finalColors[1]; 
-                            ctx.shadowBlur = 40;
                             
-                            if (imgStyle === 'glass') {
-                                ctx.beginPath();
-                                ctx.roundRect(-imgW/2, -imgH/2, imgW, imgH, 30);
-                                ctx.clip();
-                                ctx.globalAlpha = alpha * 0.85;
+                            // --- GÖRSEL STİLLERİ ---
+                            if (imgStyle === 'neon_border') {
+                                ctx.shadowColor = finalColors[1]; ctx.shadowBlur = 50;
+                                ctx.strokeStyle = finalColors[2]; ctx.lineWidth = 10;
+                                ctx.strokeRect(-imgW/2, -imgH/2, imgW, imgH);
+                            } else if (imgStyle === 'shadow') {
+                                ctx.shadowColor = finalColors[0]; ctx.shadowBlur = 60; ctx.shadowOffsetX = 20; ctx.shadowOffsetY = 20;
+                            } else if (imgStyle === 'glass' || imgStyle === 'polaroid' || imgStyle === 'circle') {
+                                ctx.shadowColor = "rgba(0,0,0,0.6)"; ctx.shadowBlur = 30;
+                            } else {
+                                ctx.shadowColor = "rgba(0,0,0,0.8)"; ctx.shadowBlur = 30;
                             }
-                            
-                            ctx.drawImage(img, -imgW/2, -imgH/2, imgW, imgH);
-                            
+
                             if (imgStyle === 'glass') {
+                                ctx.beginPath(); ctx.roundRect(-imgW/2, -imgH/2, imgW, imgH, 30); ctx.clip();
+                                ctx.globalAlpha = alpha * 0.85;
+                                ctx.drawImage(img, -imgW/2, -imgH/2, imgW, imgH);
                                 ctx.shadowBlur = 0;
                                 let glare = ctx.createLinearGradient(-imgW/2, -imgH/2, imgW/2, imgH/2);
-                                glare.addColorStop(0, "rgba(255,255,255,0.4)");
-                                glare.addColorStop(0.5, "rgba(255,255,255,0)");
-                                ctx.fillStyle = glare;
-                                ctx.fillRect(-imgW/2, -imgH/2, imgW, imgH);
+                                glare.addColorStop(0, "rgba(255,255,255,0.4)"); glare.addColorStop(0.5, "rgba(255,255,255,0)");
+                                ctx.fillStyle = glare; ctx.fillRect(-imgW/2, -imgH/2, imgW, imgH);
+                            } 
+                            else if (imgStyle === 'circle') {
+                                ctx.beginPath(); ctx.arc(0, 0, Math.min(imgW, imgH)/2, 0, Math.PI*2); ctx.clip();
+                                let drawSize = Math.min(imgW, imgH);
+                                ctx.drawImage(img, -drawSize/2, -drawSize/2, drawSize, drawSize);
+                            }
+                            else if (imgStyle === 'polaroid') {
+                                ctx.fillStyle = "white";
+                                ctx.fillRect(-imgW/2 - 20, -imgH/2 - 20, imgW + 40, imgH + 80); // Alt kısım daha geniş
+                                ctx.shadowBlur = 0;
+                                ctx.drawImage(img, -imgW/2, -imgH/2, imgW, imgH);
+                            }
+                            else {
+                                ctx.drawImage(img, -imgW/2, -imgH/2, imgW, imgH);
                             }
                             ctx.restore();
                         };
@@ -568,57 +664,64 @@
                         if (alphaNext > 0) drawImg(uploadedImages[nextIndex], alphaNext);
                     } 
                     else if (promptEmoji !== "") {
-                        // RESİM YOK, AMA YAPAY ZEKA VEYA YEREL ZEKA BİR EMOJİ BULDUYSA
                         hasContent = true;
                         ctx.save();
-                        ctx.translate(centerX, centerY + imgYOffset);
+                        ctx.translate(centerX + imgXOffset, centerY + imgYOffset);
                         ctx.rotate(imgRotation);
                         ctx.scale(imgScale, imgScale);
                         
-                        ctx.shadowColor = finalColors[1]; 
-                        ctx.shadowBlur = 80;
-                        
-                        ctx.font = "180px Arial";
-                        ctx.textAlign = "center";
-                        ctx.textBaseline = "middle";
+                        ctx.shadowColor = finalColors[1]; ctx.shadowBlur = 80;
+                        ctx.font = "180px Arial"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
                         ctx.fillText(promptEmoji, 0, 0);
                         ctx.restore();
                     }
 
-                    // 4. YAZILAR
+                    // === 4. YAZILAR VE ANİMASYONLARI ===
                     let titleYOffset = hasContent ? -230 : -50; 
                     let subYOffset = hasContent ? 260 : 40;  
-
                     let currentTextColor = customTextColor;
-                    let textX = 0;
-                    let textScale = 1;
-                    if (textAnimType === 'color_cycle') {
-                        let hue = (time / 10) % 360;
-                        currentTextColor = `hsl(${hue}, 100%, 60%)`;
-                    } else if (textAnimType === 'slide_in') {
-                        if (time < 1000) textX = -800 + (time * 0.8);
-                    } else if (textAnimType === 'bounce') {
-                        titleYOffset += Math.sin(time / 200) * 15;
-                        subYOffset += Math.sin(time / 200) * 15;
-                    } else if (textAnimType === 'neon_pulse') {
+                    let textX = 0, textY = 0, textScale = 1;
+                    
+                    if (txtAnim === 'color_cycle') {
+                        let hue = (time / 10) % 360; currentTextColor = `hsl(${hue}, 100%, 60%)`;
+                    } else if (txtAnim === 'slide_in') {
+                        if (time < 1000) textX = -1000 + (time * 1);
+                    } else if (txtAnim === 'bounce') {
+                        titleYOffset += Math.sin(time / 200) * 15; subYOffset += Math.sin(time / 200) * 15;
+                    } else if (txtAnim === 'neon_pulse') {
                         textScale = 1 + Math.sin(time / 150) * 0.05;
+                    } else if (txtAnim === 'fade_up') {
+                        if(time < 1000) { textY = (1000 - time) * 0.1; ctx.globalAlpha = time / 1000; }
+                    } else if (txtAnim === 'zoom_in') {
+                        if(time < 800) { textScale = Math.max(0.1, time / 800); ctx.globalAlpha = time / 800; }
+                    } else if (txtAnim === 'shake') {
+                        if(time > 1000 && time < 2000) { // Sadece 1 saniye titret
+                            textX = (Math.random() - 0.5) * 15; textY = (Math.random() - 0.5) * 15;
+                        }
+                    } else if (txtAnim === 'split') {
+                        // Ortadan ikiye ayrılma
+                        // Bu özellik başlık için biraz karmaşık, şimdilik sadece opacity zoom yapalım
+                        if(time < 1000) { textScale = 1.5 - (time/1000)*0.5; ctx.globalAlpha = time/1000; }
                     }
 
                     ctx.save();
-                    ctx.translate(centerX + textX, centerY);
-                    ctx.font = `600 80px 'Montserrat', sans-serif`;
-                    let titleWidth = ctx.measureText(finalTitle).width + 80;
-                    ctx.fillStyle = "rgba(0, 0, 0, 0.5)"; 
-                    ctx.beginPath();
-                    ctx.roundRect(-titleWidth/2, titleYOffset - 60, titleWidth, 110, 20);
-                    ctx.fill();
-
+                    ctx.translate(centerX + textX, centerY + textY);
                     ctx.scale(textScale, textScale);
                     ctx.textAlign = "center"; ctx.textBaseline = "middle"; 
-                    ctx.shadowColor = currentTextColor; 
-                    ctx.shadowBlur = 20; 
+                    
+                    // Başlık Fontu
+                    ctx.font = `600 80px ${selectedFont}`;
+                    let titleWidth = ctx.measureText(finalTitle).width + 80;
+                    
+                    // Yazı Okunabilirlik Plakası
+                    ctx.fillStyle = "rgba(0, 0, 0, 0.5)"; 
+                    ctx.beginPath(); ctx.roundRect(-titleWidth/2, titleYOffset - 60, titleWidth, 110, 20); ctx.fill();
+
+                    // Başlık Çizimi
+                    ctx.shadowColor = currentTextColor; ctx.shadowBlur = 20; 
                     ctx.fillStyle = currentTextColor;
-                    if (textAnimType === 'typewriter') {
+                    
+                    if (txtAnim === 'typewriter') {
                         let charsToShow = Math.floor(time / 50);
                         ctx.fillText(finalTitle.substring(0, charsToShow), 0, titleYOffset);
                     } else {
@@ -626,42 +729,71 @@
                     }
                     ctx.restore();
 
+                    // Slogan Çizimi
                     ctx.save();
-                    ctx.translate(centerX + textX, centerY);
+                    ctx.translate(centerX + textX, centerY + textY);
+                    ctx.scale(textScale, textScale);
                     ctx.textAlign = "center"; ctx.textBaseline = "middle";
-                    ctx.font = "400 32px 'Montserrat', sans-serif";
+                    ctx.font = `400 32px 'Montserrat', sans-serif`; // Slogan her zaman okunaklı modern font
+                    
                     let subWidth = ctx.measureText(finalSubtitle).width + 60;
                     ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-                    ctx.beginPath();
-                    ctx.roundRect(-subWidth/2, subYOffset - 25, subWidth, 50, 15);
-                    ctx.fill();
+                    ctx.beginPath(); ctx.roundRect(-subWidth/2, subYOffset - 25, subWidth, 50, 15); ctx.fill();
 
                     ctx.shadowColor = "rgba(0,0,0,0.8)"; ctx.shadowBlur = 10;
-                    ctx.fillStyle = textAnimType === 'color_cycle' ? currentTextColor : (finalColors[2] || "#CCCCCC");
-                    ctx.globalAlpha = Math.min(1, time / 1000);
+                    ctx.fillStyle = txtAnim === 'color_cycle' ? currentTextColor : (finalColors[2] || "#CCCCCC");
                     ctx.fillText(finalSubtitle, 0, subYOffset);
                     ctx.restore();
 
-                    // 5. EFEKTLER
+                    // === 5. SİNEMATİK GÖRÜNTÜ EFEKTLERİ ===
                     if (effectType === 'bloom') {
-                        ctx.globalCompositeOperation = 'screen';
-                        ctx.globalAlpha = 0.4;
-                        ctx.filter = 'blur(15px)';
+                        ctx.globalCompositeOperation = 'screen'; ctx.globalAlpha = 0.4; ctx.filter = 'blur(15px)';
                         ctx.drawImage(canvas, 0, 0); 
-                        ctx.filter = 'none'; ctx.globalAlpha = 1;
-                        ctx.globalCompositeOperation = 'source-over';
+                        ctx.filter = 'none'; ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
                     }
                     else if (effectType === 'vignette') {
                         const vignette = ctx.createRadialGradient(centerX, centerY, canvas.height * 0.2, centerX, centerY, canvas.height * 0.9);
-                        vignette.addColorStop(0, "rgba(0,0,0,0)");
-                        vignette.addColorStop(1, "rgba(0,0,0,0.9)");
-                        ctx.fillStyle = vignette;
-                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        vignette.addColorStop(0, "rgba(0,0,0,0)"); vignette.addColorStop(1, "rgba(0,0,0,0.9)");
+                        ctx.fillStyle = vignette; ctx.fillRect(0, 0, canvas.width, canvas.height);
                     } 
                     else if (effectType === 'grain') {
                         const grainData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                         for (let i = 0; i < grainData.data.length; i += 4) {
                             let noise = (Math.random() - 0.5) * 30; 
+                            grainData.data[i] += noise; grainData.data[i+1] += noise; grainData.data[i+2] += noise;
+                        }
+                        ctx.putImageData(grainData, 0, 0);
+                    }
+                    else if (effectType === 'scanlines') {
+                        ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+                        for (let i = 0; i < canvas.height; i += 4) {
+                            ctx.fillRect(0, i, canvas.width, 2);
+                        }
+                    }
+                    else if (effectType === 'chromatic') {
+                        // Ekranı hafifçe kırmızı ve mavi olarak kaydırıp üst üste bindir (3D etki)
+                        ctx.globalCompositeOperation = 'screen';
+                        ctx.fillStyle = "rgba(255,0,0,0.1)"; ctx.fillRect(5, 0, canvas.width, canvas.height);
+                        ctx.fillStyle = "rgba(0,0,255,0.1)"; ctx.fillRect(-5, 0, canvas.width, canvas.height);
+                        ctx.globalCompositeOperation = 'source-over';
+                    }
+                    else if (effectType === 'lightleak') {
+                        const leakX = centerX + Math.sin(time / 1500) * 600;
+                        const leakY = centerY + Math.cos(time / 2000) * 300;
+                        const leak = ctx.createRadialGradient(leakX, leakY, 0, leakX, leakY, 400);
+                        leak.addColorStop(0, "rgba(255, 200, 100, 0.4)"); leak.addColorStop(1, "rgba(255, 200, 100, 0)");
+                        ctx.fillStyle = leak; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    }
+                    else if (effectType === 'retro') {
+                        // Sepya Tonu
+                        ctx.fillStyle = "rgba(112, 66, 20, 0.4)";
+                        ctx.globalCompositeOperation = 'multiply';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        ctx.globalCompositeOperation = 'source-over';
+                        // Ağır Grain
+                        const grainData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                        for (let i = 0; i < grainData.data.length; i += 4) {
+                            let noise = (Math.random() - 0.5) * 60; 
                             grainData.data[i] += noise; grainData.data[i+1] += noise; grainData.data[i+2] += noise;
                         }
                         ctx.putImageData(grainData, 0, 0);
