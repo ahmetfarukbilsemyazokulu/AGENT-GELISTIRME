@@ -1,0 +1,42 @@
+name: Otomatik Video Uretici
+
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build-video:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Depoyu Kopyala
+        uses: actions/checkout@v4
+
+      - name: Node.js Kur
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Puppeteer ve Video Araci Kur
+        run: npm install puppeteer
+
+      - name: HTML'i Videoya Donustur
+        run: |
+          node -e '
+          const puppeteer = require("puppeteer");
+          (async () => {
+            const browser = await puppeteer.launch();
+            const page = await browser.newPage();
+            await page.setViewport({ width: 1920, height: 1080 });
+            await page.goto("file://" + process.cwd() + "/index.html");
+            await new Promise(r => setTimeout(r, 3000)); // 3 saniye bekle
+            await page.screenshot({ path: "video-kare.png" });
+            await browser.close();
+            console.log("Ekran goruntusu alindi!");
+          })();
+          '
+
+      - name: Uretilen Dosyayi Kaydet
+        uses: actions/upload-artifact@v4
+        with:
+          name: cikan-video
+          path: video-kare.png
