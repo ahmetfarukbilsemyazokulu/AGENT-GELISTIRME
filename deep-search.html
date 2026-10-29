@@ -3,329 +3,633 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doğal Yapay Zeka Asistanı | AGENT-GELISTIRME</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <title>Ultimate Pro Stüdyo v2 | AGENT-GELISTIRME</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Montserrat:wght@300;400;600&family=Inter:wght@400&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #4F46E5; --primary-hover: #4338CA; --bg: #F3F4F6;
-            --surface: #FFFFFF; --text-main: #111827; --text-muted: #6B7280;
-            --bot-bubble: #F9FAFB; --border: #E5E7EB; --radius: 16px;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); display: flex; justify-content: center; align-items: center; height: 100vh; color: var(--text-main); }
+        body { font-family: 'Inter', sans-serif; background: #0B1120; color: white; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { margin: 0; font-family: 'Playfair Display', serif; font-size: 34px; background: linear-gradient(90deg, #38BDF8, #A78BFA, #F472B6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        .chat-container {
-            width: 100%; max-width: 800px; height: 92vh; background: var(--surface);
-            border-radius: var(--radius); box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-            display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--border);
-        }
-        .chat-header {
-            padding: 16px 24px; display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--border); background: #FFF;
-        }
-        .header-info { display: flex; align-items: center; gap: 12px; }
-        .avatar-bot {
-            width: 44px; height: 44px; background: linear-gradient(135deg, #4F46E5, #7C3AED);
-            border-radius: 12px; display: flex; justify-content: center; align-items: center;
-            color: white; font-size: 20px; box-shadow: 0 4px 10px rgba(79,70,229,0.3);
-        }
-        .header-text h2 { font-size: 17px; font-weight: 600; margin-bottom: 2px; }
-        .header-text p { font-size: 12px; color: #059669; display: flex; align-items: center; gap: 4px; font-weight: 500; }
-        .header-text p::before { content: ''; display: block; width: 8px; height: 8px; background: #059669; border-radius: 50%; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
-
-        .clear-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
-        .clear-btn:hover { color: #DC2626; }
+        .studio-container { width: 100%; max-width: 900px; background: #1E293B; border-radius: 20px; padding: 24px; box-shadow: 0 25px 60px rgba(0,0,0,0.6); border: 1px solid #334155; }
         
-        .chat-messages { flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 24px; background: #F8FAFC; }
-        .message-row { display: flex; gap: 16px; max-width: 90%; animation: fadeIn 0.3s ease-out; }
-        .message-row.user { align-self: flex-end; flex-direction: row-reverse; }
-        .message-row.bot { align-self: flex-start; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+        .input-group { display: flex; flex-direction: column; gap: 6px; }
+        .input-group label { font-size: 13px; font-weight: 600; color: #E2E8F0; }
+        .input-group input, .input-group textarea { width: 100%; background: #0F172A; border: 1px solid #334155; border-radius: 8px; padding: 12px; color: white; font-family: 'Inter', sans-serif; outline: none; box-sizing: border-box; }
+        .input-group textarea { height: 70px; resize: none; }
+        .input-group input:focus, .input-group textarea:focus { border-color: #38BDF8; }
 
-        .message-content { padding: 16px 20px; border-radius: 16px; font-size: 14px; line-height: 1.7; }
-        .user .message-content { background: var(--primary); color: white; border-top-right-radius: 4px; }
-        .bot .message-content { background: var(--bot-bubble); color: var(--text-main); border: 1px solid var(--border); border-top-left-radius: 4px; }
-
-        .bot .message-content h3 { font-size: 15px; font-weight: 600; margin: 12px 0 8px; color: #1E293B; border-bottom: 1px solid #E2E8F0; padding-bottom: 4px; }
-        .bot .message-content a { color: var(--primary); text-decoration: none; font-weight: 500; }
-        .bot .message-content a:hover { text-decoration: underline; }
-        .bot .message-content ul { margin: 8px 0; padding-left: 20px; }
-        .bot .message-content li { margin-bottom: 8px; }
-        .bot .message-content p { margin-bottom: 8px; }
-        .bot .message-content p:last-child { margin-bottom: 0; }
+        /* Kontrol Panelleri */
+        .controls-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 15px; }
         
-        .loader-container { display: flex; align-items: center; gap: 12px; padding: 16px 20px; background: var(--bot-bubble); border: 1px solid var(--border); border-radius: 16px; border-top-left-radius: 4px; width: fit-content; }
-        .loader { display: flex; gap: 4px; }
-        .loader span { width: 6px; height: 6px; background: var(--primary); border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
-        .loader span:nth-child(1) { animation-delay: -0.32s; }
-        .loader span:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
-        .loader-text { font-size: 13px; color: var(--text-muted); font-weight: 500; }
+        .control-box { background: #0F172A; padding: 12px; border-radius: 10px; border: 1px solid #334155; display: flex; flex-direction: column; gap: 8px; }
+        .control-box label { font-size: 12px; color: #94A3B8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .control-box select { background: #1E293B; color: #E2E8F0; border: 1px solid #334155; padding: 10px; border-radius: 8px; outline: none; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 13px; width: 100%; }
+        .control-box select:focus { border-color: #A78BFA; }
 
-        .chat-input-area { padding: 20px 24px; background: #FFF; border-top: 1px solid var(--border); display: flex; gap: 12px; align-items: center; }
-        .input-wrapper { flex: 1; display: flex; align-items: center; background: #F1F5F9; border-radius: 24px; padding: 4px 8px; border: 1px solid transparent; transition: all 0.2s; }
-        .input-wrapper:focus-within { border-color: var(--primary); background: #FFF; box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
-        .chat-input-area input { flex: 1; border: none; background: transparent; padding: 12px 16px; font-size: 14px; outline: none; font-family: 'Inter', sans-serif; }
-        .send-btn { background: var(--primary); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s; }
-        .send-btn:hover { background: var(--primary-hover); transform: scale(1.05); }
-        .send-btn:disabled { background: #94A3B8; cursor: not-allowed; transform: none; }
+        /* Özel Renk Seçiciler */
+        .custom-colors { display: flex; gap: 10px; align-items: center; margin-top: 5px; }
+        .color-picker-group { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .color-picker-group span { font-size: 10px; color: #94A3B8; }
+        .color-picker-group input[type="color"] { -webkit-appearance: none; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; padding: 0; background: none; }
+        .color-picker-group input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+        .color-picker-group input[type="color"]::-webkit-color-swatch { border: 2px solid #475569; border-radius: 50%; }
 
-        .chat-messages::-webkit-scrollbar { width: 6px; }
-        .chat-messages::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
-        @media (max-width: 600px) { .chat-container { height: 100vh; border-radius: 0; } .message-row { max-width: 95%; } }
+        .upload-area { display: flex; flex-direction: column; gap: 10px; background: #0F172A; padding: 15px; border-radius: 10px; border: 1px dashed #475569; margin-bottom: 15px; }
+        .upload-area input { color: #94A3B8; font-size: 13px; cursor: pointer; }
+        .preview-container { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 5px; }
+        .preview-container img { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 2px solid #334155; }
+        .upload-status { font-size: 12px; color: #10B981; font-weight: 600; display: none; }
+        
+        .action-row { display: flex; gap: 10px; margin-top: 15px; }
+        .action-row button { flex: 1; background: linear-gradient(135deg, #38BDF8, #818CF8, #F472B6); background-size: 200% 200%; color: white; border: none; padding: 16px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s; animation: gradientBG 3s infinite; }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .action-row button:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(56,189,248,0.4); }
+        .action-row button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; animation: none; background: #475569; }
+
+        .canvas-area { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; position: relative; display: flex; justify-content: center; align-items: center; margin-bottom: 15px; margin-top: 20px; border: 2px solid #334155; }
+        canvas { width: 100%; height: 100%; display: none; }
+        
+        .status { text-align: center; font-size: 13px; color: #94A3B8; margin-bottom: 10px; font-weight: 600; }
+        .status.recording { color: #F87171; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        .download-area { display: none; text-align: center; margin-top: 10px; }
+        .download-area a { display: inline-block; background: #10B981; color: white; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 15px; }
+        
+        @media (max-width: 600px) { .controls-grid, .input-row { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
-<div class="chat-container">
-    <div class="chat-header">
-        <div class="header-info">
-            <div class="avatar-bot"><i class="fa-solid fa-brain"></i></div>
-            <div class="header-text">
-                <h2>Doğal Yapay Zeka Asistanı</h2>
-                <p id="statusText">Model Yükleniyor... (İlk açılışta 4.5 GB indirilebilir)</p>
-            </div>
-        </div>
-        <button class="clear-btn" onclick="clearChat()"><i class="fa-solid fa-rotate-right"></i> Sıfırla</button>
+    <div class="header">
+        <h1>Ultimate Pro Stüdyo v2</h1>
+        <p>Zengin menüler, özel renkler, altın tozu ve gelişmiş animasyonlar.</p>
     </div>
-    
-    <div class="chat-messages" id="chatMessages">
-        <div class="message-row bot">
-            <div class="avatar-bot" style="width:36px; height:36px; font-size:16px;"><i class="fa-solid fa-robot"></i></div>
-            <div class="message-content">
-                Merhaba! Ben tamamen tarayıcınızda çalışan gerçek bir yapay zeka modeliyim. 
-                Benimle her konuda doğal bir şekilde sohbet edebilirsiniz. 
-                Eğer güncel veya internette aramam gereken bir şey sorarsanız, ben de otomatik olarak web'de arama yapıp size en doğru cevabı vereceğim.
-            </div>
-        </div>
-    </div>
-    
-    <div class="chat-input-area">
-        <div class="input-wrapper">
-            <input type="text" id="userInput" placeholder="Model yükleniyor, lütfen bekleyin..." onkeypress="handleKeyPress(event)" autocomplete="off" disabled>
-        </div>
-        <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled><i class="fa-solid fa-paper-plane"></i></button>
-    </div>
-</div>
 
-<script type="module">
-    import * as webllm from "https://esm.run/@mlc-ai/web-llm";
-
-    let engine = null;
-    const chatMessages = document.getElementById('chatMessages');
-    const userInput = document.getElementById('userInput');
-    const sendBtn = document.getElementById('sendBtn');
-    const statusText = document.getElementById('statusText');
-
-    // Sohbet geçmişi (Hafıza)
-    let chatHistory = [
-        { role: "system", content: "Sen son derece zeki, doğal ve akıcı Türkçe konuşan bir yapay zeka asistanısın. Kullanıcının sorularına samimi, yardımcı ve bilgilendirici yanıtlar ver. Eğer bir konuda emin değilsen uydurma, 'Bilmiyorum' de veya 'İnternette aramamı ister misin?' diye sor. Eğer sana web arama sonuçları verilirse, bu sonuçları kullanarak kullanıcının sorusuna doğal bir yanıt oluştur." }
-    ];
-
-    // Modeli Başlat
-    async function initializeEngine() {
-        try {
-            const selectedModel = "Llama-3.1-8B-Instruct-q4f16_1-MLC"; // 8B model, yüksek kalite
-            
-            engine = await webllm.CreateMLCEngine(
-                selectedModel,
-                {
-                    initProgressCallback: (progress) => {
-                        statusText.innerText = progress.text;
-                    }
-                }
-            );
-
-            statusText.innerText = "✅ Yapay Zeka Hazır! Her şeyi sorabilirsiniz.";
-            statusText.style.color = "#059669";
-            userInput.disabled = false;
-            sendBtn.disabled = false;
-            userInput.placeholder = "Bir mesaj yazın...";
-            userInput.focus();
-
-        } catch (error) {
-            statusText.innerText = "⚠️ Model yüklenirken hata oluştu: " + error.message;
-            statusText.style.color = "#DC2626";
-        }
-    }
-
-    initializeEngine();
-
-    // Web Araması (DuckDuckGo HTML)
-    async function webSearch(query) {
-        try {
-            const proxyUrl = `https://api.allorigins.win/raw?url=`;
-            const ddgUrl = encodeURIComponent(`https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`);
-            const response = await fetch(proxyUrl + ddgUrl);
-            const htmlText = await response.text();
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(htmlText, "text/html");
-            const results = doc.querySelectorAll('.result');
-
-            let searchResults = [];
-            let count = 0;
-            results.forEach((result) => {
-                if (count >= 3) return;
-                const titleEl = result.querySelector('.result__a');
-                const snippetEl = result.querySelector('.result__snippet');
-                if (titleEl && snippetEl) {
-                    const title = titleEl.innerText;
-                    const snippet = snippetEl.innerText;
-                    let rawUrl = titleEl.getAttribute('href');
-                    let realUrl = rawUrl;
-                    if(rawUrl && rawUrl.includes('uddg=')) {
-                        realUrl = decodeURIComponent(rawUrl.split('uddg=')[1].split('&')[0]);
-                    }
-                    searchResults.push(`- ${title}: ${snippet} (Kaynak: ${realUrl})`);
-                    count++;
-                }
-            });
-            return searchResults.join('\n');
-        } catch (e) {
-            console.warn("Web araması başarısız:", e);
-            return "";
-        }
-    }
-
-    // Mesaj Gönderme
-    window.sendMessage = async function() {
-        const messageText = userInput.value.trim();
-        if (!messageText || !engine) return;
-
-        // Kullanıcı mesajını ekle
-        addMessage(messageText, 'user');
-        userInput.value = '';
-        userInput.disabled = true;
-        sendBtn.disabled = true;
-
-        // Niyet Analizi (Web araması gerekli mi?)
-        const needsSearch = /(ara|bul|güncel|son|haber|internetten|web|kaynak|fiyat|hava durumu)/i.test(messageText);
+    <div class="studio-container">
         
-        let context = "";
-        if (needsSearch) {
-            const loaderId = addLoader("İnternette güncel bilgi aranıyor...");
-            const searchResults = await webSearch(messageText);
-            removeLoader(loaderId);
+        <div class="input-group" style="margin-bottom: 12px;">
+            <label for="videoPrompt">Senaryo (Yapay Zeka'nın renk seçmesi için):</label>
+            <textarea id="videoPrompt" placeholder="Örnek: Kırmızı ve altın tonlarında lüks bir ruj reklamı."></textarea>
+        </div>
+
+        <div class="input-row">
+            <div class="input-group">
+                <label for="manualTitle">Reklam Başlığı (İsteğe Bağlı)</label>
+                <input type="text" id="manualTitle" placeholder="Örn: LUXE BEAUTY">
+            </div>
+            <div class="input-group">
+                <label for="manualSlogan">Slogan (İsteğe Bağlı)</label>
+                <input type="text" id="manualSlogan" placeholder="Örn: YENİ KOLEKSİYON">
+            </div>
+        </div>
+
+        <!-- GELİŞMİŞ KONTROL PANELLERİ -->
+        <div class="controls-grid">
             
-            if (searchResults) {
-                context = `\n\nAşağıda internette bulduğum güncel bilgiler var. Bu bilgileri kullanarak kullanıcının sorusuna doğal bir yanıt ver:\n${searchResults}`;
-            }
-        }
+            <!-- 1. RENK PALETİ -->
+            <div class="control-box">
+                <label>🎨 Renk Paleti</label>
+                <select id="colorPalette">
+                    <option value="auto">Yapay Zeka Karar Versin</option>
+                    <option value="luxury">Altın & Lüks (Gold Edition)</option>
+                    <option value="cyberpunk">Cyberpunk (Neon Mavi/Pembe)</option>
+                    <option value="pastel">Pastel Rüya (Yumuşak Tonlar)</option>
+                    <option value="sunset">Gün Batımı (Turuncu/Mor)</option>
+                    <option value="matrix">Matrix (Yeşil/Siyah)</option>
+                    <option value="vaporwave">Vaporwave (Estetik Pembe/Mavi)</option>
+                    <option value="custom">Özel Renk Seçimi...</option>
+                </select>
+                <!-- Özel Renk Seçiciler (Sadece 'custom' seçilirse aktif olur) -->
+                <div class="custom-colors" id="customColorContainer" style="display: none;">
+                    <div class="color-picker-group">
+                        <input type="color" id="color1" value="#FF007F">
+                        <span>Arka 1</span>
+                    </div>
+                    <div class="color-picker-group">
+                        <input type="color" id="color2" value="#00F0FF">
+                        <span>Arka 2</span>
+                    </div>
+                    <div class="color-picker-group">
+                        <input type="color" id="color3" value="#FFFFFF">
+                        <span>Yazı</span>
+                    </div>
+                </div>
+            </div>
 
-        // Model için mesaj geçmişini hazırla
-        const messages = [
-            ...chatHistory,
-            { role: "user", content: messageText + context }
-        ];
+            <!-- 2. ARKA PLAN -->
+            <div class="control-box">
+                <label>🌌 Arka Plan & Parçacıklar</label>
+                <select id="bgAnimation">
+                    <option value="aurora">Aurora (Kutup Işıkları)</option>
+                    <option value="galaxy">Galaksi (Yıldız Tozu)</option>
+                    <option value="cyber">Cyberpunk Izgara</option>
+                    <option value="gradient">Sıvı Renk Geçişi</option>
+                    <option value="matrix">Matrix Yağmuru</option>
+                </select>
+            </div>
 
-        // Botun yanıt alanını oluştur (Akış için)
-        const botMessageDiv = addMessage("", 'bot');
-        const messageContentDiv = botMessageDiv.querySelector('.message-content');
-        messageContentDiv.innerHTML = '<div class="loader-container"><div class="loader"><span></span><span></span><span></span></div><div class="loader-text">Düşünüyor...</div></div>';
+            <!-- 3. PARÇACIK EFEKTİ -->
+            <div class="control-box">
+                <label>✨ Parçacık Efekti</label>
+                <select id="particleEffect">
+                    <option value="none">Yok</option>
+                    <option value="golden_dust" selected>Altın Tozu (Golden Dust)</option>
+                    <option value="snow">Kar Yağışı</option>
+                    <option value="bubbles">Baloncuklar</option>
+                    <option value="confetti">Konfeti</option>
+                </select>
+            </div>
 
-        try {
-            // Modelden akışlı yanıt al
-            const chunks = await engine.chat.completions.create({
-                messages: messages,
-                stream: true,
-                temperature: 0.7,
+            <!-- 4. YAZI ANİMASYONU -->
+            <div class="control-box">
+                <label>🔠 Yazı Animasyonu</label>
+                <select id="textAnimation">
+                    <option value="typewriter">Daktilo (Harf Harf)</option>
+                    <option value="slide_in">Yandan Kayarak Gelme</option>
+                    <option value="color_cycle">Renk Değiştiren (Gökkuşağı)</option>
+                    <option value="bounce">Zıplayan / Süzülen</option>
+                    <option value="neon_pulse">Neon Nabız (Işıma)</option>
+                </select>
+            </div>
+
+            <!-- 5. SİNEMATİK EFEKT (Overlay) -->
+            <div class="control-box" style="grid-column: span 2;">
+                <label>🎬 Sinematik Görüntü Efekti</label>
+                <select id="visualEffect">
+                    <option value="none">Efekt Yok (Sade)</option>
+                    <option value="glitch">Glitch (Teknoloji/Bozulma)</option>
+                    <option value="bloom">Bloom (Işıma/Taşma)</option>
+                    <option value="vignette">Vignette (Kenar Karartma)</option>
+                    <option value="grain">Film Greni</option>
+                    <option value="lightleak">Işık Sızması (Leak)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="upload-area">
+            <label style="font-size: 13px; font-weight: 600; color: #E2E8F0;">Ürün Görselleri (Çoklu seçim için Ctrl basılı tutun):</label>
+            <input type="file" id="imageUpload" accept="image/*" multiple>
+            <div class="upload-status" id="uploadStatus">✅ Görseller Yüklendi</div>
+            <div class="preview-container" id="previewContainer"></div>
+        </div>
+
+        <div class="action-row">
+            <button id="generateBtn" onclick="generateVideo()" disabled>Yapay Zeka Yükleniyor...</button>
+        </div>
+
+        <div class="canvas-area" id="canvasContainer">
+            <span style="color: #64748B; font-weight: 300;">Reklamınız Burada Oluşacak</span>
+            <canvas id="videoCanvas" width="1280" height="720"></canvas>
+        </div>
+
+        <div class="status" id="statusText">Model indiriliyor, lütfen bekleyin...</div>
+
+        <div class="download-area" id="downloadArea">
+            <a id="downloadLink" download="pro_reklam.webm">📥 Reklam Filmini İndir (.webm)</a>
+        </div>
+    </div>
+
+    <script type="module">
+        import * as webllm from "https://esm.run/@mlc-ai/web-llm";
+
+        let engine = null;
+        const canvas = document.getElementById('videoCanvas');
+        const ctx = canvas.getContext('2d');
+        const statusText = document.getElementById('statusText');
+        const generateBtn = document.getElementById('generateBtn');
+        const downloadArea = document.getElementById('downloadArea');
+        const downloadLink = document.getElementById('downloadLink');
+        const canvasContainer = document.getElementById('canvasContainer');
+        
+        const imageUpload = document.getElementById('imageUpload');
+        const uploadStatus = document.getElementById('uploadStatus');
+        const previewContainer = document.getElementById('previewContainer');
+        
+        const colorPalette = document.getElementById('colorPalette');
+        const customColorContainer = document.getElementById('customColorContainer');
+        const color1 = document.getElementById('color1');
+        const color2 = document.getElementById('color2');
+        const color3 = document.getElementById('color3');
+        
+        const bgAnimation = document.getElementById('bgAnimation');
+        const particleEffect = document.getElementById('particleEffect');
+        const textAnimation = document.getElementById('textAnimation');
+        const visualEffect = document.getElementById('visualEffect');
+        const manualTitle = document.getElementById('manualTitle');
+        const manualSlogan = document.getElementById('manualSlogan');
+
+        let mediaRecorder;
+        let recordedChunks = [];
+        let animationId;
+        let uploadedImages = []; 
+
+        // Özel renk seçiciyi göster/gizle
+        colorPalette.addEventListener('change', () => {
+            customColorContainer.style.display = colorPalette.value === 'custom' ? 'flex' : 'none';
+        });
+
+        // Çoklu Görsel Yükleme
+        imageUpload.addEventListener('change', async function(e) {
+            const files = Array.from(e.target.files);
+            uploadedImages = [];
+            previewContainer.innerHTML = '';
+            if (files.length === 0) return;
+
+            uploadStatus.style.display = 'block';
+            uploadStatus.innerText = `⏳ Yükleniyor (${files.length} resim)...`;
+
+            const loadPromises = files.map(file => {
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            const thumb = document.createElement('img');
+                            thumb.src = event.target.result;
+                            previewContainer.appendChild(thumb);
+                            resolve(img);
+                        };
+                        img.src = event.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                });
             });
 
-            let fullReply = "";
-            let isFirstChunk = true;
+            uploadedImages = await Promise.all(loadPromises);
+            uploadStatus.innerText = `✅ ${uploadedImages.length} Görsel Yüklendi`;
+        });
 
-            for await (const chunk of chunks) {
-                const delta = chunk.choices[0]?.delta?.content || "";
-                if (delta) {
-                    if (isFirstChunk) {
-                        messageContentDiv.innerHTML = ""; // Loader'ı kaldır
-                        isFirstChunk = false;
-                    }
-                    fullReply += delta;
-                    messageContentDiv.innerHTML = marked.parse(fullReply);
-                    scrollToBottom();
-                }
+        // Modeli Başlat
+        async function initAI() {
+            try {
+                const selectedModel = "Llama-3.2-1B-Instruct-q4f32_1-MLC";
+                engine = await webllm.CreateMLCEngine(selectedModel, {
+                    initProgressCallback: (progress) => { statusText.innerText = progress.text; }
+                });
+                statusText.innerText = "✅ Sistem Hazır!";
+                statusText.style.color = "#10B981";
+                generateBtn.disabled = false;
+                generateBtn.innerText = "✨ Ultra Reklamı Üret";
+            } catch (e) {
+                statusText.innerText = "⚠️ Model hatası: " + e.message;
             }
-
-            // Sohbet geçmişini güncelle
-            chatHistory.push({ role: "user", content: messageText });
-            chatHistory.push({ role: "assistant", content: fullReply });
-
-            // Geçmiş çok uzarsa kırp (son 10 mesaj)
-            if (chatHistory.length > 21) {
-                chatHistory = [chatHistory[0], ...chatHistory.slice(-20)];
-            }
-
-        } catch (error) {
-            messageContentDiv.innerText = "⚠️ Yanıt üretirken bir hata oluştu: " + error.message;
-        } finally {
-            userInput.disabled = false;
-            sendBtn.disabled = false;
-            userInput.focus();
-            scrollToBottom();
         }
-    };
+        initAI();
 
-    window.clearChat = function() {
-        if(confirm("Sohbet geçmişi temizlenecek. Onaylıyor musunuz?")) {
-            chatMessages.innerHTML = `
-                <div class="message-row bot">
-                    <div class="avatar-bot" style="width:36px; height:36px; font-size:16px;"><i class="fa-solid fa-robot"></i></div>
-                    <div class="message-content">Sistem sıfırlandı. Yeni bir sohbet başlatabilirsiniz.</div>
-                </div>`;
-            chatHistory = [
-                { role: "system", content: "Sen son derece zeki, doğal ve akıcı Türkçe konuşan bir yapay zeka asistanısın. Kullanıcının sorularına samimi, yardımcı ve bilgilendirici yanıtlar ver. Eğer bir konuda emin değilsen uydurma, 'Bilmiyorum' de veya 'İnternette aramamı ister misin?' diye sor. Eğer sana web arama sonuçları verilirse, bu sonuçları kullanarak kullanıcının sorusuna doğal bir yanıt oluştur." }
+        // JSON Ayrıştırıcı
+        function extractJSON(text) {
+            try {
+                let clean = text.replace(/```json/gi, '').replace(/```/g, '').replace(/\/\/.*$/gm, '').trim();
+                const match = clean.match(/\{[\s\S]*\}/);
+                if (match) return JSON.parse(match[0].replace(/'/g, '"').replace(/,\s*}/g, '}'));
+            } catch (err) {}
+            return null;
+        }
+
+        // Yedek Plan (Renkler)
+        function getFallbackDesign(prompt, palette) {
+            const p = prompt.toLowerCase();
+            if (palette === 'pastel' || p.includes('pastel')) return { title: "SOFT", subtitle: "PASTEL TONES", colors: ["#FDE68A", "#FBCFE8", "#E9D5FF"], textColor: "#4C1D95", fontStyle: "serif" };
+            if (palette === 'cyberpunk' || palette === 'vivid') return { title: "NEON", subtitle: "VIVID LIFE", colors: ["#06B6D4", "#D946EF", "#F59E0B"], textColor: "#FFFFFF", fontStyle: "sans-serif" };
+            if (palette === 'luxury' || p.includes('altın')) return { title: "LUXE", subtitle: "GOLD EDITION", colors: ["#1A0B1A", "#4C1D95", "#D4AF37"], textColor: "#FBBF24", fontStyle: "serif" };
+            if (palette === 'matrix') return { title: "SYSTEM", subtitle: "ACCESS GRANTED", colors: ["#000000", "#003B00", "#00FF41"], textColor: "#00FF41", fontStyle: "sans-serif" };
+            return { title: "PREMIUM", subtitle: "DESIGN", colors: ["#111827", "#374151", "#1F2937"], textColor: "#F3F4F6", fontStyle: "sans-serif" };
+        }
+
+        // AI'dan Renk İsteme
+        async function getVideoDesignFromAI(prompt, palette) {
+            if (palette === 'custom') {
+                return getFallbackDesign(prompt, 'luxury'); // Özel seçildiyse fallback dön, renkleri kullanıcıdan alacağız.
+            }
+
+            const messages = [
+                { 
+                    role: "system", 
+                    content: `You are a JSON API. Output ONLY valid JSON. No markdown, no comments.
+                    Format: {"title": "TITLE", "subtitle": "SUBTITLE", "colors": ["#hex1", "#hex2", "#hex3"], "textColor": "#hex", "fontStyle": "serif"}
+                    The user has selected the '${palette}' color palette.` 
+                },
+                { role: "user", content: `Design for: "${prompt}"` }
             ];
+
+            try {
+                const reply = await engine.chat.completions.create({ messages, temperature: 0.1, max_tokens: 150 });
+                let design = extractJSON(reply.choices[0].message.content);
+                if (design && design.colors) return design;
+            } catch (e) {}
+            return getFallbackDesign(prompt, palette);
         }
-    }
 
-    // --- Yardımcı Fonksiyonlar ---
-    function addMessage(text, sender) {
-        const row = document.createElement('div');
-        row.className = `message-row ${sender}`;
-        let avatar = sender === 'bot' ? `<div class="avatar-bot" style="width:36px; height:36px; font-size:16px;"><i class="fa-solid fa-robot"></i></div>` : '';
-        let parsedText = sender === 'bot' && text ? marked.parse(text) : text;
-        row.innerHTML = `${avatar}<div class="message-content">${parsedText}</div>`;
-        chatMessages.appendChild(row);
-        scrollToBottom();
-        return row;
-    }
+        // ANA VİDEO ÜRETİM
+        window.generateVideo = async function() {
+            const prompt = document.getElementById('videoPrompt').value.trim() || "Modern bir reklam";
+            const palette = colorPalette.value;
+            const animType = bgAnimation.value;
+            const partType = particleEffect.value;
+            const textAnimType = textAnimation.value;
+            const effectType = visualEffect.value;
+            
+            // Metinleri al
+            const mTitle = manualTitle.value.trim();
+            const mSlogan = manualSlogan.value.trim();
 
-    function addLoader(text) {
-        const id = 'loader-' + Date.now();
-        const row = document.createElement('div');
-        row.className = 'message-row bot';
-        row.id = id;
-        row.innerHTML = `
-            <div class="avatar-bot" style="width:36px; height:36px; font-size:16px;"><i class="fa-solid fa-robot"></i></div>
-            <div class="loader-container">
-                <div class="loader"><span></span><span></span><span></span></div>
-                <div class="loader-text">${text}</div>
-            </div>`;
-        chatMessages.appendChild(row);
-        scrollToBottom();
-        return id;
-    }
+            generateBtn.disabled = true;
+            downloadArea.style.display = 'none';
+            statusText.innerText = "🧠 Yapay Zeka tasarlıyor...";
+            statusText.className = "status recording";
 
-    function removeLoader(id) {
-        const el = document.getElementById(id);
-        if (el) el.remove();
-    }
+            try {
+                const design = await getVideoDesignFromAI(prompt, palette);
+                
+                // Eğer özel renk seçildiyse, renkleri inputlardan al
+                let finalColors = design.colors;
+                let finalTextColor = design.textColor;
+                if (palette === 'custom') {
+                    finalColors = [color1.value, color2.value, color1.value]; // 3. rengi 1. ile aynı yapalım
+                    finalTextColor = color3.value;
+                }
 
-    function scrollToBottom() {
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
+                const finalTitle = mTitle !== "" ? mTitle : (design.title || "REKLAM");
+                const finalSubtitle = mSlogan !== "" ? mSlogan : (design.subtitle || "SİZİN İÇİN");
 
-    window.handleKeyPress = function(event) {
-        if (event.key === 'Enter' && !userInput.disabled) {
-            window.sendMessage();
-        }
-    }
-</script>
+                statusText.innerText = "🎬 Sinematik render başladı...";
+                canvas.style.display = 'block';
+                canvasContainer.querySelector('span').style.display = 'none';
+                recordedChunks = [];
 
+                const stream = canvas.captureStream(60);
+                mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9' });
+                mediaRecorder.ondataavailable = (event) => { if (event.data.size > 0) recordedChunks.push(event.data); };
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                    downloadLink.href = URL.createObjectURL(blob);
+                    downloadArea.style.display = 'block';
+                    statusText.innerText = "✅ Ultra Reklam Filmi Hazır!";
+                    statusText.className = "status";
+                    generateBtn.disabled = false;
+                    generateBtn.innerText = "✨ Ultra Reklamı Üret";
+                    cancelAnimationFrame(animationId);
+                };
+
+                mediaRecorder.start();
+
+                let startTime = Date.now();
+                const duration = 6000; 
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+
+                // PARÇACIK HAZIRLIĞI
+                let particles = [];
+                const pCount = partType === 'golden_dust' ? 300 : 150;
+                for (let i = 0; i < pCount; i++) {
+                    let pColor = "rgba(255,255,255," + Math.random() + ")";
+                    let pRadius = Math.random() * 2 + 0.5;
+                    let pSpeedX = (Math.random() - 0.5) * 1;
+                    let pSpeedY = (Math.random() - 0.5) * 1;
+
+                    if (partType === 'golden_dust') {
+                        pColor = `rgba(255, 215, 0, ${Math.random() * 0.8 + 0.2})`; // Altın sarısı
+                        pRadius = Math.random() * 2.5 + 0.5;
+                        pSpeedY = -(Math.random() * 1.5 + 0.5); // Yukarı süzülme
+                    } else if (partType === 'snow') {
+                        pColor = `rgba(255, 255, 255, ${Math.random() * 0.8 + 0.2})`;
+                        pRadius = Math.random() * 3 + 1;
+                        pSpeedY = Math.random() * 2 + 1; // Aşağı yağma
+                    } else if (partType === 'bubbles') {
+                        pColor = `rgba(173, 216, 230, ${Math.random() * 0.5 + 0.1})`; // Açık mavi
+                        pRadius = Math.random() * 15 + 5;
+                        pSpeedY = -(Math.random() * 1.5 + 0.5);
+                    } else if (partType === 'confetti') {
+                        pColor = `hsl(${Math.random() * 360}, 100%, 50%)`; // Renkli
+                        pRadius = Math.random() * 4 + 2;
+                        pSpeedY = Math.random() * 2 + 1;
+                    }
+
+                    particles.push({ 
+                        x: Math.random() * canvas.width, 
+                        y: Math.random() * canvas.height, 
+                        radius: pRadius, 
+                        speedX: pSpeedX,
+                        speedY: pSpeedY, 
+                        color: pColor,
+                        rotation: Math.random() * Math.PI
+                    });
+                }
+
+                function drawFrame() {
+                    const time = Date.now() - startTime;
+                    const progress = time / duration;
+
+                    // 1. ARKA PLANLAR
+                    if (animType === 'aurora' || animType === 'gradient') {
+                        ctx.fillStyle = finalColors[0];
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        const t = time / 1000;
+                        for (let i = 0; i < 3; i++) {
+                            let x = centerX + Math.cos(t * 0.5 + i * 2) * 400;
+                            let y = centerY + Math.sin(t * 0.7 + i * 2) * 300;
+                            let radGrad = ctx.createRadialGradient(x, y, 0, x, y, 600);
+                            // Renk kodlarına saydamlık ekleme (hex + AA)
+                            let c = finalColors[i] || finalColors[0];
+                            radGrad.addColorStop(0, c + "AA"); 
+                            radGrad.addColorStop(1, c + "00"); 
+                            ctx.fillStyle = radGrad;
+                            ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        }
+                    } 
+                    else if (animType === 'galaxy') {
+                        ctx.fillStyle = "#000000"; 
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        let radGrad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 800);
+                        radGrad.addColorStop(0, (finalColors[1] || "#333") + "44");
+                        radGrad.addColorStop(1, "transparent");
+                        ctx.fillStyle = radGrad;
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    }
+                    else if (animType === 'matrix') {
+                        ctx.fillStyle = "#000000";
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        ctx.fillStyle = "#00FF41";
+                        ctx.font = "20px monospace";
+                        for(let i=0; i<canvas.width; i+=30) {
+                            for(let j=0; j<canvas.height; j+=30) {
+                                if(Math.random() > 0.95) {
+                                    ctx.fillText(Math.random().toString(36).substring(2,3), i, j + (time/10)%30);
+                                }
+                            }
+                        }
+                    }
+
+                    // 2. PARÇACIKLAR (Altın Tozu vs)
+                    if (partType !== 'none') {
+                        particles.forEach(p => {
+                            ctx.save();
+                            ctx.translate(p.x, p.y);
+                            ctx.beginPath();
+                            if (partType === 'confetti') {
+                                ctx.rotate(time/500 + p.rotation);
+                                ctx.fillStyle = p.color;
+                                ctx.fillRect(-p.radius, -p.radius, p.radius*2, p.radius*2);
+                            } else {
+                                ctx.arc(0, 0, p.radius, 0, Math.PI * 2);
+                                ctx.fillStyle = p.color;
+                                if (partType === 'golden_dust') { ctx.shadowColor = "gold"; ctx.shadowBlur = 10; }
+                                ctx.fill();
+                            }
+                            ctx.restore();
+
+                            // Hareket
+                            p.x += p.speedX;
+                            p.y += p.speedY;
+                            if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+                            if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+                        });
+                    }
+
+                    // 3. ÇOKLU GÖRSELLER
+                    let hasContent = false;
+                    if (uploadedImages.length > 0) {
+                        hasContent = true;
+                        const totalImages = uploadedImages.length;
+                        const timePerImage = duration / totalImages;
+                        const currentIndex = Math.min(Math.floor(time / timePerImage), totalImages - 1);
+                        const nextIndex = (currentIndex + 1) % totalImages;
+                        const imageProgress = (time % timePerImage) / timePerImage;
+                        const scale = 1 + (imageProgress * 0.1); 
+                        
+                        let alphaCurrent = 1;
+                        let alphaNext = 0;
+                        if (imageProgress > 0.8 && totalImages > 1) {
+                            alphaCurrent = 1 - ((imageProgress - 0.8) / 0.2);
+                            alphaNext = (imageProgress - 0.8) / 0.2;
+                        }
+
+                        const drawImg = (img, alpha) => {
+                            let imgW = img.width, imgH = img.height, maxSize = 500;
+                            if (imgW > maxSize || imgH > maxSize) {
+                                if (imgW > imgH) { imgH = (maxSize / imgW) * imgH; imgW = maxSize; }
+                                else { imgW = (maxSize / imgH) * imgW; imgH = maxSize; }
+                            }
+                            ctx.save();
+                            ctx.globalAlpha = alpha;
+                            ctx.translate(centerX, centerY); 
+                            ctx.scale(scale, scale);
+                            ctx.shadowColor = "rgba(0,0,0,0.8)"; ctx.shadowBlur = 40;
+                            ctx.drawImage(img, -imgW/2, -imgH/2, imgW, imgH);
+                            ctx.restore();
+                        };
+
+                        drawImg(uploadedImages[currentIndex], alphaCurrent);
+                        if (alphaNext > 0) drawImg(uploadedImages[nextIndex], alphaNext);
+                    }
+
+                    // 4. YAZI ANİMASYONLARI
+                    let yOffset = hasContent ? 280 : -50; 
+                    let currentColor = finalTextColor || "#FFFFFF";
+                    let textX = 0;
+                    let textScale = 1;
+
+                    // Animasyon Tipine Göre Ayarlar
+                    if (textAnimType === 'color_cycle') {
+                        let hue = (time / 10) % 360;
+                        currentColor = `hsl(${hue}, 100%, 60%)`;
+                    } else if (textAnimType === 'slide_in') {
+                        if (time < 1000) textX = -800 + (time * 0.8);
+                    } else if (textAnimType === 'bounce') {
+                        yOffset += Math.sin(time / 200) * 20;
+                    } else if (textAnimType === 'neon_pulse') {
+                        textScale = 1 + Math.sin(time / 150) * 0.05;
+                    }
+
+                    ctx.save();
+                    ctx.translate(centerX + textX, centerY);
+                    ctx.scale(textScale, textScale);
+                    ctx.textAlign = "center"; ctx.textBaseline = "middle"; 
+                    
+                    ctx.shadowColor = currentColor === "#FFFFFF" ? "rgba(0,0,0,0.8)" : currentColor; 
+                    ctx.shadowBlur = textAnimType === 'neon_pulse' ? 40 : 20; 
+                    ctx.shadowOffsetY = 5;
+
+                    ctx.fillStyle = currentColor;
+                    const fontStyle = design.fontStyle === 'serif' ? "'Playfair Display', serif" : "'Montserrat', sans-serif";
+                    ctx.font = `600 80px ${fontStyle}`;
+                    
+                    if (textAnimType === 'typewriter') {
+                        let charsToShow = Math.floor(time / 50);
+                        let displayTitle = finalTitle.substring(0, charsToShow);
+                        ctx.fillText(displayTitle, 0, yOffset);
+                    } else {
+                        ctx.fillText(finalTitle, 0, yOffset);
+                    }
+
+                    // Alt Slogan
+                    ctx.shadowBlur = 10;
+                    ctx.font = "400 32px 'Montserrat', sans-serif";
+                    ctx.fillStyle = textAnimType === 'color_cycle' ? currentColor : (finalColors[2] || "#CCCCCC");
+                    ctx.globalAlpha = Math.min(1, time / 1000); // 1 saniyede belir
+                    ctx.fillText(finalSubtitle, 0, yOffset + 70);
+                    ctx.restore();
+
+                    // 5. SİNEMATİK EFEKTLER
+                    if (effectType === 'glitch') {
+                        if (Math.random() > 0.9) {
+                            let offsetX = (Math.random() - 0.5) * 40;
+                            let sliceY = Math.random() * canvas.height;
+                            let sliceH = Math.random() * 100 + 20;
+                            ctx.drawImage(canvas, 0, sliceY, canvas.width, sliceH, offsetX, sliceY, canvas.width, sliceH);
+                            ctx.globalCompositeOperation = 'screen';
+                            ctx.fillStyle = "rgba(255,0,0,0.2)"; ctx.fillRect(offsetX, 0, canvas.width, canvas.height);
+                            ctx.fillStyle = "rgba(0,255,255,0.2)"; ctx.fillRect(-offsetX, 0, canvas.width, canvas.height);
+                            ctx.globalCompositeOperation = 'source-over';
+                        }
+                    } 
+                    else if (effectType === 'bloom') {
+                        ctx.globalCompositeOperation = 'screen';
+                        ctx.globalAlpha = 0.4;
+                        ctx.filter = 'blur(15px)';
+                        ctx.drawImage(canvas, 0, 0); 
+                        ctx.filter = 'none'; ctx.globalAlpha = 1;
+                        ctx.globalCompositeOperation = 'source-over';
+                    }
+                    else if (effectType === 'vignette') {
+                        const vignette = ctx.createRadialGradient(centerX, centerY, canvas.height * 0.2, centerX, centerY, canvas.height * 0.9);
+                        vignette.addColorStop(0, "rgba(0,0,0,0)");
+                        vignette.addColorStop(1, "rgba(0,0,0,0.9)");
+                        ctx.fillStyle = vignette;
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    } 
+                    else if (effectType === 'grain') {
+                        const grainData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                        for (let i = 0; i < grainData.data.length; i += 4) {
+                            let noise = (Math.random() - 0.5) * 30; 
+                            grainData.data[i] += noise; grainData.data[i+1] += noise; grainData.data[i+2] += noise;
+                        }
+                        ctx.putImageData(grainData, 0, 0);
+                    }
+                    else if (effectType === 'lightleak') {
+                        const leakX = centerX + Math.sin(time / 1500) * 600;
+                        const leakY = centerY + Math.cos(time / 2000) * 300;
+                        const leak = ctx.createRadialGradient(leakX, leakY, 0, leakX, leakY, 400);
+                        leak.addColorStop(0, "rgba(255, 200, 100, 0.3)"); 
+                        leak.addColorStop(1, "rgba(255, 200, 100, 0)");
+                        ctx.fillStyle = leak;
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    }
+
+                    if (time >= duration) { mediaRecorder.stop(); } 
+                    else { animationId = requestAnimationFrame(drawFrame); }
+                }
+
+                drawFrame();
+
+            } catch (error) {
+                statusText.innerText = "⚠️ Hata: " + error.message;
+                generateBtn.disabled = false;
+                generateBtn.innerText = "✨ Ultra Reklamı Üret";
+            }
+        };
+    </script>
 </body>
 </html>
