@@ -3,45 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Pro Reklam Stüdyosu | AGENT-GELISTIRME</title>
+    <title>Ultimate Pro Stüdyo v2 | AGENT-GELISTIRME</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Montserrat:wght@300;400;600&family=Inter:wght@400&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; background: #0B1120; color: white; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         .header { text-align: center; margin-bottom: 20px; }
         .header h1 { margin: 0; font-family: 'Playfair Display', serif; font-size: 34px; background: linear-gradient(90deg, #38BDF8, #A78BFA, #F472B6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .header p { color: #94A3B8; font-size: 14px; margin-top: 5px; }
         
-        .studio-container { width: 100%; max-width: 850px; background: #1E293B; border-radius: 20px; padding: 24px; box-shadow: 0 25px 60px rgba(0,0,0,0.6); border: 1px solid #334155; }
+        .studio-container { width: 100%; max-width: 900px; background: #1E293B; border-radius: 20px; padding: 24px; box-shadow: 0 25px 60px rgba(0,0,0,0.6); border: 1px solid #334155; }
         
         .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
         .input-group { display: flex; flex-direction: column; gap: 6px; }
         .input-group label { font-size: 13px; font-weight: 600; color: #E2E8F0; }
-        .input-group input, .input-group textarea { width: 100%; background: #0F172A; border: 1px solid #334155; border-radius: 8px; padding: 12px; color: white; font-family: 'Inter', sans-serif; outline: none; transition: border 0.3s; box-sizing: border-box; }
+        .input-group input, .input-group textarea { width: 100%; background: #0F172A; border: 1px solid #334155; border-radius: 8px; padding: 12px; color: white; font-family: 'Inter', sans-serif; outline: none; box-sizing: border-box; }
+        .input-group textarea { height: 70px; resize: none; }
         .input-group input:focus, .input-group textarea:focus { border-color: #38BDF8; }
-        .input-group textarea { height: 80px; resize: none; }
 
-        .creative-controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 15px; }
-        .control-group { display: flex; flex-direction: column; gap: 5px; }
-        .control-group label { font-size: 11px; color: #94A3B8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        .control-group select { background: #0F172A; color: #E2E8F0; border: 1px solid #334155; padding: 10px; border-radius: 8px; outline: none; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 13px; }
-        .control-group select:focus { border-color: #A78BFA; }
-
-        .upload-area { display: flex; flex-direction: column; gap: 10px; background: #0F172A; padding: 15px; border-radius: 10px; border: 1px dashed #475569; margin-bottom: 15px; transition: border 0.3s; }
-        .upload-area:hover { border-color: #38BDF8; }
-        .upload-area input { color: #94A3B8; font-size: 13px; cursor: pointer; }
+        /* Kontrol Panelleri */
+        .controls-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 15px; }
         
-        /* Resim Önizleme Alanı */
+        .control-box { background: #0F172A; padding: 12px; border-radius: 10px; border: 1px solid #334155; display: flex; flex-direction: column; gap: 8px; }
+        .control-box label { font-size: 12px; color: #94A3B8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .control-box select { background: #1E293B; color: #E2E8F0; border: 1px solid #334155; padding: 10px; border-radius: 8px; outline: none; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 13px; width: 100%; }
+        .control-box select:focus { border-color: #A78BFA; }
+
+        /* Özel Renk Seçiciler */
+        .custom-colors { display: flex; gap: 10px; align-items: center; margin-top: 5px; }
+        .color-picker-group { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .color-picker-group span { font-size: 10px; color: #94A3B8; }
+        .color-picker-group input[type="color"] { -webkit-appearance: none; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; padding: 0; background: none; }
+        .color-picker-group input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+        .color-picker-group input[type="color"]::-webkit-color-swatch { border: 2px solid #475569; border-radius: 50%; }
+
+        .upload-area { display: flex; flex-direction: column; gap: 10px; background: #0F172A; padding: 15px; border-radius: 10px; border: 1px dashed #475569; margin-bottom: 15px; }
+        .upload-area input { color: #94A3B8; font-size: 13px; cursor: pointer; }
         .preview-container { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 5px; }
-        .preview-container img { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; border: 2px solid #334155; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+        .preview-container img { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 2px solid #334155; }
         .upload-status { font-size: 12px; color: #10B981; font-weight: 600; display: none; }
         
-        .action-row { display: flex; gap: 10px; }
+        .action-row { display: flex; gap: 10px; margin-top: 15px; }
         .action-row button { flex: 1; background: linear-gradient(135deg, #38BDF8, #818CF8, #F472B6); background-size: 200% 200%; color: white; border: none; padding: 16px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s; animation: gradientBG 3s infinite; }
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         .action-row button:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(56,189,248,0.4); }
         .action-row button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; animation: none; background: #475569; }
 
-        .canvas-area { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; position: relative; display: flex; justify-content: center; align-items: center; margin-bottom: 15px; margin-top: 20px; border: 2px solid #334155; box-shadow: inset 0 0 30px rgba(0,0,0,0.9); }
+        .canvas-area { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; position: relative; display: flex; justify-content: center; align-items: center; margin-bottom: 15px; margin-top: 20px; border: 2px solid #334155; }
         canvas { width: 100%; height: 100%; display: none; }
         
         .status { text-align: center; font-size: 13px; color: #94A3B8; margin-bottom: 10px; font-weight: 600; }
@@ -49,74 +55,121 @@
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
         .download-area { display: none; text-align: center; margin-top: 10px; }
-        .download-area a { display: inline-block; background: #10B981; color: white; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 15px; transition: background 0.2s; }
-        .download-area a:hover { background: #059669; }
-
-        @media (max-width: 600px) { .creative-controls, .input-row { grid-template-columns: 1fr; } }
+        .download-area a { display: inline-block; background: #10B981; color: white; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 15px; }
+        
+        @media (max-width: 600px) { .controls-grid, .input-row { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>Ultimate Pro Stüdyo</h1>
-        <p>Çoklu görsel, manuel metin kontrolü ve sinematik efektler.</p>
+        <h1>Ultimate Pro Stüdyo v2</h1>
+        <p>Zengin menüler, özel renkler, altın tozu ve gelişmiş animasyonlar.</p>
     </div>
 
     <div class="studio-container">
         
-        <!-- Senaryo ve Manuel Metin Girişi -->
         <div class="input-group" style="margin-bottom: 12px;">
-            <label for="videoPrompt">Senaryo / Prompt (Yapay Zeka neye göre renk seçsin?):</label>
+            <label for="videoPrompt">Senaryo (Yapay Zeka'nın renk seçmesi için):</label>
             <textarea id="videoPrompt" placeholder="Örnek: Kırmızı ve altın tonlarında lüks bir ruj reklamı."></textarea>
         </div>
 
         <div class="input-row">
             <div class="input-group">
                 <label for="manualTitle">Reklam Başlığı (İsteğe Bağlı)</label>
-                <input type="text" id="manualTitle" placeholder="Örn: LUXE BEAUTY (Boş bırakırsanız AI yazar)">
+                <input type="text" id="manualTitle" placeholder="Örn: LUXE BEAUTY">
             </div>
             <div class="input-group">
                 <label for="manualSlogan">Slogan (İsteğe Bağlı)</label>
-                <input type="text" id="manualSlogan" placeholder="Örn: YENİ KOLEKSİYON (Boş bırakırsanız AI yazar)">
+                <input type="text" id="manualSlogan" placeholder="Örn: YENİ KOLEKSİYON">
             </div>
         </div>
 
-        <!-- Kontroller -->
-        <div class="creative-controls">
-            <div class="control-group">
-                <label>Renk Paleti</label>
+        <!-- GELİŞMİŞ KONTROL PANELLERİ -->
+        <div class="controls-grid">
+            
+            <!-- 1. RENK PALETİ -->
+            <div class="control-box">
+                <label>🎨 Renk Paleti</label>
                 <select id="colorPalette">
-                    <option value="auto">AI Karar Versin (Otomatik)</option>
-                    <option value="pastel">Pastel & Yumuşak</option>
-                    <option value="vivid">Canlı & Neon</option>
-                    <option value="dark">Karanlık & Kurumsal</option>
-                    <option value="luxury">Altın & Lüks</option>
+                    <option value="auto">Yapay Zeka Karar Versin</option>
+                    <option value="luxury">Altın & Lüks (Gold Edition)</option>
+                    <option value="cyberpunk">Cyberpunk (Neon Mavi/Pembe)</option>
+                    <option value="pastel">Pastel Rüya (Yumuşak Tonlar)</option>
+                    <option value="sunset">Gün Batımı (Turuncu/Mor)</option>
+                    <option value="matrix">Matrix (Yeşil/Siyah)</option>
+                    <option value="vaporwave">Vaporwave (Estetik Pembe/Mavi)</option>
+                    <option value="custom">Özel Renk Seçimi...</option>
                 </select>
+                <!-- Özel Renk Seçiciler (Sadece 'custom' seçilirse aktif olur) -->
+                <div class="custom-colors" id="customColorContainer" style="display: none;">
+                    <div class="color-picker-group">
+                        <input type="color" id="color1" value="#FF007F">
+                        <span>Arka 1</span>
+                    </div>
+                    <div class="color-picker-group">
+                        <input type="color" id="color2" value="#00F0FF">
+                        <span>Arka 2</span>
+                    </div>
+                    <div class="color-picker-group">
+                        <input type="color" id="color3" value="#FFFFFF">
+                        <span>Yazı</span>
+                    </div>
+                </div>
             </div>
-            <div class="control-group">
-                <label>Zengin Arka Plan</label>
+
+            <!-- 2. ARKA PLAN -->
+            <div class="control-box">
+                <label>🌌 Arka Plan & Parçacıklar</label>
                 <select id="bgAnimation">
                     <option value="aurora">Aurora (Kutup Işıkları)</option>
                     <option value="galaxy">Galaksi (Yıldız Tozu)</option>
                     <option value="cyber">Cyberpunk Izgara</option>
                     <option value="gradient">Sıvı Renk Geçişi</option>
+                    <option value="matrix">Matrix Yağmuru</option>
                 </select>
             </div>
-            <div class="control-group">
-                <label>Sinematik Efekt</label>
+
+            <!-- 3. PARÇACIK EFEKTİ -->
+            <div class="control-box">
+                <label>✨ Parçacık Efekti</label>
+                <select id="particleEffect">
+                    <option value="none">Yok</option>
+                    <option value="golden_dust" selected>Altın Tozu (Golden Dust)</option>
+                    <option value="snow">Kar Yağışı</option>
+                    <option value="bubbles">Baloncuklar</option>
+                    <option value="confetti">Konfeti</option>
+                </select>
+            </div>
+
+            <!-- 4. YAZI ANİMASYONU -->
+            <div class="control-box">
+                <label>🔠 Yazı Animasyonu</label>
+                <select id="textAnimation">
+                    <option value="typewriter">Daktilo (Harf Harf)</option>
+                    <option value="slide_in">Yandan Kayarak Gelme</option>
+                    <option value="color_cycle">Renk Değiştiren (Gökkuşağı)</option>
+                    <option value="bounce">Zıplayan / Süzülen</option>
+                    <option value="neon_pulse">Neon Nabız (Işıma)</option>
+                </select>
+            </div>
+
+            <!-- 5. SİNEMATİK EFEKT (Overlay) -->
+            <div class="control-box" style="grid-column: span 2;">
+                <label>🎬 Sinematik Görüntü Efekti</label>
                 <select id="visualEffect">
                     <option value="none">Efekt Yok (Sade)</option>
-                    <option value="glitch">Glitch (Teknoloji)</option>
+                    <option value="glitch">Glitch (Teknoloji/Bozulma)</option>
                     <option value="bloom">Bloom (Işıma/Taşma)</option>
                     <option value="vignette">Vignette (Kenar Karartma)</option>
                     <option value="grain">Film Greni</option>
+                    <option value="lightleak">Işık Sızması (Leak)</option>
                 </select>
             </div>
         </div>
 
-        <!-- Çoklu Görsel Yükleme -->
         <div class="upload-area">
-            <label style="font-size: 13px; font-weight: 600; color: #E2E8F0;">Ürün Görselleri (Birden fazla seçmek için Ctrl/Cmd basılı tutun):</label>
+            <label style="font-size: 13px; font-weight: 600; color: #E2E8F0;">Ürün Görselleri (Çoklu seçim için Ctrl basılı tutun):</label>
             <input type="file" id="imageUpload" accept="image/*" multiple>
             <div class="upload-status" id="uploadStatus">✅ Görseller Yüklendi</div>
             <div class="preview-container" id="previewContainer"></div>
@@ -153,8 +206,16 @@
         const imageUpload = document.getElementById('imageUpload');
         const uploadStatus = document.getElementById('uploadStatus');
         const previewContainer = document.getElementById('previewContainer');
+        
         const colorPalette = document.getElementById('colorPalette');
+        const customColorContainer = document.getElementById('customColorContainer');
+        const color1 = document.getElementById('color1');
+        const color2 = document.getElementById('color2');
+        const color3 = document.getElementById('color3');
+        
         const bgAnimation = document.getElementById('bgAnimation');
+        const particleEffect = document.getElementById('particleEffect');
+        const textAnimation = document.getElementById('textAnimation');
         const visualEffect = document.getElementById('visualEffect');
         const manualTitle = document.getElementById('manualTitle');
         const manualSlogan = document.getElementById('manualSlogan');
@@ -162,30 +223,29 @@
         let mediaRecorder;
         let recordedChunks = [];
         let animationId;
-        let uploadedImages = []; // Sıralı yüklenecek
+        let uploadedImages = []; 
 
-        // GÖRSEL YÜKLEME DÜZELTİLDİ (Asenkron ve Sıralı)
+        // Özel renk seçiciyi göster/gizle
+        colorPalette.addEventListener('change', () => {
+            customColorContainer.style.display = colorPalette.value === 'custom' ? 'flex' : 'none';
+        });
+
+        // Çoklu Görsel Yükleme
         imageUpload.addEventListener('change', async function(e) {
             const files = Array.from(e.target.files);
             uploadedImages = [];
-            previewContainer.innerHTML = ''; // Önizlemeleri temizle
-
-            if (files.length === 0) {
-                uploadStatus.style.display = 'none';
-                return;
-            }
+            previewContainer.innerHTML = '';
+            if (files.length === 0) return;
 
             uploadStatus.style.display = 'block';
             uploadStatus.innerText = `⏳ Yükleniyor (${files.length} resim)...`;
 
-            // Promise kullanarak resimlerin sırayla ve tam yüklenmesini sağlıyoruz
             const loadPromises = files.map(file => {
                 return new Promise((resolve) => {
                     const reader = new FileReader();
                     reader.onload = (event) => {
                         const img = new Image();
                         img.onload = () => {
-                            // Önizleme oluştur
                             const thumb = document.createElement('img');
                             thumb.src = event.target.result;
                             previewContainer.appendChild(thumb);
@@ -197,9 +257,8 @@
                 });
             });
 
-            // Tüm resimler yüklenene kadar bekle
             uploadedImages = await Promise.all(loadPromises);
-            uploadStatus.innerText = `✅ ${uploadedImages.length} Görsel Başarıyla Yüklendi`;
+            uploadStatus.innerText = `✅ ${uploadedImages.length} Görsel Yüklendi`;
         });
 
         // Modeli Başlat
@@ -219,6 +278,7 @@
         }
         initAI();
 
+        // JSON Ayrıştırıcı
         function extractJSON(text) {
             try {
                 let clean = text.replace(/```json/gi, '').replace(/```/g, '').replace(/\/\/.*$/gm, '').trim();
@@ -228,22 +288,28 @@
             return null;
         }
 
-        // YEDEK PLAN
+        // Yedek Plan (Renkler)
         function getFallbackDesign(prompt, palette) {
             const p = prompt.toLowerCase();
-            if (palette === 'pastel' || p.includes('pastel')) return { title: "SOFT", subtitle: "PASTEL TONES", colors: ["#FDE68A", "#FBCFE8", "#E9D5FF"], textColor: "#4C1D95", particleColor: "rgba(255,255,255,0.8)", fontStyle: "serif" };
-            if (palette === 'vivid' || p.includes('neon')) return { title: "NEON", subtitle: "VIVID LIFE", colors: ["#06B6D4", "#D946EF", "#F59E0B"], textColor: "#FFFFFF", particleColor: "rgba(6,182,212,0.8)", fontStyle: "sans-serif" };
-            if (palette === 'luxury' || p.includes('altın')) return { title: "LUXE", subtitle: "GOLD EDITION", colors: ["#1A0B1A", "#4C1D95", "#D4AF37"], textColor: "#FBBF24", particleColor: "rgba(251,191,36,0.6)", fontStyle: "serif" };
-            return { title: "PREMIUM", subtitle: "DESIGN", colors: ["#111827", "#374151", "#1F2937"], textColor: "#F3F4F6", particleColor: "rgba(255,255,255,0.3)", fontStyle: "sans-serif" };
+            if (palette === 'pastel' || p.includes('pastel')) return { title: "SOFT", subtitle: "PASTEL TONES", colors: ["#FDE68A", "#FBCFE8", "#E9D5FF"], textColor: "#4C1D95", fontStyle: "serif" };
+            if (palette === 'cyberpunk' || palette === 'vivid') return { title: "NEON", subtitle: "VIVID LIFE", colors: ["#06B6D4", "#D946EF", "#F59E0B"], textColor: "#FFFFFF", fontStyle: "sans-serif" };
+            if (palette === 'luxury' || p.includes('altın')) return { title: "LUXE", subtitle: "GOLD EDITION", colors: ["#1A0B1A", "#4C1D95", "#D4AF37"], textColor: "#FBBF24", fontStyle: "serif" };
+            if (palette === 'matrix') return { title: "SYSTEM", subtitle: "ACCESS GRANTED", colors: ["#000000", "#003B00", "#00FF41"], textColor: "#00FF41", fontStyle: "sans-serif" };
+            return { title: "PREMIUM", subtitle: "DESIGN", colors: ["#111827", "#374151", "#1F2937"], textColor: "#F3F4F6", fontStyle: "sans-serif" };
         }
 
+        // AI'dan Renk İsteme
         async function getVideoDesignFromAI(prompt, palette) {
+            if (palette === 'custom') {
+                return getFallbackDesign(prompt, 'luxury'); // Özel seçildiyse fallback dön, renkleri kullanıcıdan alacağız.
+            }
+
             const messages = [
                 { 
                     role: "system", 
                     content: `You are a JSON API. Output ONLY valid JSON. No markdown, no comments.
-                    Format: {"title": "TITLE", "subtitle": "SUBTITLE", "colors": ["#hex1", "#hex2", "#hex3"], "textColor": "#hex", "particleColor": "rgba(255,255,255,0.5)", "fontStyle": "serif"}
-                    The user has selected the '${palette}' color palette. Ensure the colors match this vibe.` 
+                    Format: {"title": "TITLE", "subtitle": "SUBTITLE", "colors": ["#hex1", "#hex2", "#hex3"], "textColor": "#hex", "fontStyle": "serif"}
+                    The user has selected the '${palette}' color palette.` 
                 },
                 { role: "user", content: `Design for: "${prompt}"` }
             ];
@@ -256,13 +322,16 @@
             return getFallbackDesign(prompt, palette);
         }
 
+        // ANA VİDEO ÜRETİM
         window.generateVideo = async function() {
             const prompt = document.getElementById('videoPrompt').value.trim() || "Modern bir reklam";
             const palette = colorPalette.value;
             const animType = bgAnimation.value;
+            const partType = particleEffect.value;
+            const textAnimType = textAnimation.value;
             const effectType = visualEffect.value;
             
-            // Manuel metinleri al
+            // Metinleri al
             const mTitle = manualTitle.value.trim();
             const mSlogan = manualSlogan.value.trim();
 
@@ -274,7 +343,14 @@
             try {
                 const design = await getVideoDesignFromAI(prompt, palette);
                 
-                // EĞER MANUEL METİN GİRİLDİYSE, YAPAY ZEKANINKİNİ EZ (OVERRIDE)
+                // Eğer özel renk seçildiyse, renkleri inputlardan al
+                let finalColors = design.colors;
+                let finalTextColor = design.textColor;
+                if (palette === 'custom') {
+                    finalColors = [color1.value, color2.value, color1.value]; // 3. rengi 1. ile aynı yapalım
+                    finalTextColor = color3.value;
+                }
+
                 const finalTitle = mTitle !== "" ? mTitle : (design.title || "REKLAM");
                 const finalSubtitle = mSlogan !== "" ? mSlogan : (design.subtitle || "SİZİN İÇİN");
 
@@ -304,31 +380,61 @@
                 const centerX = canvas.width / 2;
                 const centerY = canvas.height / 2;
 
+                // PARÇACIK HAZIRLIĞI
                 let particles = [];
-                for (let i = 0; i < 200; i++) {
+                const pCount = partType === 'golden_dust' ? 300 : 150;
+                for (let i = 0; i < pCount; i++) {
+                    let pColor = "rgba(255,255,255," + Math.random() + ")";
+                    let pRadius = Math.random() * 2 + 0.5;
+                    let pSpeedX = (Math.random() - 0.5) * 1;
+                    let pSpeedY = (Math.random() - 0.5) * 1;
+
+                    if (partType === 'golden_dust') {
+                        pColor = `rgba(255, 215, 0, ${Math.random() * 0.8 + 0.2})`; // Altın sarısı
+                        pRadius = Math.random() * 2.5 + 0.5;
+                        pSpeedY = -(Math.random() * 1.5 + 0.5); // Yukarı süzülme
+                    } else if (partType === 'snow') {
+                        pColor = `rgba(255, 255, 255, ${Math.random() * 0.8 + 0.2})`;
+                        pRadius = Math.random() * 3 + 1;
+                        pSpeedY = Math.random() * 2 + 1; // Aşağı yağma
+                    } else if (partType === 'bubbles') {
+                        pColor = `rgba(173, 216, 230, ${Math.random() * 0.5 + 0.1})`; // Açık mavi
+                        pRadius = Math.random() * 15 + 5;
+                        pSpeedY = -(Math.random() * 1.5 + 0.5);
+                    } else if (partType === 'confetti') {
+                        pColor = `hsl(${Math.random() * 360}, 100%, 50%)`; // Renkli
+                        pRadius = Math.random() * 4 + 2;
+                        pSpeedY = Math.random() * 2 + 1;
+                    }
+
                     particles.push({ 
                         x: Math.random() * canvas.width, 
                         y: Math.random() * canvas.height, 
-                        radius: Math.random() * 2 + 0.1, 
-                        speedY: Math.random() * 2 + 0.5, 
-                        alpha: Math.random() 
+                        radius: pRadius, 
+                        speedX: pSpeedX,
+                        speedY: pSpeedY, 
+                        color: pColor,
+                        rotation: Math.random() * Math.PI
                     });
                 }
 
                 function drawFrame() {
                     const time = Date.now() - startTime;
+                    const progress = time / duration;
 
                     // 1. ARKA PLANLAR
                     if (animType === 'aurora' || animType === 'gradient') {
-                        ctx.fillStyle = design.colors[0];
+                        ctx.fillStyle = finalColors[0];
                         ctx.fillRect(0, 0, canvas.width, canvas.height);
                         const t = time / 1000;
                         for (let i = 0; i < 3; i++) {
                             let x = centerX + Math.cos(t * 0.5 + i * 2) * 400;
                             let y = centerY + Math.sin(t * 0.7 + i * 2) * 300;
                             let radGrad = ctx.createRadialGradient(x, y, 0, x, y, 600);
-                            radGrad.addColorStop(0, design.colors[i] + "AA"); 
-                            radGrad.addColorStop(1, design.colors[i] + "00"); 
+                            // Renk kodlarına saydamlık ekleme (hex + AA)
+                            let c = finalColors[i] || finalColors[0];
+                            radGrad.addColorStop(0, c + "AA"); 
+                            radGrad.addColorStop(1, c + "00"); 
                             ctx.fillStyle = radGrad;
                             ctx.fillRect(0, 0, canvas.width, canvas.height);
                         }
@@ -337,37 +443,52 @@
                         ctx.fillStyle = "#000000"; 
                         ctx.fillRect(0, 0, canvas.width, canvas.height);
                         let radGrad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 800);
-                        radGrad.addColorStop(0, design.colors[1] + "44");
+                        radGrad.addColorStop(0, (finalColors[1] || "#333") + "44");
                         radGrad.addColorStop(1, "transparent");
                         ctx.fillStyle = radGrad;
                         ctx.fillRect(0, 0, canvas.width, canvas.height);
-                        particles.forEach(p => {
-                            ctx.beginPath();
-                            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                            ctx.fillStyle = `rgba(255,255,255,${p.alpha})`;
-                            ctx.fill();
-                            p.y -= p.speedY;
-                            if (p.y < 0) { p.y = canvas.height; p.x = Math.random() * canvas.width; }
-                        });
                     }
-                    else if (animType === 'cyber') {
-                        ctx.fillStyle = design.colors[0];
+                    else if (animType === 'matrix') {
+                        ctx.fillStyle = "#000000";
                         ctx.fillRect(0, 0, canvas.width, canvas.height);
-                        ctx.strokeStyle = design.colors[1];
-                        ctx.lineWidth = 1;
-                        const gridSize = 80;
-                        const offset = (time / 20) % gridSize;
-                        ctx.globalAlpha = 0.3;
-                        for (let x = 0; x < canvas.width; x += gridSize) {
-                            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+                        ctx.fillStyle = "#00FF41";
+                        ctx.font = "20px monospace";
+                        for(let i=0; i<canvas.width; i+=30) {
+                            for(let j=0; j<canvas.height; j+=30) {
+                                if(Math.random() > 0.95) {
+                                    ctx.fillText(Math.random().toString(36).substring(2,3), i, j + (time/10)%30);
+                                }
+                            }
                         }
-                        for (let y = -gridSize; y < canvas.height; y += gridSize) {
-                            ctx.beginPath(); ctx.moveTo(0, y + offset); ctx.lineTo(canvas.width, y + offset); ctx.stroke();
-                        }
-                        ctx.globalAlpha = 1;
                     }
 
-                    // 2. ÇOKLU GÖRSELLER
+                    // 2. PARÇACIKLAR (Altın Tozu vs)
+                    if (partType !== 'none') {
+                        particles.forEach(p => {
+                            ctx.save();
+                            ctx.translate(p.x, p.y);
+                            ctx.beginPath();
+                            if (partType === 'confetti') {
+                                ctx.rotate(time/500 + p.rotation);
+                                ctx.fillStyle = p.color;
+                                ctx.fillRect(-p.radius, -p.radius, p.radius*2, p.radius*2);
+                            } else {
+                                ctx.arc(0, 0, p.radius, 0, Math.PI * 2);
+                                ctx.fillStyle = p.color;
+                                if (partType === 'golden_dust') { ctx.shadowColor = "gold"; ctx.shadowBlur = 10; }
+                                ctx.fill();
+                            }
+                            ctx.restore();
+
+                            // Hareket
+                            p.x += p.speedX;
+                            p.y += p.speedY;
+                            if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+                            if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+                        });
+                    }
+
+                    // 3. ÇOKLU GÖRSELLER
                     let hasContent = false;
                     if (uploadedImages.length > 0) {
                         hasContent = true;
@@ -404,50 +525,63 @@
                         if (alphaNext > 0) drawImg(uploadedImages[nextIndex], alphaNext);
                     }
 
-                    // 3. YAZILAR
-                    const textOpacity = Math.min(1, time / 1000);
-                    ctx.save();
-                    ctx.translate(centerX, centerY);
-                    ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.globalAlpha = textOpacity;
-                    ctx.shadowColor = "rgba(0,0,0,1)"; ctx.shadowBlur = 25; ctx.shadowOffsetY = 5;
-
+                    // 4. YAZI ANİMASYONLARI
                     let yOffset = hasContent ? 280 : -50; 
-                    ctx.fillStyle = design.textColor || "#FFFFFF";
+                    let currentColor = finalTextColor || "#FFFFFF";
+                    let textX = 0;
+                    let textScale = 1;
+
+                    // Animasyon Tipine Göre Ayarlar
+                    if (textAnimType === 'color_cycle') {
+                        let hue = (time / 10) % 360;
+                        currentColor = `hsl(${hue}, 100%, 60%)`;
+                    } else if (textAnimType === 'slide_in') {
+                        if (time < 1000) textX = -800 + (time * 0.8);
+                    } else if (textAnimType === 'bounce') {
+                        yOffset += Math.sin(time / 200) * 20;
+                    } else if (textAnimType === 'neon_pulse') {
+                        textScale = 1 + Math.sin(time / 150) * 0.05;
+                    }
+
+                    ctx.save();
+                    ctx.translate(centerX + textX, centerY);
+                    ctx.scale(textScale, textScale);
+                    ctx.textAlign = "center"; ctx.textBaseline = "middle"; 
+                    
+                    ctx.shadowColor = currentColor === "#FFFFFF" ? "rgba(0,0,0,0.8)" : currentColor; 
+                    ctx.shadowBlur = textAnimType === 'neon_pulse' ? 40 : 20; 
+                    ctx.shadowOffsetY = 5;
+
+                    ctx.fillStyle = currentColor;
                     const fontStyle = design.fontStyle === 'serif' ? "'Playfair Display', serif" : "'Montserrat', sans-serif";
                     ctx.font = `600 80px ${fontStyle}`;
                     
-                    let letters = finalTitle.split('');
-                    let totalWidth = ctx.measureText(finalTitle).width;
-                    let startX = -totalWidth / 2;
-                    
-                    letters.forEach((letter, index) => {
-                        let letterDelay = index * 0.05;
-                        let letterOpacity = Math.max(0, Math.min(1, (time/1000 - letterDelay) * 2));
-                        ctx.globalAlpha = textOpacity * letterOpacity;
-                        ctx.fillText(letter, startX, yOffset);
-                        startX += ctx.measureText(letter).width;
-                    });
+                    if (textAnimType === 'typewriter') {
+                        let charsToShow = Math.floor(time / 50);
+                        let displayTitle = finalTitle.substring(0, charsToShow);
+                        ctx.fillText(displayTitle, 0, yOffset);
+                    } else {
+                        ctx.fillText(finalTitle, 0, yOffset);
+                    }
 
-                    ctx.globalAlpha = textOpacity;
-                    ctx.shadowBlur = 15;
+                    // Alt Slogan
+                    ctx.shadowBlur = 10;
                     ctx.font = "400 32px 'Montserrat', sans-serif";
-                    ctx.fillStyle = design.colors[2] || "#CCCCCC"; 
+                    ctx.fillStyle = textAnimType === 'color_cycle' ? currentColor : (finalColors[2] || "#CCCCCC");
+                    ctx.globalAlpha = Math.min(1, time / 1000); // 1 saniyede belir
                     ctx.fillText(finalSubtitle, 0, yOffset + 70);
                     ctx.restore();
 
-                    // 4. EFEKTLER
+                    // 5. SİNEMATİK EFEKTLER
                     if (effectType === 'glitch') {
                         if (Math.random() > 0.9) {
                             let offsetX = (Math.random() - 0.5) * 40;
-                            let offsetY = (Math.random() - 0.5) * 20;
                             let sliceY = Math.random() * canvas.height;
                             let sliceH = Math.random() * 100 + 20;
-                            ctx.drawImage(canvas, 0, sliceY, canvas.width, sliceH, offsetX, sliceY + offsetY, canvas.width, sliceH);
+                            ctx.drawImage(canvas, 0, sliceY, canvas.width, sliceH, offsetX, sliceY, canvas.width, sliceH);
                             ctx.globalCompositeOperation = 'screen';
-                            ctx.fillStyle = "rgba(255,0,0,0.2)";
-                            ctx.fillRect(offsetX, 0, canvas.width, canvas.height);
-                            ctx.fillStyle = "rgba(0,255,255,0.2)";
-                            ctx.fillRect(-offsetX, 0, canvas.width, canvas.height);
+                            ctx.fillStyle = "rgba(255,0,0,0.2)"; ctx.fillRect(offsetX, 0, canvas.width, canvas.height);
+                            ctx.fillStyle = "rgba(0,255,255,0.2)"; ctx.fillRect(-offsetX, 0, canvas.width, canvas.height);
                             ctx.globalCompositeOperation = 'source-over';
                         }
                     } 
@@ -456,8 +590,7 @@
                         ctx.globalAlpha = 0.4;
                         ctx.filter = 'blur(15px)';
                         ctx.drawImage(canvas, 0, 0); 
-                        ctx.filter = 'none';
-                        ctx.globalAlpha = 1;
+                        ctx.filter = 'none'; ctx.globalAlpha = 1;
                         ctx.globalCompositeOperation = 'source-over';
                     }
                     else if (effectType === 'vignette') {
@@ -471,11 +604,18 @@
                         const grainData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                         for (let i = 0; i < grainData.data.length; i += 4) {
                             let noise = (Math.random() - 0.5) * 30; 
-                            grainData.data[i] += noise;
-                            grainData.data[i+1] += noise;
-                            grainData.data[i+2] += noise;
+                            grainData.data[i] += noise; grainData.data[i+1] += noise; grainData.data[i+2] += noise;
                         }
                         ctx.putImageData(grainData, 0, 0);
+                    }
+                    else if (effectType === 'lightleak') {
+                        const leakX = centerX + Math.sin(time / 1500) * 600;
+                        const leakY = centerY + Math.cos(time / 2000) * 300;
+                        const leak = ctx.createRadialGradient(leakX, leakY, 0, leakX, leakY, 400);
+                        leak.addColorStop(0, "rgba(255, 200, 100, 0.3)"); 
+                        leak.addColorStop(1, "rgba(255, 200, 100, 0)");
+                        ctx.fillStyle = leak;
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
                     }
 
                     if (time >= duration) { mediaRecorder.stop(); } 
