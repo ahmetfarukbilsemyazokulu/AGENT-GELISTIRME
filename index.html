@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tarayıcı İçi Yapay Zeka - Agent</title>
+    <title>Hızlı Tarayıcı İçi AI Asistanı</title>
     <!-- WebLLM Kütüphanesi -->
     <script type="module">
         import * as webllm from "https://esm.run/@mlc-ai/web-llm";
@@ -27,10 +27,10 @@
 <body>
 
 <div class="chat-container">
-    <div class="chat-header">🤖 Gerçek Tarayıcı İçi AI Asistanı</div>
-    <div id="status">Model yükleniyor, lütfen bekleyin (İlk yüklemede model indirilebilir)...</div>
+    <div class="chat-header">🤖 Hızlı Tarayıcı İçi AI Asistanı</div>
+    <div id="status">Hızlı model yükleniyor, lütfen bekleyin...</div>
     <div class="chat-messages" id="chatMessages">
-        <div class="message bot-message">👋 Merhaba! Ben doğrudan tarayıcınızda çalışan gerçek bir yapay zeka modeliyim. Model tamamen yüklendiğinde dilediğiniz her soruyu bana sorabilirsiniz!</div>
+        <div class="message bot-message">👋 Merhaba! Ben optimize edilmiş hızlı yapay zeka modeliyim. Hazır olduğumda dilediğin soruyu sorabilirsin!</div>
     </div>
     <div class="chat-input-area">
         <input type="text" id="userInput" placeholder="Yapay zekaya bir şeyler sorun..." disabled onkeypress="handleKeyPress(event)">
@@ -42,8 +42,8 @@
     import * as webllm from "https://esm.run/@mlc-ai/web-llm";
 
     let engine = null;
-    // Hafif ve hızlı bir model seçiyoruz
-    const selectedModel = "Llama-3-8B-Instruct-q4f32_1-MLC"; 
+    // Çok daha hızlı ve hafif olan Phi-3-mini modeli
+    const selectedModel = "Phi-3-mini-4k-instruct-q4f32_1-MLC"; 
 
     async function initializeEngine() {
         const statusDiv = document.getElementById("status");
@@ -51,7 +51,7 @@
         const sendBtn = document.getElementById("sendBtn");
 
         try {
-            statusDiv.innerText = "Yapay zeka motoru başlatılıyor ve model yükleniyor...";
+            statusDiv.innerText = "Hızlı model motoru başlatılıyor...";
             
             engine = await webllm.CreateMLCEngine(
                 selectedModel,
@@ -62,7 +62,7 @@
                 }
             );
 
-            statusDiv.innerText = "✅ Yapay Zeka Hazır! Dilediğiniz soruyu sorabilirsiniz.";
+            statusDiv.innerText = "✅ Hızlı Model Hazır! Dilediğiniz soruyu sorabilirsiniz.";
             statusDiv.style.background = "#d4edda";
             statusDiv.style.color = "#155724";
             
@@ -86,7 +86,6 @@
         appendMessage(messageText, 'user-message');
         inputField.value = '';
 
-        // Bot yanıtı için geçici bir kutu açalım
         const chatMessages = document.getElementById('chatMessages');
         const botMessageDiv = document.createElement('div');
         botMessageDiv.className = 'message bot-message';
@@ -96,7 +95,7 @@
 
         try {
             const messages = [
-                { role: "system", content: "Sen yardımcı, akıllı ve arkadaş canlısı bir yapay zeka asistanısın. Türkçe yanıtlar ver." },
+                { role: "system", content: "Sen yardımcı, hızlı ve arkadaş canlısı bir yapay zeka asistanısın. Türkçe yanıtlar ver." },
                 { role: "user", content: messageText }
             ];
 
