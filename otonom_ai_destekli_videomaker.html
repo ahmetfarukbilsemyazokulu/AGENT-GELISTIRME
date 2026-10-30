@@ -87,6 +87,9 @@
         .download-area { display: none; text-align: center; margin-top: 10px; }
         .download-area a { display: inline-block; background: #10B981; color: white; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 15px; margin-top: 10px;}
         
+        /* Gizli video elementi (Tarayıcının videoyu tanıması için DOM'a eklenir) */
+        .hidden-videos { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; top: -9999px; left: -9999px; }
+        
         @media (max-width: 800px) { .controls-grid, .upload-row { grid-template-columns: repeat(2, 1fr); } .scene-editor.active { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -304,6 +307,9 @@
         </div>
     </div>
 
+    <!-- Gizli Video Konteyneri (Tarayıcının oynatması için) -->
+    <div id="hiddenVideoContainer" class="hidden-videos"></div>
+
     <script type="module">
         import * as webllm from "https://esm.run/@mlc-ai/web-llm";
 
@@ -325,6 +331,7 @@
         const downloadLink = document.getElementById('downloadLink');
         const mediaPlaceholder = document.getElementById('mediaPlaceholder');
         const videoPlayer = document.getElementById('videoPlayer');
+        const hiddenVideoContainer = document.getElementById('hiddenVideoContainer');
         
         // UI Elements
         const colorPalette = document.getElementById('colorPalette');
@@ -414,9 +421,14 @@
                     video.muted = true; 
                     video.playsInline = true;
                     video.loop = true; 
-                    video.onloadedmetadata = () => {
-                        // İlk kareyi yüklemek için oynat ve duraklat (Bazı tarayıcılarda siyah ekran sorununu çözer)
-                        video.play().then(() => video.pause()).catch(() => {});
+                    video.crossOrigin = "anonymous";
+                    video.preload = "auto";
+                    
+                    // KRİTİK DÜZELTME: Videoyu DOM'a ekle (Gizli bir kapsayıcıya)
+                    hiddenVideoContainer.appendChild(video);
+
+                    // Oynatılmaya hazır olduğunda çöz (Sadece yüklendiğinde değil, oynatılabilir olduğunda)
+                    video.oncanplay = () => {
                         resolve(video);
                     };
                     video.load(); 
@@ -429,8 +441,8 @@
                 colorPalette: 'auto', bgAnimation: 'auto', particleEffect: 'auto', 
                 imageStyle: 'auto', entryAnimation: 'auto', textStyle: 'auto', 
                 textAnimation: 'auto', visualEffect: 'auto', transitionEffect: 'auto',
-                title: "", titleX: 0, titleY: -230, titleSize: 80, // Varsayılan metinler BOŞ
-                subtitle: "", subtitleX: 0, subtitleY: 260, subtitleSize: 32, // Varsayılan metinler BOŞ
+                title: "", titleX: 0, titleY: -230, titleSize: 80, 
+                subtitle: "", subtitleX: 0, subtitleY: 260, subtitleSize: 32, 
                 titleColor: "#FFFFFF", subtitleColor: "#CCCCCC",
                 colors: ["#111827", "#374151", "#1F2937"]
             };
@@ -523,6 +535,7 @@
                     el.src = mediaData.mediaObj.src;
                     el.className = `draggable-img ${index === activeImageIndex ? 'selected' : ''}`;
                 } else {
+                    // Önizleme için kopya video oluştur (Ana video gizli oynarken bu da oynasın)
                     el = document.createElement('video');
                     el.src = mediaData.mediaObj.src;
                     el.muted = true; el.loop = true; el.playsInline = true;
@@ -548,7 +561,6 @@
                 interactiveCanvas.appendChild(el);
             });
 
-            // SADECE YAZI VARSA EKRANA EKLE
             if (scene.settings.title.trim() !== "") {
                 const titleEl = document.createElement('div');
                 titleEl.className = 'draggable-text';
@@ -562,7 +574,6 @@
                 interactiveCanvas.appendChild(titleEl);
             }
 
-            // SADECE SLOGAN VARSA EKRANA EKLE
             if (scene.settings.subtitle.trim() !== "") {
                 const subEl = document.createElement('div');
                 subEl.className = 'draggable-text';
@@ -768,7 +779,6 @@
                     scene.settings.colors = aiDesign.colors || ["#111827", "#374151", "#1F2937"];
                 }
                 
-                // SADECE KULLANICI YAZI YAZDIYSA RENGİNİ AYARLA
                 if (scene.settings.title.trim() !== "" && scene.settings.titleColor === "#FFFFFF") {
                     scene.settings.titleColor = aiDesign.textColor || "#FFFFFF";
                 }
@@ -845,8 +855,11 @@
                 let easedProgress = easeOutCubic(entryProgress);
 
                 scenes[sceneIndex].media.forEach(mediaData => {
+                    // VİDEO OYNATMA KONTROLÜ (Sahne aktifse ve video duraklatılmışsa oynat)
                     if (mediaData.type === 'video') {
-                        if (mediaData.mediaObj.paused) mediaData.mediaObj.play().catch(e=>console.log(e));
+                        if (mediaData.mediaObj.paused && sceneTime < sceneDuration) {
+                            mediaData.mediaObj.play().catch(e => console.log("Play hatası:", e));
+                        }
                     }
 
                     let targetX = mediaData.x;
@@ -906,7 +919,7 @@
                 });
             }
 
-            // YAZILAR (Sadece kullanıcı yazdıysa)
+            // YAZILAR
             if (s.title.trim() !== "") {
                 let titleX = s.titleX;
                 let titleY = s.titleY;
@@ -943,7 +956,7 @@
                 targetCtx.restore();
             }
 
-            // SLOGAN (Sadece kullanıcı yazdıysa)
+            // SLOGAN
             if (s.subtitle.trim() !== "") {
                 let subX = s.subtitleX;
                 let subY = s.subtitleY;
@@ -1052,6 +1065,13 @@
                     generateBtn.innerText = "✨ Otonom Reklamı Üret";
                     cancelAnimationFrame(animationId);
                     if (audioElement) audioElement.pause();
+                    
+                    // Tüm videoları durdur
+                    scenes.forEach(scene => {
+                        scene.media.forEach(m => {
+                            if (m.type === 'video') m.mediaObj.pause();
+                        });
+                    });
                 };
 
                 let totalDuration = 6000; 
@@ -1100,11 +1120,11 @@
                             });
                         }
 
-                        // Yeni sahnedeki videoları başlat (SORUN BURADAYDI, EKLENDİ)
+                        // Yeni sahnedeki videoları başlat
                         scenes[currentSceneIndex].media.forEach(m => {
                             if (m.type === 'video') {
-                                m.mediaObj.currentTime = 0; // Baştan başlat
-                                m.mediaObj.play().catch(e => console.log("Video oynatma hatası:", e));
+                                m.mediaObj.currentTime = 0; 
+                                m.mediaObj.play().catch(e => console.log("Video play block:", e));
                             }
                         });
                         
@@ -1147,12 +1167,6 @@
                     }
 
                     if (time >= totalDuration) { 
-                        // Videonun sonlanması durumunda tüm videoları durdur
-                        scenes.forEach(scene => {
-                            scene.media.forEach(m => {
-                                if (m.type === 'video') m.mediaObj.pause();
-                            });
-                        });
                         mediaRecorder.stop(); 
                     } 
                     else { animationId = requestAnimationFrame(drawFrame); }
