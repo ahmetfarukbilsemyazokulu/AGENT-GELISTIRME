@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video ve Resim Destekli Sinema Stüdyosu | AGENT-GELISTIRME</title>
+    <title>Hibrit Video Maker | AGENT-GELISTIRME</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=Montserrat:wght@400;600;800&family=Caveat:wght@700&family=Cinzel:wght@700&family=Inter:wght@400&family=Courier+Prime:wght@700&display=swap" rel="stylesheet">
     
     <style>
@@ -87,10 +87,10 @@
         .download-area { display: none; text-align: center; margin-top: 10px; }
         .download-area a { display: inline-block; background: #10B981; color: white; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 15px; margin-top: 10px;}
         
-        /* GİZLİ VİDEO KAPSAYICISI - Tarayıcının videoyu oynatması için 1x1 boyutunda görünmez alan */
-        .hidden-video-container { 
-            position: fixed; top: 0; left: 0; width: 1px; height: 1px; 
-            opacity: 0.01; pointer-events: none; overflow: hidden; z-index: -1;
+        /* VİDEOLARIN OYNATILMASI İÇİN ÖZEL SINIF */
+        .video-pool {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            opacity: 0.01; pointer-events: none; z-index: -9999; overflow: hidden;
         }
         
         @media (max-width: 800px) { .controls-grid, .upload-row { grid-template-columns: repeat(2, 1fr); } .scene-editor.active { grid-template-columns: 1fr; } }
@@ -99,8 +99,8 @@
 <body>
 
     <div class="header">
-        <h1>Video ve Resim Destekli Stüdyo</h1>
-        <p>Kendi videolarınızı yükleyin, efektlerle süsleyin.</p>
+        <h1>Hibrit Video Maker</h1>
+        <p>Resim ve videoları birleştirerek sinematik reklamlar üretin.</p>
     </div>
 
     <div class="studio-container">
@@ -315,8 +315,8 @@
         </div>
     </div>
 
-    <!-- GİZLİ VİDEO KAPSAYICISI -->
-    <div id="hiddenVideoContainer" class="hidden-video-container"></div>
+    <!-- VİDEOLARIN OYNATILDIĞI GÖRÜNMEZ ALAN (Tarayıcı burayı görünür sayar) -->
+    <div id="videoPool" class="video-pool"></div>
 
     <script type="module">
         import * as webllm from "https://esm.run/@mlc-ai/web-llm";
@@ -339,7 +339,7 @@
         const downloadLink = document.getElementById('downloadLink');
         const mediaPlaceholder = document.getElementById('mediaPlaceholder');
         const videoPlayer = document.getElementById('videoPlayer');
-        const hiddenVideoContainer = document.getElementById('hiddenVideoContainer');
+        const videoPool = document.getElementById('videoPool');
         
         // UI Elements
         const colorPalette = document.getElementById('colorPalette');
@@ -417,7 +417,6 @@
             if (activeSceneIndex === -1 && scenes.length > 0) selectScene(0);
         });
 
-        // YENİ: Aktif Sahneye Resim/Video Ekleme
         addMediaToSceneInput.addEventListener('change', async function(e) {
             const files = Array.from(e.target.files);
             if (files.length === 0 || activeSceneIndex === -1) return;
@@ -446,13 +445,14 @@
                     video.muted = true; 
                     video.playsInline = true;
                     video.loop = true; 
+                    video.autoplay = true;
                     video.crossOrigin = "anonymous";
                     video.preload = "auto";
                     
-                    // Videoyu DOM'a ekle (Görünmez olsa bile tarayıcı oynatması için bu şart)
-                    hiddenVideoContainer.appendChild(video);
+                    // Videoyu görünür sayılan bir alana ekle (Tarayıcı duraklatmasın diye)
+                    videoPool.appendChild(video);
 
-                    video.oncanplay = () => {
+                    video.oncanplaythrough = () => {
                         resolve(video);
                     };
                     video.load(); 
@@ -553,6 +553,11 @@
                 let el;
                 let mediaW = mediaData.type === 'image' ? mediaData.mediaObj.width : mediaData.mediaObj.videoWidth;
                 let mediaH = mediaData.type === 'image' ? mediaData.mediaObj.height : mediaData.mediaObj.videoHeight;
+
+                // Eğer video boyutları henüz yüklenmediyse varsayılan boyut ver
+                if (mediaData.type === 'video' && (mediaW === 0 || mediaH === 0)) {
+                    mediaW = 640; mediaH = 360; 
+                }
 
                 if (mediaData.type === 'image') {
                     el = document.createElement('img');
@@ -881,7 +886,7 @@
                     // VİDEO OYNATMA GARANTİSİ (Eğer oynamıyorsa zorla oynat)
                     if (mediaData.type === 'video') {
                         if (mediaData.mediaObj.paused) {
-                            mediaData.mediaObj.play().catch(e => console.log("Play hatası:", e));
+                            mediaData.mediaObj.play().catch(e => {});
                         }
                     }
 
@@ -913,6 +918,11 @@
                     let mediaW = mediaData.type === 'image' ? mediaData.mediaObj.width : mediaData.mediaObj.videoWidth;
                     let mediaH = mediaData.type === 'image' ? mediaData.mediaObj.height : mediaData.mediaObj.videoHeight;
                     
+                    // EĞER VİDEO HAZIR DEĞİLSE ÇİZME (Siyah kare oluşmasın)
+                    if (mediaData.type === 'video' && (!mediaW || !mediaH || mediaData.mediaObj.readyState < 2)) {
+                        return;
+                    }
+
                     let maxSize = 400;
                     if (mediaW > maxSize || mediaH > maxSize) { 
                         if (mediaW > mediaH) { mediaH = (maxSize / mediaW) * mediaH; mediaW = maxSize; } 
@@ -1143,12 +1153,19 @@
                         scenes[currentSceneIndex].media.forEach(m => {
                             if (m.type === 'video') {
                                 m.mediaObj.currentTime = 0; 
-                                m.mediaObj.play().catch(e => console.log("Video play block:", e));
+                                m.mediaObj.play().catch(e => {});
                             }
                         });
                         
                         lastSceneIndex = currentSceneIndex;
                     }
+
+                    // Her karede aktif sahnenin videolarının çaldığından emin ol
+                    scenes[currentSceneIndex].media.forEach(m => {
+                        if (m.type === 'video' && m.mediaObj.paused) {
+                            m.mediaObj.play().catch(e => {});
+                        }
+                    });
 
                     sceneCtx.clearRect(0, 0, canvas.width, canvas.height);
                     renderSceneToCtx(sceneCtx, currentSceneIndex, sceneTime, sceneDuration, time);
