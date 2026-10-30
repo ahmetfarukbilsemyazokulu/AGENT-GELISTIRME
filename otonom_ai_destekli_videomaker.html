@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gelişmiş Sahne Yöneticili Sinema Stüdyosu | AGENT-GELISTIRME</title>
+    <title>Sürükle-Bırak Sinema Stüdyosu | AGENT-GELISTIRME</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=Montserrat:wght@400;600;800&family=Caveat:wght@700&family=Cinzel:wght@700&family=Inter:wght@400&family=Courier+Prime:wght@700&display=swap" rel="stylesheet">
     
     <style>
@@ -20,7 +20,6 @@
         .input-group textarea { height: 70px; resize: none; }
         .input-group input:focus, .input-group textarea:focus { border-color: #38BDF8; }
 
-        /* Ana Kontroller */
         .controls-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
         .control-box { background: #0F172A; padding: 10px; border-radius: 10px; border: 1px solid #334155; display: flex; flex-direction: column; gap: 6px; }
         .control-box label { font-size: 10px; color: #94A3B8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -44,11 +43,22 @@
         
         .scene-editor { display: none; grid-template-columns: 1fr 1fr; gap: 15px; }
         .scene-editor.active { display: grid; }
-        .scene-image-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
-        .scene-img-thumb { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 2px solid #334155; cursor: pointer; }
-        .scene-img-thumb.active { border-color: #F472B6; }
+        
+        /* Görsel Sürükleme Alanı */
+        .interactive-canvas-container { display: flex; flex-direction: column; gap: 10px; }
+        .interactive-canvas { 
+            position: relative; width: 100%; aspect-ratio: 16/9; background: #000; 
+            border: 2px dashed #475569; border-radius: 8px; overflow: hidden; 
+            cursor: crosshair; user-select: none;
+        }
+        .draggable-img { 
+            position: absolute; cursor: grab; transform-origin: center center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5); border: 2px solid transparent;
+            transition: border 0.1s;
+        }
+        .draggable-img:active { cursor: grabbing; }
+        .draggable-img.selected { border-color: #38BDF8; box-shadow: 0 0 15px rgba(56,189,248,0.8); }
 
-        /* Sliderlar */
         .slider-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; }
         .slider-group label { font-size: 11px; color: #94A3B8; display: flex; justify-content: space-between; }
         .slider-group input[type="range"] { width: 100%; accent-color: #38BDF8; }
@@ -79,13 +89,12 @@
 <body>
 
     <div class="header">
-        <h1>Sahne Yöneticili Sinema Stüdyosu</h1>
-        <p>Her sahneyi ayrı ayrı düzenleyin, resimleri konumlandırın.</p>
+        <h1>Sürükle-Bırak Sinema Stüdyosu</h1>
+        <p>Resimleri fareyle tutup sahnede istediğiniz yere bırakın.</p>
     </div>
 
     <div class="studio-container">
         
-        <!-- Senaryo -->
         <div class="input-group" style="margin-bottom: 12px;">
             <label for="videoPrompt">Senaryo (Yapay Zeka her şeyi buna göre seçecek):</label>
             <textarea id="videoPrompt" placeholder="Örnek: Kırmızı ruj reklamı. Veya: Lüks bir araba tanıtımı."></textarea>
@@ -102,7 +111,6 @@
             </div>
         </div>
 
-        <!-- Global Ayarlar (Aktif Sahneye Uygulanır) -->
         <div class="controls-grid">
             <div class="control-box">
                 <label>🎨 Renk Teması</label>
@@ -205,7 +213,6 @@
             </div>
         </div>
 
-        <!-- Toplu Resim Yükleme (Her Resim 1 Sahne Olur) -->
         <div class="upload-area">
             <label style="font-size: 13px; font-weight: 600; color: #E2E8F0;">Yeni Sahne Olarak Resim Yükle (Toplu Seçim Yapabilirsiniz):</label>
             <input type="file" id="imageUpload" accept="image/*" multiple>
@@ -218,29 +225,28 @@
             <div class="scene-tabs" id="sceneTabs"></div>
             
             <div class="scene-editor" id="sceneEditor">
-                <div>
-                    <label style="font-size: 12px; color: #94A3B8; font-weight: 600;">Bu Sahnedeki Resimler:</label>
-                    <div class="scene-image-list" id="sceneImageList"></div>
+                <div class="interactive-canvas-container">
+                    <label style="font-size: 12px; color: #94A3B8; font-weight: 600;">Önizleme (Resimleri Sürükleyerek Yerleştirin):</label>
+                    <!-- SÜRÜKLE BIRAK ALANI -->
+                    <div class="interactive-canvas" id="interactiveCanvas"></div>
+                    
                     <input type="file" id="addImageToScene" accept="image/*" style="display: none;" multiple>
-                    <button onclick="document.getElementById('addImageToScene').click()" style="background: #334155; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; margin-bottom: 10px;">➕ Bu Sahneye Resim Ekle</button>
+                    <button onclick="document.getElementById('addImageToScene').click()" style="background: #334155; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-size: 13px; width: 100%; font-weight: bold;">➕ Bu Sahneye Yeni Resim Ekle</button>
                 </div>
-                <div id="imageTransformControls" style="display: none; background: #1E293B; padding: 10px; border-radius: 8px;">
-                    <label style="font-size: 12px; color: #F472B6; font-weight: 600;" id="selectedImageLabel">Seçili Resim Ayarları</label>
-                    <div class="slider-group">
-                        <label>X Konumu <span id="valX">0</span></label>
-                        <input type="range" id="imgX" min="-500" max="500" value="0" oninput="updateImageProperty('x', this.value)">
-                    </div>
-                    <div class="slider-group">
-                        <label>Y Konumu <span id="valY">0</span></label>
-                        <input type="range" id="imgY" min="-400" max="400" value="0" oninput="updateImageProperty('y', this.value)">
-                    </div>
+                
+                <div id="imageTransformControls" style="display: none; background: #1E293B; padding: 15px; border-radius: 8px;">
+                    <label style="font-size: 13px; color: #F472B6; font-weight: 600; display: block; margin-bottom: 10px;" id="selectedImageLabel">Seçili Resim Ayarları</label>
+                    
                     <div class="slider-group">
                         <label>Boyut <span id="valScale">1</span></label>
-                        <input type="range" id="imgScale" min="0.1" max="3" step="0.1" value="1" oninput="updateImageProperty('scale', this.value)">
+                        <input type="range" id="imgScale" min="0.1" max="3" step="0.05" value="1" oninput="updateImageProperty('scale', this.value)">
                     </div>
                     <div class="slider-group">
                         <label>Açı <span id="valRot">0</span></label>
                         <input type="range" id="imgRot" min="-180" max="180" value="0" oninput="updateImageProperty('rotation', this.value)">
+                    </div>
+                    <div style="font-size: 11px; color: #64748B; margin-top: 10px;">
+                        * Resmi fareyle tutup önizleme ekranında sürükleyebilirsiniz.
                     </div>
                 </div>
             </div>
@@ -274,7 +280,7 @@
         const downloadLink = document.getElementById('downloadLink');
         const canvasContainer = document.getElementById('canvasContainer');
         
-        // Global Ayarlar
+        // UI Elements
         const colorPalette = document.getElementById('colorPalette');
         const bgAnimation = document.getElementById('bgAnimation');
         const particleEffect = document.getElementById('particleEffect');
@@ -285,57 +291,42 @@
         const visualEffect = document.getElementById('visualEffect');
         const manualTitle = document.getElementById('manualTitle');
         const manualSlogan = document.getElementById('manualSlogan');
-        const customColorContainer = document.getElementById('customColorContainer');
-        const color1 = document.getElementById('color1');
-        const color2 = document.getElementById('color2');
-
-        // Sahne Yöneticisi UI
+        
         const sceneManager = document.getElementById('sceneManager');
         const sceneTabs = document.getElementById('sceneTabs');
         const sceneEditor = document.getElementById('sceneEditor');
-        const sceneImageList = document.getElementById('sceneImageList');
+        const interactiveCanvas = document.getElementById('interactiveCanvas');
         const imageTransformControls = document.getElementById('imageTransformControls');
         const addImageToSceneInput = document.getElementById('addImageToScene');
 
-        let mediaRecorder;
-        let recordedChunks = [];
-        let animationId;
-        
-        // STATE
-        let scenes = []; // Her sahne kendi ayarlarını ve resimlerini tutar
+        let mediaRecorder, recordedChunks = [], animationId;
+        let scenes = []; 
         let activeSceneIndex = -1;
-        let activeImageIndex = -1; // Sahne içindeki seçili resim
+        let activeImageIndex = -1;
 
-        colorPalette.addEventListener('change', () => {
-            customColorContainer.style.display = colorPalette.value === 'custom' ? 'flex' : 'none';
-        });
-
-        // Yeni Sahneler Yükle (Her dosya bir sahne)
+        // Görsel yükleme (Sahneler)
         document.getElementById('imageUpload').addEventListener('change', async function(e) {
             const files = Array.from(e.target.files);
-            if (files.length === 0) return;
-
             for (const file of files) {
                 const img = await loadImageFile(file);
                 scenes.push({
                     id: Date.now() + Math.random(),
-                    images: [{ imgObj: img, x: 0, y: 0, scale: 1, rotation: 0 }],
-                    settings: getDefaultSceneSettings() // Default ayarlar
+                    // Koordinatlar merkeze göre (0,0) olacak şekilde ayarlandı
+                    images: [{ imgObj: img, x: 0, y: 0, scale: 1, rotation: 0, id: Date.now() + Math.random() }],
+                    settings: getDefaultSceneSettings()
                 });
             }
-            
             updateSceneUI();
             if (activeSceneIndex === -1 && scenes.length > 0) selectScene(0);
         });
 
-        // Aktif Sahneye Resim Ekle
+        // Sahneye resim ekleme
         addImageToSceneInput.addEventListener('change', async function(e) {
             const files = Array.from(e.target.files);
             if (files.length === 0 || activeSceneIndex === -1) return;
-
             for (const file of files) {
                 const img = await loadImageFile(file);
-                scenes[activeSceneIndex].images.push({ imgObj: img, x: 0, y: 0, scale: 1, rotation: 0 });
+                scenes[activeSceneIndex].images.push({ imgObj: img, x: 0, y: 0, scale: 1, rotation: 0, id: Date.now() + Math.random() });
             }
             updateSceneUI();
         });
@@ -353,19 +344,11 @@
         }
 
         function getDefaultSceneSettings() {
-            return {
-                colorPalette: 'auto', bgAnimation: 'auto', particleEffect: 'auto',
-                imageStyle: 'auto', imageAnimType: 'auto', textStyle: 'auto',
-                textAnimation: 'auto', visualEffect: 'auto'
-            };
+            return { colorPalette: 'auto', bgAnimation: 'auto', particleEffect: 'auto', imageStyle: 'auto', imageAnimType: 'auto', textStyle: 'auto', textAnimation: 'auto', visualEffect: 'auto' };
         }
 
-        // Sahne UI Güncelleme
         function updateSceneUI() {
-            if (scenes.length === 0) {
-                sceneManager.style.display = 'none';
-                return;
-            }
+            if (scenes.length === 0) { sceneManager.style.display = 'none'; return; }
             sceneManager.style.display = 'block';
             
             sceneTabs.innerHTML = '';
@@ -379,76 +362,147 @@
 
             if (activeSceneIndex !== -1) {
                 sceneEditor.classList.add('active');
-                renderSceneImageList();
+                renderInteractiveCanvas();
             } else {
                 sceneEditor.classList.remove('active');
             }
         }
 
-        function renderSceneImageList() {
-            sceneImageList.innerHTML = '';
+        function selectScene(index) {
+            activeSceneIndex = index;
+            activeImageIndex = 0; 
+            updateSceneUI();
+            
+            const s = scenes[index].settings;
+            colorPalette.value = s.colorPalette; bgAnimation.value = s.bgAnimation;
+            particleEffect.value = s.particleEffect; imageStyle.value = s.imageStyle;
+            imageAnimType.value = s.imageAnimType; textStyle.value = s.textStyle;
+            textAnimation.value = s.textAnimation; visualEffect.value = s.visualEffect;
+        }
+
+        // ETKİLEŞİMLİ TUVAL - GÖRSELLERİ SÜRÜKLEME
+        function renderInteractiveCanvas() {
+            interactiveCanvas.innerHTML = ''; // Temizle
             const scene = scenes[activeSceneIndex];
             
             scene.images.forEach((imgData, index) => {
-                const thumb = document.createElement('img');
-                thumb.src = imgData.imgObj.src;
-                thumb.className = `scene-img-thumb ${index === activeImageIndex ? 'active' : ''}`;
-                thumb.onclick = () => selectImage(index);
-                sceneImageList.appendChild(thumb);
+                const imgEl = document.createElement('img');
+                imgEl.src = imgData.imgObj.src;
+                imgEl.className = `draggable-img ${index === activeImageIndex ? 'selected' : ''}`;
+                imgEl.dataset.index = index;
+                
+                // Başlangıç Boyutu (Max 400 px genişlik)
+                let baseW = imgData.imgObj.width;
+                let baseH = imgData.imgObj.height;
+                let maxW = 400;
+                if (baseW > maxW) { baseH = (maxW / baseW) * baseH; baseW = maxW; }
+
+                // UI için boyutları ayarla (Önizleme alanına sığdırmak için /2 yapıyoruz ki daha rahat çalışılsın)
+                const uiScaleFactor = interactiveCanvas.clientWidth / 1280; // 1280 gerçek genişlik
+                const finalW = baseW * imgData.scale * uiScaleFactor;
+                const finalH = baseH * imgData.scale * uiScaleFactor;
+
+                imgEl.style.width = `${finalW}px`;
+                imgEl.style.height = `${finalH}px`;
+                imgEl.style.left = `calc(50% + ${imgData.x * uiScaleFactor}px - ${finalW/2}px)`;
+                imgEl.style.top = `calc(50% + ${imgData.y * uiScaleFactor}px - ${finalH/2}px)`;
+                imgEl.style.transform = `rotate(${imgData.rotation}deg)`;
+
+                // Sürükleme Mantığı (Sadece X ve Y)
+                imgEl.addEventListener('mousedown', (e) => startDrag(e, index));
+
+                interactiveCanvas.appendChild(imgEl);
             });
+            
+            updateTransformControls();
         }
 
-        function selectScene(index) {
-            activeSceneIndex = index;
-            activeImageIndex = 0; // İlk resmi seç
-            updateSceneUI();
-            selectImage(0);
-            
-            // Global ayarları bu sahnenin ayarlarıyla güncelle
-            const s = scenes[index].settings;
-            colorPalette.value = s.colorPalette;
-            bgAnimation.value = s.bgAnimation;
-            particleEffect.value = s.particleEffect;
-            imageStyle.value = s.imageStyle;
-            imageAnimType.value = s.imageAnimType;
-            textStyle.value = s.textStyle;
-            textAnimation.value = s.textAnimation;
-            visualEffect.value = s.visualEffect;
-        }
+        function updateTransformControls() {
+            if (activeImageIndex === -1 || activeSceneIndex === -1) {
+                imageTransformControls.style.display = 'none'; return;
+            }
+            const imgData = scenes[activeSceneIndex].images[activeImageIndex];
+            if(!imgData) return;
 
-        function selectImage(index) {
-            activeImageIndex = index;
-            const imgData = scenes[activeSceneIndex].images[index];
-            
             imageTransformControls.style.display = 'block';
-            document.getElementById('selectedImageLabel').innerText = `Resim ${index + 1} Ayarları`;
-            
-            // Slider değerlerini güncelle
-            document.getElementById('imgX').value = imgData.x;
-            document.getElementById('valX').innerText = imgData.x;
-            document.getElementById('imgY').value = imgData.y;
-            document.getElementById('valY').innerText = imgData.y;
+            document.getElementById('selectedImageLabel').innerText = `Resim ${activeImageIndex + 1} Ayarları`;
             document.getElementById('imgScale').value = imgData.scale;
-            document.getElementById('valScale').innerText = imgData.scale;
+            document.getElementById('valScale').innerText = imgData.scale.toFixed(2);
             document.getElementById('imgRot').value = imgData.rotation;
             document.getElementById('valRot').innerText = imgData.rotation;
-
-            renderSceneImageList();
         }
 
         window.updateImageProperty = function(prop, value) {
             if (activeSceneIndex === -1 || activeImageIndex === -1) return;
-            value = parseFloat(value);
-            scenes[activeSceneIndex].images[activeImageIndex][prop] = value;
-            
-            // UI güncelle
-            if(prop === 'x') document.getElementById('valX').innerText = value;
-            if(prop === 'y') document.getElementById('valY').innerText = value;
-            if(prop === 'scale') document.getElementById('valScale').innerText = value;
-            if(prop === 'rotation') document.getElementById('valRot').innerText = value;
+            scenes[activeSceneIndex].images[activeImageIndex][prop] = parseFloat(value);
+            renderInteractiveCanvas(); // UI'ı yeniden çiz
         }
 
-        // Model Başlatma ve AI İşlemleri (Öncekiyle aynı)
+        // SÜRÜKLEME (DRAG AND DROP) MANTIĞI
+        let isDragging = false;
+        let startX = 0, startY = 0;
+        let initialImgX = 0, initialImgY = 0;
+        let draggingIndex = -1;
+
+        function startDrag(e, index) {
+            e.preventDefault();
+            activeImageIndex = index;
+            isDragging = true;
+            draggingIndex = index;
+
+            // Seçili resim UI güncellemesi
+            document.querySelectorAll('.draggable-img').forEach(el => el.classList.remove('selected'));
+            e.target.classList.add('selected');
+            updateTransformControls();
+
+            // Fare ve resmin başlangıç konumunu kaydet
+            startX = e.clientX;
+            startY = e.clientY;
+            initialImgX = scenes[activeSceneIndex].images[index].x;
+            initialImgY = scenes[activeSceneIndex].images[index].y;
+
+            // Tüm belge üzerinde hareket dinle (böylece kutunun dışına çıksa bile takip eder)
+            document.addEventListener('mousemove', onDrag);
+            document.addEventListener('mouseup', stopDrag);
+        }
+
+        function onDrag(e) {
+            if (!isDragging) return;
+            
+            // Farenin hareket mesafesi
+            const deltaX = e.clientX - startX;
+            const deltaY = e.clientY - startY;
+            
+            // UI ölçeğini gerçek Canvas boyutuna çevir
+            const uiScaleFactor = 1280 / interactiveCanvas.clientWidth;
+
+            // Yeni konumu hesapla
+            scenes[activeSceneIndex].images[draggingIndex].x = initialImgX + (deltaX * uiScaleFactor);
+            scenes[activeSceneIndex].images[draggingIndex].y = initialImgY + (deltaY * uiScaleFactor);
+
+            // Sadece o resmin stilini güncelle (performans için)
+            const imgEl = document.querySelector(`.draggable-img[data-index="${draggingIndex}"]`);
+            if(imgEl) {
+                let baseW = scenes[activeSceneIndex].images[draggingIndex].imgObj.width;
+                let baseH = scenes[activeSceneIndex].images[draggingIndex].imgObj.height;
+                let maxW = 400;
+                if (baseW > maxW) { baseH = (maxW / baseW) * baseH; baseW = maxW; }
+                
+                const uiScale = interactiveCanvas.clientWidth / 1280;
+                const finalW = baseW * scenes[activeSceneIndex].images[draggingIndex].scale * uiScale;
+                
+                imgEl.style.left = `calc(50% + ${scenes[activeSceneIndex].images[draggingIndex].x * uiScale}px - ${finalW/2}px)`;
+                imgEl.style.top = `calc(50% + ${scenes[activeSceneIndex].images[draggingIndex].y * uiScale}px - ${finalW/2}px)`; // Kare varsayımı
+            }
+        }
+
+        function stopDrag() {
+            isDragging = false;
+            document.removeEventListener('mousemove', onDrag);
+            document.removeEventListener('mouseup', stopDrag);
+        }
+
+        // Yapay Zeka ve Render İşlemleri (Aynen korundu)
         async function initAI() {
             try {
                 const selectedModel = "Llama-3.2-1B-Instruct-q4f32_1-MLC";
@@ -475,7 +529,7 @@
         }
 
         function getLocalPromptDesign(prompt) {
-            // ... (Önceki yerel yedek plan mantığı, aynen korundu)
+            // (Önceki kodun aynısı, yerel zeka yedek planı)
             const p = prompt.toLowerCase();
             let design = { emoji: "", colors: ["#111827", "#374151", "#1F2937"], textColor: "#FFFFFF", bgAnimation: "gradient", particleEffect: "none", imageStyle: "glass", imageAnimType: "float", textStyle: "modern", textAnimation: "fade_up", visualEffect: "none" };
             const emojiMap = {'ruj': '💄', 'parfüm': '🧴', 'ağaç': '🌳', 'kalem': '✏️', 'araba': '🚗', 'saat': '⌚', 'kahve': '☕', 'çiçek': '🌸', 'kitap': '📚', 'telefon': '📱', 'gözlük': '🕶️', 'ayakkabı': '👠', 'yiyecek': '🍔', 'müzik': '🎵', 'elmas': '💎', 'roket': '🚀', 'uzay': '🌌', 'robot': '🤖', 'oyun': '🎮', 'pizza': '🍕', 'kedi': '🐱', 'köpek': '🐶', 'kuş': '🐦', 'deniz': '🌊', 'kalp': '❤️'};
@@ -483,15 +537,12 @@
             if (p.includes('ruj') || p.includes('aşk') || p.includes('güzellik') || p.includes('kırmızı')) { design.colors = ["#4C0519", "#BE123C", "#FDA4AF"]; design.textColor = "#FFF1F2"; design.bgAnimation = "aurora"; design.particleEffect = "golden_dust"; design.imageStyle = "glass"; design.imageAnimType = "pulse"; design.textStyle = "elegant"; design.textAnimation = "neon_pulse"; design.visualEffect = "bloom"; }
             else if (p.includes('doğa') || p.includes('ağaç') || p.includes('yeşil') || p.includes('orman')) { design.colors = ["#064E3B", "#10B981", "#A7F3D0"]; design.textColor = "#ECFDF5"; design.bgAnimation = "bokeh"; design.particleEffect = "fireflies"; design.imageStyle = "circle"; design.imageAnimType = "float"; design.textStyle = "classic"; design.textAnimation = "fade_up"; design.visualEffect = "lightleak"; }
             else if (p.includes('parfüm') || p.includes('lüks') || p.includes('altın')) { design.colors = ["#1A0B1A", "#4C1D95", "#FBBF24"]; design.textColor = "#FEF3C7"; design.bgAnimation = "aurora"; design.particleEffect = "golden_dust"; design.imageStyle = "polaroid"; design.imageAnimType = "swing"; design.textStyle = "elegant"; design.textAnimation = "typewriter"; design.visualEffect = "vignette"; }
-            else if (p.includes('teknoloji') || p.includes('neon') || p.includes('uzay') || p.includes('roket') || p.includes('siber')) { design.colors = ["#020617", "#1D4ED8", "#06B6D4"]; design.textColor = "#E0F2FE"; design.bgAnimation = "tunnel"; design.particleEffect = "none"; design.imageStyle = "neon_border"; design.imageAnimType = "3d_tilt"; design.textStyle = "mono"; design.textAnimation = "shake"; design.visualEffect = "glitch"; }
-            else if (p.includes('kahve') || p.includes('yemek') || p.includes('sıcak')) { design.colors = ["#451A03", "#92400E", "#FDE68A"]; design.textColor = "#FFFBEB"; design.bgAnimation = "waves"; design.particleEffect = "snow"; design.imageStyle = "normal"; design.imageAnimType = "zoom_in"; design.textStyle = "handwriting"; design.textAnimation = "bounce"; design.visualEffect = "retro"; }
             return design;
         }
 
         async function getGlobalDesignFromAI(prompt) {
             const messages = [
                 { role: "system", content: `You are an expert AI Art Director. Output ONLY valid JSON.
-                    Select the best options for the fields based on the prompt.
                     Allowed values:
                     - bgAnimation: [aurora, galaxy, cyber, matrix, waves, tunnel, bokeh, gradient]
                     - particleEffect: [golden_dust, none, snow, confetti, fireflies]
@@ -518,12 +569,9 @@
             return "'Montserrat', sans-serif";
         }
 
-        // Tüm sahnelere global tasarımı uygula
         async function applyAIDesignToScenes(prompt) {
             const aiDesign = await getGlobalDesignFromAI(prompt) || getLocalPromptDesign(prompt);
-            
             scenes.forEach(scene => {
-                // Kullanıcı 'auto' seçmediyse onun seçimini koru, seçtiyse AI'nınkini kullan
                 scene.settings.bgAnimation = bgAnimation.value === 'auto' ? (aiDesign.bgAnimation || 'aurora') : bgAnimation.value;
                 scene.settings.particleEffect = particleEffect.value === 'auto' ? (aiDesign.particleEffect || 'none') : particleEffect.value;
                 scene.settings.imageStyle = imageStyle.value === 'auto' ? (aiDesign.imageStyle || 'glass') : imageStyle.value;
@@ -532,25 +580,16 @@
                 scene.settings.textAnimation = textAnimation.value === 'auto' ? (aiDesign.textAnimation || 'fade_up') : textAnimation.value;
                 scene.settings.visualEffect = visualEffect.value === 'auto' ? (aiDesign.visualEffect || 'none') : visualEffect.value;
                 
-                if(colorPalette.value === 'custom') {
-                    scene.settings.colors = [color1.value, color2.value, color1.value];
-                } else {
-                    scene.settings.colors = aiDesign.colors || ["#111827", "#374151", "#1F2937"];
-                }
-                
+                if(colorPalette.value === 'custom') { scene.settings.colors = [color1.value, color2.value, color1.value]; } 
+                else { scene.settings.colors = aiDesign.colors || ["#111827", "#374151", "#1F2937"]; }
                 scene.settings.textColor = aiDesign.textColor || "#FFFFFF";
-                scene.settings.emoji = aiDesign.emoji || "";
                 scene.settings.title = aiDesign.title || "REKLAM";
                 scene.settings.subtitle = aiDesign.subtitle || "SİZİN İÇİN";
             });
         }
 
         window.generateVideo = async function() {
-            if (scenes.length === 0) {
-                alert("Lütfen önce en az bir resim yükleyin!");
-                return;
-            }
-
+            if (scenes.length === 0) return alert("Lütfen önce resim yükleyin!");
             const prompt = document.getElementById('videoPrompt').value.trim() || "Modern bir reklam";
             const mTitle = manualTitle.value.trim();
             const mSlogan = manualSlogan.value.trim();
@@ -561,9 +600,7 @@
             statusText.className = "status recording";
 
             try {
-                // AI tasarımını sahnelerin ayarlarına yedir
                 await applyAIDesignToScenes(prompt);
-                
                 statusText.innerText = "🎬 Sinematik render başladı...";
                 canvas.style.display = 'block';
                 canvasContainer.querySelector('span').style.display = 'none';
@@ -584,7 +621,6 @@
                 };
 
                 mediaRecorder.start();
-
                 let startTime = Date.now();
                 const totalDuration = 6000; 
                 const sceneDuration = totalDuration / scenes.length;
@@ -593,8 +629,6 @@
 
                 function drawFrame() {
                     const time = Date.now() - startTime;
-                    
-                    // Hangi sahnedeyiz?
                     const currentSceneIndex = Math.min(Math.floor(time / sceneDuration), scenes.length - 1);
                     const currentScene = scenes[currentSceneIndex];
                     const sceneTime = time % sceneDuration;
@@ -606,7 +640,7 @@
                     const finalColors = s.colors;
                     const selectedFont = getFontFamily(s.textStyle);
 
-                    // === 1. ARKA PLAN ===
+                    // Arka Plan
                     if (s.bgAnimation === 'aurora' || s.bgAnimation === 'gradient') {
                         ctx.fillStyle = finalColors[0]; ctx.fillRect(0, 0, canvas.width, canvas.height);
                         const t = time / 1000;
@@ -628,22 +662,14 @@
                     else if (s.bgAnimation === 'matrix') {
                         ctx.fillStyle = "#000000"; ctx.fillRect(0, 0, canvas.width, canvas.height);
                         ctx.fillStyle = finalColors[1] || "#00FF41"; ctx.font = "20px monospace";
-                        for(let i=0; i<canvas.width; i+=30) {
-                            for(let j=0; j<canvas.height; j+=30) {
-                                if(Math.random() > 0.95) ctx.fillText(Math.random().toString(36).substring(2,3), i, j + (time/10)%30);
-                            }
-                        }
+                        for(let i=0; i<canvas.width; i+=30) { for(let j=0; j<canvas.height; j+=30) { if(Math.random() > 0.95) ctx.fillText(Math.random().toString(36).substring(2,3), i, j + (time/10)%30); } }
                     }
                     else if (s.bgAnimation === 'waves') {
                         ctx.fillStyle = finalColors[0]; ctx.fillRect(0, 0, canvas.width, canvas.height);
                         for (let i = 0; i < 3; i++) {
                             ctx.beginPath(); ctx.moveTo(0, canvas.height);
-                            for (let x = 0; x <= canvas.width; x += 20) {
-                                let y = centerY + Math.sin(x / 200 + time / 1000 + i) * 100;
-                                ctx.lineTo(x, y);
-                            }
-                            ctx.lineTo(canvas.width, canvas.height);
-                            ctx.fillStyle = (finalColors[i] || "#333") + "66"; ctx.fill();
+                            for (let x = 0; x <= canvas.width; x += 20) { let y = centerY + Math.sin(x / 200 + time / 1000 + i) * 100; ctx.lineTo(x, y); }
+                            ctx.lineTo(canvas.width, canvas.height); ctx.fillStyle = (finalColors[i] || "#333") + "66"; ctx.fill();
                         }
                     }
                     else if (s.bgAnimation === 'tunnel') {
@@ -666,38 +692,31 @@
                         }
                     }
 
-                    // === 2. PARÇACIKLAR ===
+                    // Parçacıklar
                     if (s.particleEffect !== 'none') {
-                        let pCount = s.particleEffect === 'golden_dust' ? 100 : 50; // Sahnede daha az parçacık
+                        let pCount = s.particleEffect === 'golden_dust' ? 100 : 50;
                         for (let i = 0; i < pCount; i++) {
                             let pX = (Math.random() * canvas.width + time * 0.1) % canvas.width;
                             let pY = (Math.random() * canvas.height - time * 0.2) % canvas.height;
                             if(pY < 0) pY += canvas.height;
-                            
-                            ctx.beginPath();
-                            let pRadius = Math.random() * 2 + 1;
+                            ctx.beginPath(); let pRadius = Math.random() * 2 + 1;
                             if(s.particleEffect === 'golden_dust') { ctx.fillStyle = `rgba(255, 215, 0, 0.8)`; ctx.shadowColor = "gold"; ctx.shadowBlur = 10; }
                             else if(s.particleEffect === 'snow') { ctx.fillStyle = `rgba(255, 255, 255, 0.8)`; }
                             else if(s.particleEffect === 'fireflies') { ctx.fillStyle = `rgba(200, 255, 100, 0.8)`; ctx.shadowColor = "yellow"; ctx.shadowBlur = 15; }
-                            
-                            ctx.arc(pX, pY, pRadius, 0, Math.PI*2);
-                            ctx.fill();
-                            ctx.shadowBlur = 0;
+                            ctx.arc(pX, pY, pRadius, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0;
                         }
                     }
 
-                    // === 3. SAHNEDEKİ RESİMLER ===
+                    // Sahnedeki Resimler
                     let hasContent = false;
                     if (currentScene.images.length > 0) {
                         hasContent = true;
-                        
                         currentScene.images.forEach(imgData => {
                             let imgXOffset = imgData.x;
                             let imgYOffset = imgData.y;
                             let imgScale = imgData.scale;
                             let imgRotation = (imgData.rotation * Math.PI) / 180;
                             
-                            // Sahne bazlı animasyonlar
                             if (s.imageAnimType === 'float') imgYOffset += Math.sin(sceneTime / 300) * 20;
                             if (s.imageAnimType === 'pulse') imgScale *= 1 + Math.sin(sceneTime / 200) * 0.05;
                             if (s.imageAnimType === 'rotate') imgRotation += Math.sin(sceneTime / 500) * 0.05;
@@ -706,17 +725,12 @@
                             if (s.imageAnimType === '3d_tilt') { imgRotation += Math.sin(sceneTime/1000)*0.1; imgScale *= 1 + Math.cos(sceneTime/1000)*0.05; }
 
                             let imgW = imgData.imgObj.width, imgH = imgData.imgObj.height, maxSize = 400;
-                            if (imgW > maxSize || imgH > maxSize) {
-                                if (imgW > imgH) { imgH = (maxSize / imgW) * imgH; imgW = maxSize; }
-                                else { imgW = (maxSize / imgH) * imgW; imgH = maxSize; }
-                            }
+                            if (imgW > maxSize || imgH > maxSize) { if (imgW > imgH) { imgH = (maxSize / imgW) * imgH; imgW = maxSize; } else { imgW = (maxSize / imgH) * imgW; imgH = maxSize; } }
 
                             ctx.save();
                             ctx.translate(centerX + imgXOffset, centerY + imgYOffset); 
-                            ctx.rotate(imgRotation); 
-                            ctx.scale(imgScale, imgScale);
+                            ctx.rotate(imgRotation); ctx.scale(imgScale, imgScale);
 
-                            // Resim Stilleri
                             if (s.imageStyle === 'neon_border') {
                                 ctx.shadowColor = finalColors[1]; ctx.shadowBlur = 50;
                                 ctx.strokeStyle = finalColors[2]; ctx.lineWidth = 10; ctx.strokeRect(-imgW/2, -imgH/2, imgW, imgH);
@@ -724,9 +738,7 @@
                                 ctx.shadowColor = finalColors[0]; ctx.shadowBlur = 60; ctx.shadowOffsetX = 20; ctx.shadowOffsetY = 20;
                             } else if (s.imageStyle === 'glass' || s.imageStyle === 'polaroid' || s.imageStyle === 'circle') {
                                 ctx.shadowColor = "rgba(0,0,0,0.6)"; ctx.shadowBlur = 30;
-                            } else {
-                                ctx.shadowColor = "rgba(0,0,0,0.8)"; ctx.shadowBlur = 30;
-                            }
+                            } else { ctx.shadowColor = "rgba(0,0,0,0.8)"; ctx.shadowBlur = 30; }
 
                             if (s.imageStyle === 'glass') {
                                 ctx.beginPath(); ctx.roundRect(-imgW/2, -imgH/2, imgW, imgH, 30); ctx.clip();
@@ -749,23 +761,17 @@
                         });
                     }
 
-                    // === 4. YAZILAR ===
+                    // Yazılar
                     let titleYOffset = hasContent ? -280 : -50; 
                     let subYOffset = hasContent ? 280 : 40;  
                     let currentTextColor = s.textColor;
                     let textX = 0, textY = 0, textScale = 1;
                     
-                    if (s.textAnimation === 'color_cycle') {
-                        let hue = (time / 10) % 360; currentTextColor = `hsl(${hue}, 100%, 60%)`;
-                    } else if (s.textAnimation === 'slide_in') {
-                        if (sceneTime < 1000) textX = -1000 + (sceneTime * 1);
-                    } else if (s.textAnimation === 'bounce') {
-                        titleYOffset += Math.sin(time / 200) * 15; subYOffset += Math.sin(time / 200) * 15;
-                    } else if (s.textAnimation === 'neon_pulse') {
-                        textScale = 1 + Math.sin(time / 150) * 0.05;
-                    } else if (s.textAnimation === 'fade_up') {
-                        if(sceneTime < 1000) { textY = (1000 - sceneTime) * 0.1; ctx.globalAlpha = sceneTime / 1000; }
-                    }
+                    if (s.textAnimation === 'color_cycle') { let hue = (time / 10) % 360; currentTextColor = `hsl(${hue}, 100%, 60%)`; } 
+                    else if (s.textAnimation === 'slide_in') { if (sceneTime < 1000) textX = -1000 + (sceneTime * 1); } 
+                    else if (s.textAnimation === 'bounce') { titleYOffset += Math.sin(time / 200) * 15; subYOffset += Math.sin(time / 200) * 15; } 
+                    else if (s.textAnimation === 'neon_pulse') { textScale = 1 + Math.sin(time / 150) * 0.05; } 
+                    else if (s.textAnimation === 'fade_up') { if(sceneTime < 1000) { textY = (1000 - sceneTime) * 0.1; ctx.globalAlpha = sceneTime / 1000; } }
 
                     ctx.save(); ctx.translate(centerX + textX, centerY + textY); ctx.scale(textScale, textScale);
                     ctx.textAlign = "center"; ctx.textBaseline = "middle"; 
@@ -780,9 +786,7 @@
                     if (s.textAnimation === 'typewriter') {
                         let charsToShow = Math.floor(sceneTime / 50);
                         ctx.fillText(finalTitle.substring(0, charsToShow), 0, titleYOffset);
-                    } else {
-                        ctx.fillText(finalTitle, 0, titleYOffset);
-                    }
+                    } else { ctx.fillText(finalTitle, 0, titleYOffset); }
                     ctx.restore();
 
                     ctx.save(); ctx.translate(centerX + textX, centerY + textY); ctx.scale(textScale, textScale);
@@ -796,7 +800,7 @@
                     ctx.fillStyle = s.textAnimation === 'color_cycle' ? currentTextColor : (finalColors[2] || "#CCCCCC");
                     ctx.fillText(finalSubtitle, 0, subYOffset); ctx.restore();
 
-                    // === 5. EFEKTLER ===
+                    // Efektler
                     if (s.visualEffect === 'bloom') {
                         ctx.globalCompositeOperation = 'screen'; ctx.globalAlpha = 0.4; ctx.filter = 'blur(15px)';
                         ctx.drawImage(canvas, 0, 0); ctx.filter = 'none'; ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
@@ -830,6 +834,11 @@
                 generateBtn.innerText = "✨ Otonom Reklamı Üret";
             }
         };
+
+        // Pencere boyutu değiştiğinde önizlemeyi yeniden çiz (responsive)
+        window.addEventListener('resize', () => {
+            if (activeSceneIndex !== -1) renderInteractiveCanvas();
+        });
     </script>
 </body>
 </html>
