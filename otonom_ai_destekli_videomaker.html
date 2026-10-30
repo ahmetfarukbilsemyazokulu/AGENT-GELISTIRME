@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Oynatıcılı ve Geçiş Efektli Sinema Stüdyosu | AGENT-GELISTIRME</title>
+    <title>Video ve Resim Destekli Sinema Stüdyosu | AGENT-GELISTIRME</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=Montserrat:wght@400;600;800&family=Caveat:wght@700&family=Cinzel:wght@700&family=Inter:wght@400&family=Courier+Prime:wght@700&display=swap" rel="stylesheet">
     
     <style>
@@ -30,7 +30,7 @@
         .color-picker-group input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
         .color-picker-group input[type="color"]::-webkit-color-swatch { border: 2px solid #475569; border-radius: 50%; }
 
-        .upload-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .upload-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px; }
         .upload-area { display: flex; flex-direction: column; gap: 10px; background: #0F172A; padding: 15px; border-radius: 10px; border: 1px dashed #475569; }
         .upload-area input { color: #94A3B8; font-size: 13px; cursor: pointer; }
         
@@ -51,11 +51,12 @@
             border: 2px dashed #475569; border-radius: 8px; overflow: hidden; 
             cursor: crosshair; user-select: none;
         }
-        .draggable-img { 
+        .draggable-img, .draggable-video { 
             position: absolute; cursor: grab; transform-origin: center center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.5); border: 2px solid transparent;
+            object-fit: cover;
         }
-        .draggable-img.selected { border-color: #38BDF8; box-shadow: 0 0 15px rgba(56,189,248,0.8); }
+        .draggable-img.selected, .draggable-video.selected { border-color: #38BDF8; box-shadow: 0 0 15px rgba(56,189,248,0.8); }
         
         .draggable-text {
             position: absolute; cursor: grab; transform-origin: center center;
@@ -92,8 +93,8 @@
 <body>
 
     <div class="header">
-        <h1>Geçiş Efektli ve Video Oynatıcılı Stüdyo</h1>
-        <p>Sahne geçişlerini seçin, videonuzu anında izleyin.</p>
+        <h1>Video ve Resim Destekli Stüdyo</h1>
+        <p>Kendi videolarınızı yükleyin, efektlerle süsleyin.</p>
     </div>
 
     <div class="studio-container">
@@ -185,9 +186,9 @@
             </div>
         </div>
 
-        <div class="controls-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+        <div class="controls-grid" style="grid-template-columns: 1fr 1fr 1fr 1fr;">
             <div class="control-box">
-                <label>🎥 Sinematik Görüntü Efektleri (Overlay)</label>
+                <label>🎥 Görüntü Efektleri</label>
                 <select id="visualEffect">
                     <option value="auto" selected>✨ Yapay Zeka Karar Versin</option>
                     <option value="none">Efekt Yok</option>
@@ -198,38 +199,52 @@
                     <option value="scanlines">CRT Çizgileri</option>
                 </select>
             </div>
-            <!-- YENİ: SAHNE GEÇİŞ EFEKTİ -->
             <div class="control-box">
-                <label>🔄 Sahneler Arası Geçiş Efekti</label>
+                <label>🔄 Sahne Geçişi</label>
                 <select id="transitionEffect">
                     <option value="auto" selected>✨ Yapay Zeka Karar Versin</option>
-                    <option value="none">Ani Geçiş (Yok)</option>
-                    <option value="fade">Yumuşak Karartma (Fade)</option>
+                    <option value="none">Ani Geçiş</option>
+                    <option value="fade">Karartma (Fade)</option>
                     <option value="slide_left">Sola Kaydır</option>
                     <option value="slide_right">Sağa Kaydır</option>
-                    <option value="zoom">Yakınlaşarak Gel</option>
+                    <option value="zoom">Yakınlaş</option>
                     <option value="wipe">Perde (Wipe)</option>
                 </select>
             </div>
             <div class="control-box">
-                <label>🎵 Arka Plan Müziği (Ses Dosyası)</label>
-                <input type="file" id="audioUpload" accept="audio/*" style="background: transparent; border: none; color: #94A3B8; font-size: 12px; padding: 8px 0;">
-                <div id="audioStatus" style="font-size: 11px; color: #10B981; display: none;">✅ Müzik Yüklendi</div>
+                <label>⏱️ Video Hızı (Süre)</label>
+                <select id="videoDuration">
+                    <option value="auto" selected>✨ Yapay Zeka Karar Versin</option>
+                    <option value="4000">Hızlı (4 Saniye)</option>
+                    <option value="6000">Normal (6 Saniye)</option>
+                    <option value="10000">Yavaş (10 Saniye)</option>
+                    <option value="15000">Çok Yavaş (15 Saniye)</option>
+                </select>
+            </div>
+            <div class="control-box">
+                <label>🎵 Arka Plan Müziği</label>
+                <input type="file" id="audioUpload" accept="audio/*" style="background: transparent; border: none; color: #94A3B8; font-size: 11px; padding: 8px 0;">
+                <div id="audioStatus" style="font-size: 11px; color: #10B981; display: none;">✅ Yüklendi</div>
             </div>
         </div>
 
         <div class="upload-row">
             <div class="upload-area">
-                <label style="font-size: 13px; font-weight: 600; color: #E2E8F0;">Sahne Resimleri (Toplu Seçim):</label>
+                <label style="font-size: 13px; font-weight: 600; color: #E2E8F0;">Resim Yükle (Sahne):</label>
                 <input type="file" id="imageUpload" accept="image/*" multiple>
             </div>
+            <!-- YENİ: VİDEO YÜKLEME ALANI -->
+            <div class="upload-area">
+                <label style="font-size: 13px; font-weight: 600; color: #E2E8F0;">Video Yükle (Sahne):</label>
+                <input type="file" id="videoUpload" accept="video/*" multiple>
+            </div>
             <div class="upload-area" style="justify-content: center; border-style: solid; border-color: #1E293B; background: #0F172A;">
-                <span style="font-size: 12px; color: #94A3B8; text-align: center;">Her resim yeni bir sahne oluşturur.<br>Yazıları ve resimleri aşağıdaki panelden sürükleyin.</span>
+                <span style="font-size: 12px; color: #94A3B8; text-align: center;">Yüklediğiniz her dosya (resim veya video) yeni bir sahne oluşturur.</span>
             </div>
         </div>
 
         <div class="scene-manager" id="sceneManager" style="display: none;">
-            <h3 style="margin: 0 0 10px 0; font-size: 14px; color: #38BDF8;">Sahne Yöneticisi (Yazı ve Resimleri Sürükleyin)</h3>
+            <h3 style="margin: 0 0 10px 0; font-size: 14px; color: #38BDF8;">Sahne Yöneticisi (Yazı ve Görselleri Sürükleyin)</h3>
             <div class="scene-tabs" id="sceneTabs"></div>
             
             <div class="scene-editor" id="sceneEditor">
@@ -250,15 +265,24 @@
                 </div>
                 
                 <div id="imageTransformControls" style="display: none; background: #1E293B; padding: 15px; border-radius: 8px;">
-                    <label style="font-size: 13px; color: #F472B6; font-weight: 600; display: block; margin-bottom: 10px;" id="selectedImageLabel">Resim Ayarları</label>
+                    <label style="font-size: 13px; color: #F472B6; font-weight: 600; display: block; margin-bottom: 10px;" id="selectedImageLabel">Görsel ve Yazı Boyut Ayarları</label>
                     
                     <div class="slider-group">
-                        <label>Boyut <span id="valScale">1</span></label>
+                        <label>Görsel Boyutu <span id="valScale">1</span></label>
                         <input type="range" id="imgScale" min="0.1" max="3" step="0.05" value="1" oninput="updateImageProperty('scale', this.value)">
                     </div>
                     <div class="slider-group">
-                        <label>Açı <span id="valRot">0</span></label>
+                        <label>Görsel Açısı <span id="valRot">0</span></label>
                         <input type="range" id="imgRot" min="-180" max="180" value="0" oninput="updateImageProperty('rotation', this.value)">
+                    </div>
+                    
+                    <div class="slider-group" style="margin-top: 15px; border-top: 1px solid #334155; padding-top: 10px;">
+                        <label style="color: #38BDF8;">Başlık Boyutu <span id="valTitleSize">80</span></label>
+                        <input type="range" id="titleSize" min="20" max="150" value="80" oninput="updateTextSize('titleSize', this.value)">
+                    </div>
+                    <div class="slider-group">
+                        <label style="color: #38BDF8;">Slogan Boyutu <span id="valSubSize">32</span></label>
+                        <input type="range" id="subtitleSize" min="10" max="100" value="32" oninput="updateTextSize('subtitleSize', this.value)">
                     </div>
                 </div>
             </div>
@@ -268,7 +292,6 @@
             <button id="generateBtn" onclick="generateVideo()" disabled>Yapay Zeka Yükleniyor...</button>
         </div>
 
-        <!-- MEDYA ALANI (Canvas ve Video Oynatıcı) -->
         <div class="media-area" id="mediaContainer">
             <span id="mediaPlaceholder" style="color: #64748B; font-weight: 300;">Reklamınız Burada Oluşacak</span>
             <canvas id="videoCanvas" width="1280" height="720"></canvas>
@@ -289,7 +312,6 @@
         const canvas = document.getElementById('videoCanvas');
         const ctx = canvas.getContext('2d');
         
-        // Geçiş efektleri için offscreen canvas'lar
         const sceneCanvas = document.createElement('canvas');
         sceneCanvas.width = canvas.width; sceneCanvas.height = canvas.height;
         const sceneCtx = sceneCanvas.getContext('2d');
@@ -302,7 +324,6 @@
         const generateBtn = document.getElementById('generateBtn');
         const downloadArea = document.getElementById('downloadArea');
         const downloadLink = document.getElementById('downloadLink');
-        const mediaContainer = document.getElementById('mediaContainer');
         const mediaPlaceholder = document.getElementById('mediaPlaceholder');
         const videoPlayer = document.getElementById('videoPlayer');
         
@@ -316,6 +337,7 @@
         const textAnimation = document.getElementById('textAnimation');
         const visualEffect = document.getElementById('visualEffect');
         const transitionEffect = document.getElementById('transitionEffect');
+        const videoDurationSelect = document.getElementById('videoDuration');
         
         const sceneManager = document.getElementById('sceneManager');
         const sceneTabs = document.getElementById('sceneTabs');
@@ -352,13 +374,14 @@
             return `rgba(${r}, ${g}, ${b}, ${alpha})`;
         }
 
+        // RESİM YÜKLEME
         document.getElementById('imageUpload').addEventListener('change', async function(e) {
             const files = Array.from(e.target.files);
             for (const file of files) {
-                const img = await loadImageFile(file);
+                const img = await loadMediaFile(file, 'image');
                 scenes.push({
                     id: Date.now() + Math.random(),
-                    images: [{ imgObj: img, x: 0, y: 0, scale: 1, rotation: 0, id: Date.now() + Math.random() }],
+                    media: [{ mediaObj: img, type: 'image', x: 0, y: 0, scale: 1, rotation: 0, id: Date.now() + Math.random() }],
                     settings: getDefaultSceneSettings()
                 });
             }
@@ -366,15 +389,39 @@
             if (activeSceneIndex === -1 && scenes.length > 0) selectScene(0);
         });
 
-        function loadImageFile(file) {
+        // VİDEO YÜKLEME
+        document.getElementById('videoUpload').addEventListener('change', async function(e) {
+            const files = Array.from(e.target.files);
+            for (const file of files) {
+                const video = await loadMediaFile(file, 'video');
+                scenes.push({
+                    id: Date.now() + Math.random(),
+                    media: [{ mediaObj: video, type: 'video', x: 0, y: 0, scale: 1, rotation: 0, id: Date.now() + Math.random() }],
+                    settings: getDefaultSceneSettings()
+                });
+            }
+            updateSceneUI();
+            if (activeSceneIndex === -1 && scenes.length > 0) selectScene(0);
+        });
+
+        function loadMediaFile(file, type) {
             return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onload = (event) => {
+                const url = URL.createObjectURL(file);
+                if (type === 'image') {
                     const img = new Image();
                     img.onload = () => resolve(img);
-                    img.src = event.target.result;
-                };
-                reader.readAsDataURL(file);
+                    img.src = url;
+                } else {
+                    const video = document.createElement('video');
+                    video.src = url;
+                    video.muted = true; // Sahnede ses çalmasın, müzik çalsın
+                    video.playsInline = true;
+                    video.loop = true; // Sahne süresince dönsün
+                    // Video boyutlarının yüklenmesini bekle
+                    video.onloadedmetadata = () => resolve(video);
+                    // Bazı tarayıcılar için ilk kareyi yüklemeyi tetikle
+                    video.load(); 
+                }
             });
         }
 
@@ -383,8 +430,8 @@
                 colorPalette: 'auto', bgAnimation: 'auto', particleEffect: 'auto', 
                 imageStyle: 'auto', entryAnimation: 'auto', textStyle: 'auto', 
                 textAnimation: 'auto', visualEffect: 'auto', transitionEffect: 'auto',
-                title: "REKLAM", titleX: 0, titleY: -230,
-                subtitle: "SİZİN İÇİN", subtitleX: 0, subtitleY: 260,
+                title: "REKLAM", titleX: 0, titleY: -230, titleSize: 80,
+                subtitle: "SİZİN İÇİN", subtitleX: 0, subtitleY: 260, subtitleSize: 32,
                 titleColor: "#FFFFFF", subtitleColor: "#CCCCCC",
                 colors: ["#111827", "#374151", "#1F2937"]
             };
@@ -398,7 +445,16 @@
             scenes.forEach((scene, index) => {
                 const tab = document.createElement('div');
                 tab.className = `scene-tab ${index === activeSceneIndex ? 'active' : ''}`;
-                tab.innerHTML = `<img src="${scene.images[0].imgObj.src}" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;"><span>Sahne ${index + 1}</span>`;
+                
+                // İlk medyayı thumbnail olarak göster
+                const firstMedia = scene.media[0];
+                if(firstMedia.type === 'image') {
+                    tab.innerHTML = `<img src="${firstMedia.mediaObj.src}" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;"><span>Sahne ${index + 1} (Resim)</span>`;
+                } else {
+                    // Video için özel thumbnail (video etiketi kullanabiliriz ama basit tutmak için metin koyalım)
+                    tab.innerHTML = `<div style="width: 60px; height: 40px; background: #000; display: flex; justify-content: center; align-items: center; border-radius: 4px; font-size: 20px;">🎬</div><span>Sahne ${index + 1} (Video)</span>`;
+                }
+                
                 tab.onclick = () => selectScene(index);
                 sceneTabs.appendChild(tab);
             });
@@ -425,6 +481,11 @@
             
             sceneTitleInput.value = s.title;
             sceneSloganInput.value = s.subtitle;
+            
+            document.getElementById('titleSize').value = s.titleSize;
+            document.getElementById('valTitleSize').innerText = s.titleSize;
+            document.getElementById('subtitleSize').value = s.subtitleSize;
+            document.getElementById('valSubSize').innerText = s.subtitleSize;
         }
 
         sceneTitleInput.addEventListener('input', (e) => {
@@ -439,33 +500,55 @@
             renderInteractiveCanvas();
         });
 
+        window.updateTextSize = function(prop, value) {
+            if (activeSceneIndex === -1) return;
+            value = parseFloat(value);
+            scenes[activeSceneIndex].settings[prop] = value;
+            
+            if (prop === 'titleSize') document.getElementById('valTitleSize').innerText = value;
+            if (prop === 'subtitleSize') document.getElementById('valSubSize').innerText = value;
+            
+            renderInteractiveCanvas();
+        }
+
         function renderInteractiveCanvas() {
             interactiveCanvas.innerHTML = ''; 
             const scene = scenes[activeSceneIndex];
             const uiScaleFactor = interactiveCanvas.clientWidth / 1280; 
             
-            scene.images.forEach((imgData, index) => {
-                const imgEl = document.createElement('img');
-                imgEl.src = imgData.imgObj.src;
-                imgEl.className = `draggable-img ${index === activeImageIndex ? 'selected' : ''}`;
-                imgEl.dataset.index = index;
+            scene.media.forEach((mediaData, index) => {
+                let el;
+                let mediaW = mediaData.type === 'image' ? mediaData.mediaObj.width : mediaData.mediaObj.videoWidth;
+                let mediaH = mediaData.type === 'image' ? mediaData.mediaObj.height : mediaData.mediaObj.videoHeight;
+
+                if (mediaData.type === 'image') {
+                    el = document.createElement('img');
+                    el.src = mediaData.mediaObj.src;
+                    el.className = `draggable-img ${index === activeImageIndex ? 'selected' : ''}`;
+                } else {
+                    el = document.createElement('video');
+                    el.src = mediaData.mediaObj.src;
+                    el.muted = true; el.loop = true; el.playsInline = true;
+                    el.play(); // Önizlemede oynasın
+                    el.className = `draggable-video ${index === activeImageIndex ? 'selected' : ''}`;
+                }
                 
-                let baseW = imgData.imgObj.width;
-                let baseH = imgData.imgObj.height;
+                el.dataset.index = index;
+                
                 let maxW = 400;
-                if (baseW > maxW) { baseH = (maxW / baseW) * baseH; baseW = maxW; }
+                if (mediaW > maxW) { mediaH = (maxW / mediaW) * mediaH; mediaW = maxW; }
 
-                const finalW = baseW * imgData.scale * uiScaleFactor;
-                const finalH = baseH * imgData.scale * uiScaleFactor;
+                const finalW = mediaW * mediaData.scale * uiScaleFactor;
+                const finalH = mediaH * mediaData.scale * uiScaleFactor;
 
-                imgEl.style.width = `${finalW}px`;
-                imgEl.style.height = `${finalH}px`;
-                imgEl.style.left = `calc(50% + ${imgData.x * uiScaleFactor}px - ${finalW/2}px)`;
-                imgEl.style.top = `calc(50% + ${imgData.y * uiScaleFactor}px - ${finalH/2}px)`;
-                imgEl.style.transform = `rotate(${imgData.rotation}deg)`;
+                el.style.width = `${finalW}px`;
+                el.style.height = `${finalH}px`;
+                el.style.left = `calc(50% + ${mediaData.x * uiScaleFactor}px - ${finalW/2}px)`;
+                el.style.top = `calc(50% + ${mediaData.y * uiScaleFactor}px - ${finalH/2}px)`;
+                el.style.transform = `rotate(${mediaData.rotation}deg)`;
 
-                imgEl.addEventListener('mousedown', (e) => startDrag(e, 'image', index));
-                interactiveCanvas.appendChild(imgEl);
+                el.addEventListener('mousedown', (e) => startDrag(e, 'media', index));
+                interactiveCanvas.appendChild(el);
             });
 
             const titleEl = document.createElement('div');
@@ -475,7 +558,7 @@
             titleEl.style.top = `calc(50% + ${scene.settings.titleY * uiScaleFactor}px)`;
             titleEl.style.transform = `translate(-50%, -50%)`;
             titleEl.style.color = scene.settings.titleColor;
-            titleEl.style.fontSize = `${24 * uiScaleFactor * 2.5}px`; 
+            titleEl.style.fontSize = `${scene.settings.titleSize * uiScaleFactor}px`; 
             titleEl.addEventListener('mousedown', (e) => startDrag(e, 'title', 0));
             interactiveCanvas.appendChild(titleEl);
 
@@ -486,7 +569,7 @@
             subEl.style.top = `calc(50% + ${scene.settings.subtitleY * uiScaleFactor}px)`;
             subEl.style.transform = `translate(-50%, -50%)`;
             subEl.style.color = scene.settings.subtitleColor;
-            subEl.style.fontSize = `${16 * uiScaleFactor * 2.5}px`; 
+            subEl.style.fontSize = `${scene.settings.subtitleSize * uiScaleFactor}px`; 
             subEl.addEventListener('mousedown', (e) => startDrag(e, 'subtitle', 0));
             interactiveCanvas.appendChild(subEl);
             
@@ -497,20 +580,20 @@
             if (activeImageIndex === -1 || activeSceneIndex === -1) {
                 imageTransformControls.style.display = 'none'; return;
             }
-            const imgData = scenes[activeSceneIndex].images[activeImageIndex];
-            if(!imgData) return;
+            const mediaData = scenes[activeSceneIndex].media[activeImageIndex];
+            if(!mediaData) return;
 
             imageTransformControls.style.display = 'block';
-            document.getElementById('selectedImageLabel').innerText = `Resim ${activeImageIndex + 1} Ayarları`;
-            document.getElementById('imgScale').value = imgData.scale;
-            document.getElementById('valScale').innerText = imgData.scale.toFixed(2);
-            document.getElementById('imgRot').value = imgData.rotation;
-            document.getElementById('valRot').innerText = imgData.rotation;
+            document.getElementById('selectedImageLabel').innerText = `Görsel ve Yazı Boyut Ayarları`;
+            document.getElementById('imgScale').value = mediaData.scale;
+            document.getElementById('valScale').innerText = mediaData.scale.toFixed(2);
+            document.getElementById('imgRot').value = mediaData.rotation;
+            document.getElementById('valRot').innerText = mediaData.rotation;
         }
 
         window.updateImageProperty = function(prop, value) {
             if (activeSceneIndex === -1 || activeImageIndex === -1) return;
-            scenes[activeSceneIndex].images[activeImageIndex][prop] = parseFloat(value);
+            scenes[activeSceneIndex].media[activeImageIndex][prop] = parseFloat(value);
             renderInteractiveCanvas(); 
         }
 
@@ -526,18 +609,18 @@
             dragType = type;
             dragIndex = index;
 
-            document.querySelectorAll('.draggable-img').forEach(el => el.classList.remove('selected'));
+            document.querySelectorAll('.draggable-img, .draggable-video').forEach(el => el.classList.remove('selected'));
             document.querySelectorAll('.draggable-text').forEach(el => el.classList.remove('selected'));
             
-            if (type === 'image') {
+            if (type === 'media') {
                 activeImageIndex = index;
                 e.target.classList.add('selected');
                 updateTransformControls();
-                initialX = scenes[activeSceneIndex].images[index].x;
-                initialY = scenes[activeSceneIndex].images[index].y;
+                initialX = scenes[activeSceneIndex].media[index].x;
+                initialY = scenes[activeSceneIndex].media[index].y;
             } else {
                 e.target.classList.add('selected');
-                imageTransformControls.style.display = 'none'; 
+                imageTransformControls.style.display = 'block';
                 if (type === 'title') {
                     initialX = scenes[activeSceneIndex].settings.titleX;
                     initialY = scenes[activeSceneIndex].settings.titleY;
@@ -563,20 +646,21 @@
             const newX = initialX + (deltaX * uiScaleFactor);
             const newY = initialY + (deltaY * uiScaleFactor);
 
-            if (dragType === 'image') {
-                scenes[activeSceneIndex].images[dragIndex].x = newX;
-                scenes[activeSceneIndex].images[dragIndex].y = newY;
+            if (dragType === 'media') {
+                scenes[activeSceneIndex].media[dragIndex].x = newX;
+                scenes[activeSceneIndex].media[dragIndex].y = newY;
                 
-                const imgEl = document.querySelector(`.draggable-img[data-index="${dragIndex}"]`);
-                if(imgEl) {
-                    let baseW = scenes[activeSceneIndex].images[dragIndex].imgObj.width;
+                const el = document.querySelector(`.draggable-img[data-index="${dragIndex}"], .draggable-video[data-index="${dragIndex}"]`);
+                if(el) {
+                    let mediaData = scenes[activeSceneIndex].media[dragIndex];
+                    let mediaW = mediaData.type === 'image' ? mediaData.mediaObj.width : mediaData.mediaObj.videoWidth;
                     let maxW = 400;
-                    if (baseW > maxW) baseW = maxW;
+                    if (mediaW > maxW) mediaW = maxW;
                     const uiScale = interactiveCanvas.clientWidth / 1280;
-                    const finalW = baseW * scenes[activeSceneIndex].images[dragIndex].scale * uiScale;
+                    const finalW = mediaW * mediaData.scale * uiScale;
                     
-                    imgEl.style.left = `calc(50% + ${newX * uiScale}px - ${finalW/2}px)`;
-                    imgEl.style.top = `calc(50% + ${newY * uiScale}px - ${finalW/2}px)`; 
+                    el.style.left = `calc(50% + ${newX * uiScale}px - ${finalW/2}px)`;
+                    el.style.top = `calc(50% + ${newY * uiScale}px - ${finalW/2}px)`; 
                 }
             } else if (dragType === 'title') {
                 scenes[activeSceneIndex].settings.titleX = newX;
@@ -626,12 +710,12 @@
 
         function getLocalPromptDesign(prompt) {
             const p = prompt.toLowerCase();
-            let design = { emoji: "", colors: ["#111827", "#374151", "#1F2937"], textColor: "#FFFFFF", bgAnimation: "gradient", particleEffect: "none", imageStyle: "glass", entryAnimation: "zoom_in", textStyle: "modern", textAnimation: "fade_up", visualEffect: "none", transitionEffect: "fade" };
+            let design = { emoji: "", colors: ["#111827", "#374151", "#1F2937"], textColor: "#FFFFFF", bgAnimation: "gradient", particleEffect: "none", imageStyle: "glass", entryAnimation: "zoom_in", textStyle: "modern", textAnimation: "fade_up", visualEffect: "none", transitionEffect: "fade", duration: 6000 };
             const emojiMap = {'ruj': '💄', 'parfüm': '🧴', 'ağaç': '🌳', 'kalem': '✏️', 'araba': '🚗', 'saat': '⌚', 'kahve': '☕', 'çiçek': '🌸', 'kitap': '📚', 'telefon': '📱', 'gözlük': '🕶️', 'ayakkabı': '👠', 'yiyecek': '🍔', 'müzik': '🎵', 'elmas': '💎', 'roket': '🚀', 'uzay': '🌌', 'robot': '🤖', 'oyun': '🎮', 'pizza': '🍕', 'kedi': '🐱', 'köpek': '🐶', 'kuş': '🐦', 'deniz': '🌊', 'kalp': '❤️'};
             for (const [key, value] of Object.entries(emojiMap)) { if (p.includes(key)) { design.emoji = value; break; } }
-            if (p.includes('ruj') || p.includes('aşk') || p.includes('güzellik') || p.includes('kırmızı')) { design.colors = ["#4C0519", "#BE123C", "#FDA4AF"]; design.textColor = "#FFF1F2"; design.bgAnimation = "aurora"; design.particleEffect = "golden_dust"; design.imageStyle = "glass"; design.entryAnimation = "orbit"; design.textStyle = "elegant"; design.textAnimation = "neon_pulse"; design.visualEffect = "bloom"; design.transitionEffect = "fade"; }
-            else if (p.includes('doğa') || p.includes('ağaç') || p.includes('yeşil') || p.includes('orman')) { design.colors = ["#064E3B", "#10B981", "#A7F3D0"]; design.textColor = "#ECFDF5"; design.bgAnimation = "bokeh"; design.particleEffect = "fireflies"; design.imageStyle = "circle"; design.entryAnimation = "fly_up"; design.textStyle = "classic"; design.textAnimation = "fade_up"; design.visualEffect = "lightleak"; design.transitionEffect = "zoom"; }
-            else if (p.includes('teknoloji') || p.includes('neon') || p.includes('uzay') || p.includes('roket')) { design.colors = ["#020617", "#1D4ED8", "#06B6D4"]; design.textColor = "#E0F2FE"; design.bgAnimation = "tunnel"; design.particleEffect = "none"; design.imageStyle = "neon_border"; design.entryAnimation = "slide_left"; design.textStyle = "mono"; design.textAnimation = "shake"; design.visualEffect = "glitch"; design.transitionEffect = "slide_right"; }
+            if (p.includes('ruj') || p.includes('aşk') || p.includes('güzellik') || p.includes('kırmızı')) { design.colors = ["#4C0519", "#BE123C", "#FDA4AF"]; design.textColor = "#FFF1F2"; design.bgAnimation = "aurora"; design.particleEffect = "golden_dust"; design.imageStyle = "glass"; design.entryAnimation = "orbit"; design.textStyle = "elegant"; design.textAnimation = "neon_pulse"; design.visualEffect = "bloom"; design.transitionEffect = "fade"; design.duration = 8000; }
+            else if (p.includes('doğa') || p.includes('ağaç') || p.includes('yeşil') || p.includes('orman')) { design.colors = ["#064E3B", "#10B981", "#A7F3D0"]; design.textColor = "#ECFDF5"; design.bgAnimation = "bokeh"; design.particleEffect = "fireflies"; design.imageStyle = "circle"; design.entryAnimation = "fly_up"; design.textStyle = "classic"; design.textAnimation = "fade_up"; design.visualEffect = "lightleak"; design.transitionEffect = "zoom"; design.duration = 10000; }
+            else if (p.includes('teknoloji') || p.includes('neon') || p.includes('uzay') || p.includes('roket')) { design.colors = ["#020617", "#1D4ED8", "#06B6D4"]; design.textColor = "#E0F2FE"; design.bgAnimation = "tunnel"; design.particleEffect = "none"; design.imageStyle = "neon_border"; design.entryAnimation = "slide_left"; design.textStyle = "mono"; design.textAnimation = "shake"; design.visualEffect = "glitch"; design.transitionEffect = "slide_right"; design.duration = 4000; }
             return design;
         }
 
@@ -647,7 +731,8 @@
                     - textAnimation: [typewriter, slide_in, neon_pulse, bounce, color_cycle, fade_up, zoom_in, shake, split]
                     - visualEffect: [none, bloom, glitch, vignette, grain, scanlines, chromatic, lightleak, retro]
                     - transitionEffect: [none, fade, slide_left, slide_right, zoom, wipe]
-                    JSON: {"title": "TITLE", "subtitle": "SUBTITLE", "colors": ["#hex1", "#hex2", "#hex3"], "emoji": "SINGLE_EMOJI", "bgAnimation": "...", "particleEffect": "...", "imageStyle": "...", "entryAnimation": "...", "textStyle": "...", "textAnimation": "...", "visualEffect": "...", "transitionEffect": "..."}` },
+                    - duration: [4000, 6000, 10000, 15000]
+                    JSON: {"title": "TITLE", "subtitle": "SUBTITLE", "colors": ["#hex1", "#hex2", "#hex3"], "emoji": "SINGLE_EMOJI", "bgAnimation": "...", "particleEffect": "...", "imageStyle": "...", "entryAnimation": "...", "textStyle": "...", "textAnimation": "...", "visualEffect": "...", "transitionEffect": "...", "duration": 6000}` },
                 { role: "user", content: `Design for: "${prompt}"` }
             ];
             try {
@@ -663,6 +748,14 @@
             if (style === 'handwriting') return "'Caveat', cursive";
             if (style === 'mono') return "'Courier Prime', monospace";
             return "'Montserrat', sans-serif";
+        }
+
+        function fitTextSize(text, desiredSize, maxWidth, context, fontFamily) {
+            let size = desiredSize;
+            context.font = `600 ${size}px ${fontFamily}`;
+            let width = context.measureText(text).width;
+            if (width > maxWidth) { size = size * (maxWidth / width); }
+            return size;
         }
 
         async function applyAIDesignToScenes(prompt) {
@@ -686,6 +779,13 @@
                 scene.settings.textAnimation = textAnimation.value === 'auto' ? (aiDesign.textAnimation || 'fade_up') : textAnimation.value;
                 scene.settings.visualEffect = visualEffect.value === 'auto' ? (aiDesign.visualEffect || 'none') : visualEffect.value;
                 scene.settings.transitionEffect = transitionEffect.value === 'auto' ? (aiDesign.transitionEffect || 'fade') : transitionEffect.value;
+                
+                if (scene.settings.titleSize === 80) {
+                     scene.settings.titleSize = Math.max(30, Math.min(100, 900 / (scene.settings.title.length || 1)));
+                }
+                if (scene.settings.subtitleSize === 32) {
+                     scene.settings.subtitleSize = Math.max(15, Math.min(50, 500 / (scene.settings.subtitle.length || 1)));
+                }
             });
         }
 
@@ -693,7 +793,6 @@
             return 1 - Math.pow(1 - x, 3);
         }
 
-        // SAHNE ÇİZİM FONKSİYONU (Offscreen Canvas'a çizer)
         function renderSceneToCtx(targetCtx, sceneIndex, sceneTime, sceneDuration, globalTime) {
             const s = scenes[sceneIndex].settings;
             const selectedFont = getFontFamily(s.textStyle);
@@ -741,17 +840,22 @@
                 }
             }
 
-            // Resimler
-            if (scenes[sceneIndex].images.length > 0) {
+            // Görseller ve Videolar
+            if (scenes[sceneIndex].media.length > 0) {
                 const entryDuration = sceneDuration * 0.4; 
                 let entryProgress = Math.min(1, sceneTime / entryDuration);
                 let easedProgress = easeOutCubic(entryProgress);
 
-                scenes[sceneIndex].images.forEach(imgData => {
-                    let targetX = imgData.x;
-                    let targetY = imgData.y;
-                    let targetScale = imgData.scale;
-                    let imgRotation = (imgData.rotation * Math.PI) / 180;
+                scenes[sceneIndex].media.forEach(mediaData => {
+                    // Video oynatma kontrolü (Sahnede oynasın)
+                    if (mediaData.type === 'video') {
+                        if (mediaData.mediaObj.paused) mediaData.mediaObj.play();
+                    }
+
+                    let targetX = mediaData.x;
+                    let targetY = mediaData.y;
+                    let targetScale = mediaData.scale;
+                    let imgRotation = (mediaData.rotation * Math.PI) / 180;
                     
                     let currentX = targetX, currentY = targetY, currentScale = targetScale, extraRotation = 0;
 
@@ -773,25 +877,35 @@
                         currentScale = startScale + (targetScale - startScale) * easedProgress;
                     }
 
-                    let imgW = imgData.imgObj.width, imgH = imgData.imgObj.height, maxSize = 400;
-                    if (imgW > maxSize || imgH > maxSize) { if (imgW > imgH) { imgH = (maxSize / imgW) * imgH; imgW = maxSize; } else { imgW = (maxSize / imgH) * imgW; imgH = maxSize; } }
+                    // Medya boyutlarını al
+                    let mediaW = mediaData.type === 'image' ? mediaData.mediaObj.width : mediaData.mediaObj.videoWidth;
+                    let mediaH = mediaData.type === 'image' ? mediaData.mediaObj.height : mediaData.mediaObj.videoHeight;
+                    
+                    // Boyut sınırlaması (Maksimum 400px)
+                    let maxSize = 400;
+                    if (mediaW > maxSize || mediaH > maxSize) { 
+                        if (mediaW > mediaH) { mediaH = (maxSize / mediaW) * mediaH; mediaW = maxSize; } 
+                        else { mediaW = (maxSize / mediaH) * mediaW; mediaH = maxSize; } 
+                    }
 
                     targetCtx.save();
                     targetCtx.translate(centerX + currentX, centerY + currentY); 
                     targetCtx.rotate(imgRotation + extraRotation); targetCtx.scale(currentScale, currentScale);
 
                     if (s.imageStyle === 'glass') {
-                        targetCtx.beginPath(); targetCtx.roundRect(-imgW/2, -imgH/2, imgW, imgH, 30); targetCtx.clip();
-                        targetCtx.globalAlpha = 0.85; targetCtx.drawImage(imgData.imgObj, -imgW/2, -imgH/2, imgW, imgH);
+                        targetCtx.beginPath(); targetCtx.roundRect(-mediaW/2, -mediaH/2, mediaW, mediaH, 30); targetCtx.clip();
+                        targetCtx.globalAlpha = 0.85; 
+                        targetCtx.drawImage(mediaData.mediaObj, -mediaW/2, -mediaH/2, mediaW, mediaH);
                         targetCtx.shadowBlur = 0;
-                        let glare = targetCtx.createLinearGradient(-imgW/2, -imgH/2, imgW/2, imgH/2);
+                        let glare = targetCtx.createLinearGradient(-mediaW/2, -mediaH/2, mediaW/2, mediaH/2);
                         glare.addColorStop(0, "rgba(255,255,255,0.4)"); glare.addColorStop(0.5, "rgba(255,255,255,0)");
-                        targetCtx.fillStyle = glare; targetCtx.fillRect(-imgW/2, -imgH/2, imgW, imgH);
+                        targetCtx.fillStyle = glare; targetCtx.fillRect(-mediaW/2, -mediaH/2, mediaW, mediaH);
                     } else if (s.imageStyle === 'circle') {
-                        targetCtx.beginPath(); targetCtx.arc(0, 0, Math.min(imgW, imgH)/2, 0, Math.PI*2); targetCtx.clip();
-                        let drawSize = Math.min(imgW, imgH); targetCtx.drawImage(imgData.imgObj, -drawSize/2, -drawSize/2, drawSize, drawSize);
+                        targetCtx.beginPath(); targetCtx.arc(0, 0, Math.min(mediaW, mediaH)/2, 0, Math.PI*2); targetCtx.clip();
+                        let drawSize = Math.min(mediaW, mediaH); 
+                        targetCtx.drawImage(mediaData.mediaObj, -drawSize/2, -drawSize/2, drawSize, drawSize);
                     } else {
-                        targetCtx.drawImage(imgData.imgObj, -imgW/2, -imgH/2, imgW, imgH);
+                        targetCtx.drawImage(mediaData.mediaObj, -mediaW/2, -mediaH/2, mediaW, mediaH);
                     }
                     targetCtx.restore();
                 });
@@ -815,15 +929,16 @@
                 textScale = 1 + Math.sin(globalTime / 150) * 0.05; 
             }
 
+            let actualTitleSize = fitTextSize(s.title, s.titleSize, canvas.width - 150, targetCtx, selectedFont);
             targetCtx.save(); 
             targetCtx.translate(centerX + titleX, centerY + titleY); 
             targetCtx.scale(textScale, textScale);
             targetCtx.textAlign = "center"; targetCtx.textBaseline = "middle"; 
-            targetCtx.font = `600 80px ${selectedFont}`;
+            targetCtx.font = `600 ${actualTitleSize}px ${selectedFont}`;
             
             let titleWidth = targetCtx.measureText(s.title).width + 80;
             targetCtx.fillStyle = "rgba(0, 0, 0, 0.5)"; 
-            targetCtx.beginPath(); targetCtx.roundRect(-titleWidth/2, -60, titleWidth, 110, 20); targetCtx.fill();
+            targetCtx.beginPath(); targetCtx.roundRect(-titleWidth/2, -(actualTitleSize*0.75), titleWidth, actualTitleSize*1.5, 20); targetCtx.fill();
 
             targetCtx.shadowColor = currentTitleColor; targetCtx.shadowBlur = 20; targetCtx.fillStyle = currentTitleColor;
             
@@ -835,22 +950,23 @@
             }
             targetCtx.restore();
 
+            let actualSubSize = fitTextSize(s.subtitle, s.subtitleSize, canvas.width - 150, targetCtx, 'Montserrat');
             targetCtx.save(); 
             targetCtx.translate(centerX + subX, centerY + subY); 
             targetCtx.scale(textScale, textScale);
             targetCtx.textAlign = "center"; targetCtx.textBaseline = "middle";
-            targetCtx.font = `400 32px 'Montserrat', sans-serif`; 
+            targetCtx.font = `400 ${actualSubSize}px 'Montserrat', sans-serif`; 
             
             let subWidth = targetCtx.measureText(s.subtitle).width + 60;
             targetCtx.fillStyle = "rgba(0, 0, 0, 0.5)"; 
-            targetCtx.beginPath(); targetCtx.roundRect(-subWidth/2, -25, subWidth, 50, 15); targetCtx.fill();
+            targetCtx.beginPath(); targetCtx.roundRect(-subWidth/2, -(actualSubSize*0.8), subWidth, actualSubSize*1.6, 15); targetCtx.fill();
 
             targetCtx.shadowColor = "rgba(0,0,0,0.8)"; targetCtx.shadowBlur = 10;
             targetCtx.fillStyle = currentSubColor;
             targetCtx.fillText(s.subtitle, 0, 0); 
             targetCtx.restore();
 
-            // Efektler (Sadece sahne tuvaline uygulanır)
+            // Efektler
             if (s.visualEffect === 'bloom') {
                 targetCtx.globalCompositeOperation = 'screen'; targetCtx.globalAlpha = 0.4; targetCtx.filter = 'blur(15px)';
                 targetCtx.drawImage(sceneCanvas, 0, 0); targetCtx.filter = 'none'; targetCtx.globalAlpha = 1; targetCtx.globalCompositeOperation = 'source-over';
@@ -874,7 +990,7 @@
         }
 
         window.generateVideo = async function() {
-            if (scenes.length === 0) return alert("Lütfen önce resim yükleyin!");
+            if (scenes.length === 0) return alert("Lütfen önce resim veya video yükleyin!");
             const prompt = document.getElementById('videoPrompt').value.trim() || "Modern bir reklam";
 
             generateBtn.disabled = true;
@@ -914,7 +1030,6 @@
                     const blob = new Blob(recordedChunks, { type: 'video/webm' });
                     const url = URL.createObjectURL(blob);
                     
-                    // Video Oynatıcıyı Ayarla
                     videoPlayer.src = url;
                     videoPlayer.style.display = 'block';
                     canvas.style.display = 'none';
@@ -922,7 +1037,7 @@
                     
                     downloadLink.href = url;
                     downloadArea.style.display = 'block';
-                    statusText.innerText = "✅ Reklam Filmi Hazır! Videodan izleyebilirsiniz.";
+                    statusText.innerText = "✅ Reklam Filmi Hazır!";
                     statusText.className = "status";
                     generateBtn.disabled = false;
                     generateBtn.innerText = "✨ Otonom Reklamı Üret";
@@ -930,14 +1045,27 @@
                     if (audioElement) audioElement.pause();
                 };
 
+                let totalDuration = 6000; // Default
+                if (videoDurationSelect.value === 'auto') {
+                     totalDuration = scenes[0].settings.duration || 6000;
+                } else {
+                    totalDuration = parseInt(videoDurationSelect.value);
+                }
+
                 mediaRecorder.start();
                 let startTime = Date.now();
-                const totalDuration = 6000; 
                 const sceneDuration = totalDuration / scenes.length;
                 
                 let lastSceneIndex = -1;
                 let transitionStartTime = -1;
-                const transitionDuration = 800; // 0.8 saniye geçiş süresi
+                const transitionDuration = 800;
+
+                // Sahnelerdeki tüm videoları sıfırla ve durdur (Baştan başlasınlar)
+                scenes.forEach(scene => {
+                    scene.media.forEach(m => {
+                        if (m.type === 'video') { m.mediaObj.currentTime = 0; m.mediaObj.pause(); }
+                    });
+                });
 
                 function drawFrame() {
                     const time = Date.now() - startTime;
@@ -946,22 +1074,26 @@
                     
                     const s = scenes[currentSceneIndex].settings;
 
-                    // Yeni sahneye geçildi mi?
                     if (currentSceneIndex !== lastSceneIndex) {
                         if (lastSceneIndex !== -1) {
-                            // Önceki sahnenin son halini kopyala
                             prevCtx.clearRect(0, 0, canvas.width, canvas.height);
                             prevCtx.drawImage(sceneCanvas, 0, 0); 
                             transitionStartTime = time;
                         }
+                        
+                        // Önceki sahnedeki videoları durdur
+                        if (lastSceneIndex !== -1) {
+                            scenes[lastSceneIndex].media.forEach(m => {
+                                if (m.type === 'video') m.mediaObj.pause();
+                            });
+                        }
+                        
                         lastSceneIndex = currentSceneIndex;
                     }
 
-                    // Mevcut sahneyi kendi tuvaline çiz
                     sceneCtx.clearRect(0, 0, canvas.width, canvas.height);
                     renderSceneToCtx(sceneCtx, currentSceneIndex, sceneTime, sceneDuration, time);
 
-                    // Ana tuvale aktar (Geçiş efekti varsa uygula)
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     
                     const isTransitioning = (transitionStartTime !== -1 && (time - transitionStartTime) < transitionDuration);
@@ -969,10 +1101,8 @@
                     if (isTransitioning && currentSceneIndex > 0) {
                         const progress = (time - transitionStartTime) / transitionDuration;
                         
-                        // Önceki sahneyi çiz
                         ctx.drawImage(prevCanvas, 0, 0);
                         
-                        // Geçiş Efektini Uygula
                         ctx.save();
                         if (s.transitionEffect === 'fade') {
                             ctx.globalAlpha = progress;
@@ -990,15 +1120,15 @@
                             ctx.clip();
                         }
                         
-                        // Yeni sahneyi çiz
                         ctx.drawImage(sceneCanvas, 0, 0);
                         ctx.restore();
                     } else {
-                        // Geçiş yoksa direkt çiz
                         ctx.drawImage(sceneCanvas, 0, 0);
                     }
 
-                    if (time >= totalDuration) { mediaRecorder.stop(); } 
+                    if (time >= totalDuration) { 
+                        mediaRecorder.stop(); 
+                    } 
                     else { animationId = requestAnimationFrame(drawFrame); }
                 }
 
