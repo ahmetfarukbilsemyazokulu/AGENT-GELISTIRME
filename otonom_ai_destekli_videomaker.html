@@ -233,7 +233,6 @@
                 <label style="font-size: 13px; font-weight: 600; color: #E2E8F0;">Resim Yükle (Sahne):</label>
                 <input type="file" id="imageUpload" accept="image/*" multiple>
             </div>
-            <!-- YENİ: VİDEO YÜKLEME ALANI -->
             <div class="upload-area">
                 <label style="font-size: 13px; font-weight: 600; color: #E2E8F0;">Video Yükle (Sahne):</label>
                 <input type="file" id="videoUpload" accept="video/*" multiple>
@@ -244,22 +243,22 @@
         </div>
 
         <div class="scene-manager" id="sceneManager" style="display: none;">
-            <h3 style="margin: 0 0 10px 0; font-size: 14px; color: #38BDF8;">Sahne Yöneticisi (Yazı ve Görselleri Sürükleyin)</h3>
+            <h3 style="margin: 0 0 10px 0; font-size: 14px; color: #38BDF8;">Sahne Yöneticisi</h3>
             <div class="scene-tabs" id="sceneTabs"></div>
             
             <div class="scene-editor" id="sceneEditor">
                 <div class="interactive-canvas-container">
-                    <label style="font-size: 12px; color: #94A3B8; font-weight: 600;">Canlı Önizleme:</label>
+                    <label style="font-size: 12px; color: #94A3B8; font-weight: 600;">Canlı Önizleme (Görselleri ve yazıları sürükleyin):</label>
                     <div class="interactive-canvas" id="interactiveCanvas"></div>
                     
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
                         <div class="input-group" style="margin: 0;">
-                            <label style="font-size: 11px;">Sahne Başlığı</label>
-                            <input type="text" id="sceneTitleInput" placeholder="Örn: LUXE BEAUTY">
+                            <label style="font-size: 11px;">Sahne Başlığı (İsteğe Bağlı)</label>
+                            <input type="text" id="sceneTitleInput" placeholder="Yazmazsanız çıkmaz...">
                         </div>
                         <div class="input-group" style="margin: 0;">
-                            <label style="font-size: 11px;">Sahne Sloganı</label>
-                            <input type="text" id="sceneSloganInput" placeholder="Örn: YENİ KOLEKSİYON">
+                            <label style="font-size: 11px;">Sahne Sloganı (İsteğe Bağlı)</label>
+                            <input type="text" id="sceneSloganInput" placeholder="Yazmazsanız çıkmaz...">
                         </div>
                     </div>
                 </div>
@@ -374,7 +373,6 @@
             return `rgba(${r}, ${g}, ${b}, ${alpha})`;
         }
 
-        // RESİM YÜKLEME
         document.getElementById('imageUpload').addEventListener('change', async function(e) {
             const files = Array.from(e.target.files);
             for (const file of files) {
@@ -389,7 +387,6 @@
             if (activeSceneIndex === -1 && scenes.length > 0) selectScene(0);
         });
 
-        // VİDEO YÜKLEME
         document.getElementById('videoUpload').addEventListener('change', async function(e) {
             const files = Array.from(e.target.files);
             for (const file of files) {
@@ -414,12 +411,10 @@
                 } else {
                     const video = document.createElement('video');
                     video.src = url;
-                    video.muted = true; // Sahnede ses çalmasın, müzik çalsın
+                    video.muted = true; 
                     video.playsInline = true;
-                    video.loop = true; // Sahne süresince dönsün
-                    // Video boyutlarının yüklenmesini bekle
+                    video.loop = true; 
                     video.onloadedmetadata = () => resolve(video);
-                    // Bazı tarayıcılar için ilk kareyi yüklemeyi tetikle
                     video.load(); 
                 }
             });
@@ -430,8 +425,8 @@
                 colorPalette: 'auto', bgAnimation: 'auto', particleEffect: 'auto', 
                 imageStyle: 'auto', entryAnimation: 'auto', textStyle: 'auto', 
                 textAnimation: 'auto', visualEffect: 'auto', transitionEffect: 'auto',
-                title: "REKLAM", titleX: 0, titleY: -230, titleSize: 80,
-                subtitle: "SİZİN İÇİN", subtitleX: 0, subtitleY: 260, subtitleSize: 32,
+                title: "", titleX: 0, titleY: -230, titleSize: 80, // Varsayılan metinler BOŞ
+                subtitle: "", subtitleX: 0, subtitleY: 260, subtitleSize: 32, // Varsayılan metinler BOŞ
                 titleColor: "#FFFFFF", subtitleColor: "#CCCCCC",
                 colors: ["#111827", "#374151", "#1F2937"]
             };
@@ -446,13 +441,11 @@
                 const tab = document.createElement('div');
                 tab.className = `scene-tab ${index === activeSceneIndex ? 'active' : ''}`;
                 
-                // İlk medyayı thumbnail olarak göster
                 const firstMedia = scene.media[0];
                 if(firstMedia.type === 'image') {
-                    tab.innerHTML = `<img src="${firstMedia.mediaObj.src}" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;"><span>Sahne ${index + 1} (Resim)</span>`;
+                    tab.innerHTML = `<img src="${firstMedia.mediaObj.src}" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;"><span>Sahne ${index + 1}</span>`;
                 } else {
-                    // Video için özel thumbnail (video etiketi kullanabiliriz ama basit tutmak için metin koyalım)
-                    tab.innerHTML = `<div style="width: 60px; height: 40px; background: #000; display: flex; justify-content: center; align-items: center; border-radius: 4px; font-size: 20px;">🎬</div><span>Sahne ${index + 1} (Video)</span>`;
+                    tab.innerHTML = `<div style="width: 60px; height: 40px; background: #000; display: flex; justify-content: center; align-items: center; border-radius: 4px; font-size: 20px;">🎬</div><span>Sahne ${index + 1}</span>`;
                 }
                 
                 tab.onclick = () => selectScene(index);
@@ -529,7 +522,7 @@
                     el = document.createElement('video');
                     el.src = mediaData.mediaObj.src;
                     el.muted = true; el.loop = true; el.playsInline = true;
-                    el.play(); // Önizlemede oynasın
+                    el.play(); 
                     el.className = `draggable-video ${index === activeImageIndex ? 'selected' : ''}`;
                 }
                 
@@ -551,27 +544,33 @@
                 interactiveCanvas.appendChild(el);
             });
 
-            const titleEl = document.createElement('div');
-            titleEl.className = 'draggable-text';
-            titleEl.innerText = scene.settings.title || "Başlık";
-            titleEl.style.left = `calc(50% + ${scene.settings.titleX * uiScaleFactor}px)`;
-            titleEl.style.top = `calc(50% + ${scene.settings.titleY * uiScaleFactor}px)`;
-            titleEl.style.transform = `translate(-50%, -50%)`;
-            titleEl.style.color = scene.settings.titleColor;
-            titleEl.style.fontSize = `${scene.settings.titleSize * uiScaleFactor}px`; 
-            titleEl.addEventListener('mousedown', (e) => startDrag(e, 'title', 0));
-            interactiveCanvas.appendChild(titleEl);
+            // SADECE YAZI VARSA EKRANA EKLE
+            if (scene.settings.title.trim() !== "") {
+                const titleEl = document.createElement('div');
+                titleEl.className = 'draggable-text';
+                titleEl.innerText = scene.settings.title;
+                titleEl.style.left = `calc(50% + ${scene.settings.titleX * uiScaleFactor}px)`;
+                titleEl.style.top = `calc(50% + ${scene.settings.titleY * uiScaleFactor}px)`;
+                titleEl.style.transform = `translate(-50%, -50%)`;
+                titleEl.style.color = scene.settings.titleColor;
+                titleEl.style.fontSize = `${scene.settings.titleSize * uiScaleFactor}px`; 
+                titleEl.addEventListener('mousedown', (e) => startDrag(e, 'title', 0));
+                interactiveCanvas.appendChild(titleEl);
+            }
 
-            const subEl = document.createElement('div');
-            subEl.className = 'draggable-text';
-            subEl.innerText = scene.settings.subtitle || "Slogan";
-            subEl.style.left = `calc(50% + ${scene.settings.subtitleX * uiScaleFactor}px)`;
-            subEl.style.top = `calc(50% + ${scene.settings.subtitleY * uiScaleFactor}px)`;
-            subEl.style.transform = `translate(-50%, -50%)`;
-            subEl.style.color = scene.settings.subtitleColor;
-            subEl.style.fontSize = `${scene.settings.subtitleSize * uiScaleFactor}px`; 
-            subEl.addEventListener('mousedown', (e) => startDrag(e, 'subtitle', 0));
-            interactiveCanvas.appendChild(subEl);
+            // SADECE SLOGAN VARSA EKRANA EKLE
+            if (scene.settings.subtitle.trim() !== "") {
+                const subEl = document.createElement('div');
+                subEl.className = 'draggable-text';
+                subEl.innerText = scene.settings.subtitle;
+                subEl.style.left = `calc(50% + ${scene.settings.subtitleX * uiScaleFactor}px)`;
+                subEl.style.top = `calc(50% + ${scene.settings.subtitleY * uiScaleFactor}px)`;
+                subEl.style.transform = `translate(-50%, -50%)`;
+                subEl.style.color = scene.settings.subtitleColor;
+                subEl.style.fontSize = `${scene.settings.subtitleSize * uiScaleFactor}px`; 
+                subEl.addEventListener('mousedown', (e) => startDrag(e, 'subtitle', 0));
+                interactiveCanvas.appendChild(subEl);
+            }
             
             updateTransformControls();
         }
@@ -710,9 +709,8 @@
 
         function getLocalPromptDesign(prompt) {
             const p = prompt.toLowerCase();
-            let design = { emoji: "", colors: ["#111827", "#374151", "#1F2937"], textColor: "#FFFFFF", bgAnimation: "gradient", particleEffect: "none", imageStyle: "glass", entryAnimation: "zoom_in", textStyle: "modern", textAnimation: "fade_up", visualEffect: "none", transitionEffect: "fade", duration: 6000 };
-            const emojiMap = {'ruj': '💄', 'parfüm': '🧴', 'ağaç': '🌳', 'kalem': '✏️', 'araba': '🚗', 'saat': '⌚', 'kahve': '☕', 'çiçek': '🌸', 'kitap': '📚', 'telefon': '📱', 'gözlük': '🕶️', 'ayakkabı': '👠', 'yiyecek': '🍔', 'müzik': '🎵', 'elmas': '💎', 'roket': '🚀', 'uzay': '🌌', 'robot': '🤖', 'oyun': '🎮', 'pizza': '🍕', 'kedi': '🐱', 'köpek': '🐶', 'kuş': '🐦', 'deniz': '🌊', 'kalp': '❤️'};
-            for (const [key, value] of Object.entries(emojiMap)) { if (p.includes(key)) { design.emoji = value; break; } }
+            let design = { colors: ["#111827", "#374151", "#1F2937"], textColor: "#FFFFFF", bgAnimation: "gradient", particleEffect: "none", imageStyle: "glass", entryAnimation: "zoom_in", textStyle: "modern", textAnimation: "fade_up", visualEffect: "none", transitionEffect: "fade", duration: 6000 };
+            
             if (p.includes('ruj') || p.includes('aşk') || p.includes('güzellik') || p.includes('kırmızı')) { design.colors = ["#4C0519", "#BE123C", "#FDA4AF"]; design.textColor = "#FFF1F2"; design.bgAnimation = "aurora"; design.particleEffect = "golden_dust"; design.imageStyle = "glass"; design.entryAnimation = "orbit"; design.textStyle = "elegant"; design.textAnimation = "neon_pulse"; design.visualEffect = "bloom"; design.transitionEffect = "fade"; design.duration = 8000; }
             else if (p.includes('doğa') || p.includes('ağaç') || p.includes('yeşil') || p.includes('orman')) { design.colors = ["#064E3B", "#10B981", "#A7F3D0"]; design.textColor = "#ECFDF5"; design.bgAnimation = "bokeh"; design.particleEffect = "fireflies"; design.imageStyle = "circle"; design.entryAnimation = "fly_up"; design.textStyle = "classic"; design.textAnimation = "fade_up"; design.visualEffect = "lightleak"; design.transitionEffect = "zoom"; design.duration = 10000; }
             else if (p.includes('teknoloji') || p.includes('neon') || p.includes('uzay') || p.includes('roket')) { design.colors = ["#020617", "#1D4ED8", "#06B6D4"]; design.textColor = "#E0F2FE"; design.bgAnimation = "tunnel"; design.particleEffect = "none"; design.imageStyle = "neon_border"; design.entryAnimation = "slide_left"; design.textStyle = "mono"; design.textAnimation = "shake"; design.visualEffect = "glitch"; design.transitionEffect = "slide_right"; design.duration = 4000; }
@@ -732,7 +730,7 @@
                     - visualEffect: [none, bloom, glitch, vignette, grain, scanlines, chromatic, lightleak, retro]
                     - transitionEffect: [none, fade, slide_left, slide_right, zoom, wipe]
                     - duration: [4000, 6000, 10000, 15000]
-                    JSON: {"title": "TITLE", "subtitle": "SUBTITLE", "colors": ["#hex1", "#hex2", "#hex3"], "emoji": "SINGLE_EMOJI", "bgAnimation": "...", "particleEffect": "...", "imageStyle": "...", "entryAnimation": "...", "textStyle": "...", "textAnimation": "...", "visualEffect": "...", "transitionEffect": "...", "duration": 6000}` },
+                    JSON: {"colors": ["#hex1", "#hex2", "#hex3"], "textColor": "#hex", "bgAnimation": "...", "particleEffect": "...", "imageStyle": "...", "entryAnimation": "...", "textStyle": "...", "textAnimation": "...", "visualEffect": "...", "transitionEffect": "...", "duration": 6000}` },
                 { role: "user", content: `Design for: "${prompt}"` }
             ];
             try {
@@ -762,13 +760,16 @@
             const aiDesign = await getGlobalDesignFromAI(prompt) || getLocalPromptDesign(prompt);
             
             scenes.forEach(scene => {
-                if (scene.settings.title === "REKLAM" || scene.settings.title === "") scene.settings.title = aiDesign.title || "REKLAM";
-                if (scene.settings.subtitle === "SİZİN İÇİN" || scene.settings.subtitle === "") scene.settings.subtitle = aiDesign.subtitle || "SİZİN İÇİN";
-                if (scene.settings.titleColor === "#FFFFFF") scene.settings.titleColor = aiDesign.textColor || "#FFFFFF";
-                if (scene.settings.subtitleColor === "#CCCCCC") scene.settings.subtitleColor = (aiDesign.colors && aiDesign.colors[2]) ? aiDesign.colors[2] : "#CCCCCC";
-
                 if (!Array.isArray(scene.settings.colors) || scene.settings.colors.length < 3) {
                     scene.settings.colors = aiDesign.colors || ["#111827", "#374151", "#1F2937"];
+                }
+                
+                // SADECE KULLANICI YAZI YAZDIYSA RENGİNİ AYARLA
+                if (scene.settings.title.trim() !== "" && scene.settings.titleColor === "#FFFFFF") {
+                    scene.settings.titleColor = aiDesign.textColor || "#FFFFFF";
+                }
+                if (scene.settings.subtitle.trim() !== "" && scene.settings.subtitleColor === "#CCCCCC") {
+                    scene.settings.subtitleColor = (aiDesign.colors && aiDesign.colors[2]) ? aiDesign.colors[2] : "#CCCCCC";
                 }
 
                 scene.settings.bgAnimation = bgAnimation.value === 'auto' ? (aiDesign.bgAnimation || 'aurora') : bgAnimation.value;
@@ -780,12 +781,7 @@
                 scene.settings.visualEffect = visualEffect.value === 'auto' ? (aiDesign.visualEffect || 'none') : visualEffect.value;
                 scene.settings.transitionEffect = transitionEffect.value === 'auto' ? (aiDesign.transitionEffect || 'fade') : transitionEffect.value;
                 
-                if (scene.settings.titleSize === 80) {
-                     scene.settings.titleSize = Math.max(30, Math.min(100, 900 / (scene.settings.title.length || 1)));
-                }
-                if (scene.settings.subtitleSize === 32) {
-                     scene.settings.subtitleSize = Math.max(15, Math.min(50, 500 / (scene.settings.subtitle.length || 1)));
-                }
+                // AI'dan gelen başlık ve sloganı ATAMIYORUZ (Kullanıcı yazmadıysa boş kalacak).
             });
         }
 
@@ -847,7 +843,6 @@
                 let easedProgress = easeOutCubic(entryProgress);
 
                 scenes[sceneIndex].media.forEach(mediaData => {
-                    // Video oynatma kontrolü (Sahnede oynasın)
                     if (mediaData.type === 'video') {
                         if (mediaData.mediaObj.paused) mediaData.mediaObj.play();
                     }
@@ -877,11 +872,9 @@
                         currentScale = startScale + (targetScale - startScale) * easedProgress;
                     }
 
-                    // Medya boyutlarını al
                     let mediaW = mediaData.type === 'image' ? mediaData.mediaObj.width : mediaData.mediaObj.videoWidth;
                     let mediaH = mediaData.type === 'image' ? mediaData.mediaObj.height : mediaData.mediaObj.videoHeight;
                     
-                    // Boyut sınırlaması (Maksimum 400px)
                     let maxSize = 400;
                     if (mediaW > maxSize || mediaH > maxSize) { 
                         if (mediaW > mediaH) { mediaH = (maxSize / mediaW) * mediaH; mediaW = maxSize; } 
@@ -911,60 +904,74 @@
                 });
             }
 
-            // YAZILAR
-            let titleX = s.titleX;
-            let titleY = s.titleY;
-            let subX = s.subtitleX;
-            let subY = s.subtitleY;
-            
-            let currentTitleColor = s.titleColor;
-            let currentSubColor = s.subtitleColor;
-            let textScale = 1;
+            // YAZILAR (Sadece kullanıcı yazdıysa)
+            if (s.title.trim() !== "") {
+                let titleX = s.titleX;
+                let titleY = s.titleY;
+                let currentTitleColor = s.titleColor;
+                let textScale = 1;
 
-            if (s.textAnimation === 'color_cycle') { 
-                let hue = (globalTime / 10) % 360; currentTitleColor = `hsl(${hue}, 100%, 60%)`; currentSubColor = currentTitleColor;
-            } else if (s.textAnimation === 'bounce') { 
-                titleY += Math.sin(globalTime / 200) * 15; subY += Math.sin(globalTime / 200) * 15; 
-            } else if (s.textAnimation === 'neon_pulse') { 
-                textScale = 1 + Math.sin(globalTime / 150) * 0.05; 
+                if (s.textAnimation === 'color_cycle') { 
+                    let hue = (globalTime / 10) % 360; currentTitleColor = `hsl(${hue}, 100%, 60%)`;
+                } else if (s.textAnimation === 'bounce') { 
+                    titleY += Math.sin(globalTime / 200) * 15; 
+                } else if (s.textAnimation === 'neon_pulse') { 
+                    textScale = 1 + Math.sin(globalTime / 150) * 0.05; 
+                }
+
+                let actualTitleSize = fitTextSize(s.title, s.titleSize, canvas.width - 150, targetCtx, selectedFont);
+                targetCtx.save(); 
+                targetCtx.translate(centerX + titleX, centerY + titleY); 
+                targetCtx.scale(textScale, textScale);
+                targetCtx.textAlign = "center"; targetCtx.textBaseline = "middle"; 
+                targetCtx.font = `600 ${actualTitleSize}px ${selectedFont}`;
+                
+                let titleWidth = targetCtx.measureText(s.title).width + 80;
+                targetCtx.fillStyle = "rgba(0, 0, 0, 0.5)"; 
+                targetCtx.beginPath(); targetCtx.roundRect(-titleWidth/2, -(actualTitleSize*0.75), titleWidth, actualTitleSize*1.5, 20); targetCtx.fill();
+
+                targetCtx.shadowColor = currentTitleColor; targetCtx.shadowBlur = 20; targetCtx.fillStyle = currentTitleColor;
+                
+                if (s.textAnimation === 'typewriter') {
+                    let charsToShow = Math.floor(sceneTime / 50);
+                    targetCtx.fillText(s.title.substring(0, charsToShow), 0, 0);
+                } else { 
+                    targetCtx.fillText(s.title, 0, 0); 
+                }
+                targetCtx.restore();
             }
 
-            let actualTitleSize = fitTextSize(s.title, s.titleSize, canvas.width - 150, targetCtx, selectedFont);
-            targetCtx.save(); 
-            targetCtx.translate(centerX + titleX, centerY + titleY); 
-            targetCtx.scale(textScale, textScale);
-            targetCtx.textAlign = "center"; targetCtx.textBaseline = "middle"; 
-            targetCtx.font = `600 ${actualTitleSize}px ${selectedFont}`;
-            
-            let titleWidth = targetCtx.measureText(s.title).width + 80;
-            targetCtx.fillStyle = "rgba(0, 0, 0, 0.5)"; 
-            targetCtx.beginPath(); targetCtx.roundRect(-titleWidth/2, -(actualTitleSize*0.75), titleWidth, actualTitleSize*1.5, 20); targetCtx.fill();
+            // SLOGAN (Sadece kullanıcı yazdıysa)
+            if (s.subtitle.trim() !== "") {
+                let subX = s.subtitleX;
+                let subY = s.subtitleY;
+                let currentSubColor = s.subtitleColor;
+                let textScale = 1;
 
-            targetCtx.shadowColor = currentTitleColor; targetCtx.shadowBlur = 20; targetCtx.fillStyle = currentTitleColor;
-            
-            if (s.textAnimation === 'typewriter') {
-                let charsToShow = Math.floor(sceneTime / 50);
-                targetCtx.fillText(s.title.substring(0, charsToShow), 0, 0);
-            } else { 
-                targetCtx.fillText(s.title, 0, 0); 
+                if (s.textAnimation === 'color_cycle') { 
+                    let hue = (globalTime / 10) % 360; currentSubColor = `hsl(${hue}, 100%, 60%)`;
+                } else if (s.textAnimation === 'bounce') { 
+                    subY += Math.sin(globalTime / 200) * 15; 
+                } else if (s.textAnimation === 'neon_pulse') { 
+                    textScale = 1 + Math.sin(globalTime / 150) * 0.05; 
+                }
+
+                let actualSubSize = fitTextSize(s.subtitle, s.subtitleSize, canvas.width - 150, targetCtx, 'Montserrat');
+                targetCtx.save(); 
+                targetCtx.translate(centerX + subX, centerY + subY); 
+                targetCtx.scale(textScale, textScale);
+                targetCtx.textAlign = "center"; targetCtx.textBaseline = "middle";
+                targetCtx.font = `400 ${actualSubSize}px 'Montserrat', sans-serif`; 
+                
+                let subWidth = targetCtx.measureText(s.subtitle).width + 60;
+                targetCtx.fillStyle = "rgba(0, 0, 0, 0.5)"; 
+                targetCtx.beginPath(); targetCtx.roundRect(-subWidth/2, -(actualSubSize*0.8), subWidth, actualSubSize*1.6, 15); targetCtx.fill();
+
+                targetCtx.shadowColor = "rgba(0,0,0,0.8)"; targetCtx.shadowBlur = 10;
+                targetCtx.fillStyle = currentSubColor;
+                targetCtx.fillText(s.subtitle, 0, 0); 
+                targetCtx.restore();
             }
-            targetCtx.restore();
-
-            let actualSubSize = fitTextSize(s.subtitle, s.subtitleSize, canvas.width - 150, targetCtx, 'Montserrat');
-            targetCtx.save(); 
-            targetCtx.translate(centerX + subX, centerY + subY); 
-            targetCtx.scale(textScale, textScale);
-            targetCtx.textAlign = "center"; targetCtx.textBaseline = "middle";
-            targetCtx.font = `400 ${actualSubSize}px 'Montserrat', sans-serif`; 
-            
-            let subWidth = targetCtx.measureText(s.subtitle).width + 60;
-            targetCtx.fillStyle = "rgba(0, 0, 0, 0.5)"; 
-            targetCtx.beginPath(); targetCtx.roundRect(-subWidth/2, -(actualSubSize*0.8), subWidth, actualSubSize*1.6, 15); targetCtx.fill();
-
-            targetCtx.shadowColor = "rgba(0,0,0,0.8)"; targetCtx.shadowBlur = 10;
-            targetCtx.fillStyle = currentSubColor;
-            targetCtx.fillText(s.subtitle, 0, 0); 
-            targetCtx.restore();
 
             // Efektler
             if (s.visualEffect === 'bloom') {
@@ -1045,7 +1052,7 @@
                     if (audioElement) audioElement.pause();
                 };
 
-                let totalDuration = 6000; // Default
+                let totalDuration = 6000; 
                 if (videoDurationSelect.value === 'auto') {
                      totalDuration = scenes[0].settings.duration || 6000;
                 } else {
@@ -1060,7 +1067,6 @@
                 let transitionStartTime = -1;
                 const transitionDuration = 800;
 
-                // Sahnelerdeki tüm videoları sıfırla ve durdur (Baştan başlasınlar)
                 scenes.forEach(scene => {
                     scene.media.forEach(m => {
                         if (m.type === 'video') { m.mediaObj.currentTime = 0; m.mediaObj.pause(); }
@@ -1081,7 +1087,6 @@
                             transitionStartTime = time;
                         }
                         
-                        // Önceki sahnedeki videoları durdur
                         if (lastSceneIndex !== -1) {
                             scenes[lastSceneIndex].media.forEach(m => {
                                 if (m.type === 'video') m.mediaObj.pause();
