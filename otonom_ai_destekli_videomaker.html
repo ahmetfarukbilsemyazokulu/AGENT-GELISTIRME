@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sürükle-Bırak Sinema Stüdyosu | AGENT-GELISTIRME</title>
+    <title>Ses ve Yol Animasyonlu Sinema Stüdyosu | AGENT-GELISTIRME</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=Montserrat:wght@400;600;800&family=Caveat:wght@700&family=Cinzel:wght@700&family=Inter:wght@400&family=Courier+Prime:wght@700&display=swap" rel="stylesheet">
     
     <style>
@@ -32,6 +32,12 @@
         .color-picker-group input[type="color"] { -webkit-appearance: none; border: none; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; padding: 0; background: none; }
         .color-picker-group input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
         .color-picker-group input[type="color"]::-webkit-color-swatch { border: 2px solid #475569; border-radius: 50%; }
+
+        /* Yükleme Alanları */
+        .upload-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .upload-area { display: flex; flex-direction: column; gap: 10px; background: #0F172A; padding: 15px; border-radius: 10px; border: 1px dashed #475569; }
+        .upload-area input { color: #94A3B8; font-size: 13px; cursor: pointer; }
+        .upload-status { font-size: 12px; color: #10B981; font-weight: 600; display: none; }
 
         /* Sahne Yöneticisi */
         .scene-manager { background: #0F172A; border-radius: 10px; padding: 15px; border: 1px solid #334155; margin-bottom: 15px; }
@@ -63,9 +69,6 @@
         .slider-group label { font-size: 11px; color: #94A3B8; display: flex; justify-content: space-between; }
         .slider-group input[type="range"] { width: 100%; accent-color: #38BDF8; }
 
-        .upload-area { display: flex; flex-direction: column; gap: 10px; background: #0F172A; padding: 15px; border-radius: 10px; border: 1px dashed #475569; margin-bottom: 15px; }
-        .upload-area input { color: #94A3B8; font-size: 13px; cursor: pointer; }
-        
         .action-row { display: flex; gap: 10px; margin-top: 15px; }
         .action-row button { flex: 1; background: linear-gradient(135deg, #38BDF8, #818CF8, #F472B6); background-size: 200% 200%; color: white; border: none; padding: 16px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s; animation: gradientBG 3s infinite; }
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
@@ -82,22 +85,22 @@
         .download-area { display: none; text-align: center; margin-top: 10px; }
         .download-area a { display: inline-block; background: #10B981; color: white; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 15px; }
         
-        @media (max-width: 800px) { .controls-grid { grid-template-columns: repeat(2, 1fr); } .scene-editor.active { grid-template-columns: 1fr; } }
+        @media (max-width: 800px) { .controls-grid, .upload-row { grid-template-columns: repeat(2, 1fr); } .scene-editor.active { grid-template-columns: 1fr; } }
         @media (max-width: 500px) { .controls-grid, .input-row { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>Sürükle-Bırak Sinema Stüdyosu</h1>
-        <p>Resimleri fareyle tutup sahnede istediğiniz yere bırakın.</p>
+        <h1>Ses ve Yol Animasyonlu Stüdyo</h1>
+        <p>Müzik ekleyin, resimlerin sahneye uçuşunu izleyin.</p>
     </div>
 
     <div class="studio-container">
         
         <div class="input-group" style="margin-bottom: 12px;">
             <label for="videoPrompt">Senaryo (Yapay Zeka her şeyi buna göre seçecek):</label>
-            <textarea id="videoPrompt" placeholder="Örnek: Kırmızı ruj reklamı. Veya: Lüks bir araba tanıtımı."></textarea>
+            <textarea id="videoPrompt" placeholder="Örnek: Kırmızı ruj reklamı. Veya: Uzayda süzülen bir astronot."></textarea>
         </div>
 
         <div class="input-row">
@@ -160,15 +163,15 @@
                     <option value="neon_border">Neon Çerçeve</option>
                     <option value="shadow">Gölge</option>
                 </select>
-                <label style="margin-top: 4px;">🎞️ Görsel Hareketi</label>
-                <select id="imageAnimType">
+                <label style="margin-top: 4px;">🚀 Giriş Animasyonu</label>
+                <select id="entryAnimation">
                     <option value="auto" selected>✨ Yapay Zeka Karar Versin</option>
-                    <option value="float">Süzülme</option>
-                    <option value="pulse">Nefes Alma</option>
-                    <option value="rotate">Dönme</option>
-                    <option value="zoom_in">Yaklaşma</option>
-                    <option value="swing">Sallanma</option>
-                    <option value="3d_tilt">3D Eğilme</option>
+                    <option value="slide_left">Soldan Uçarak Gel</option>
+                    <option value="slide_right">Sağdan Uçarak Gel</option>
+                    <option value="drop_down">Yukarıdan Düş</option>
+                    <option value="fly_up">Aşağıdan Yüksel</option>
+                    <option value="zoom_in">İçeriden Büyü</option>
+                    <option value="orbit">Etrafında Dönerek Gel (Yörünge)</option>
                 </select>
             </div>
             <div class="control-box">
@@ -195,7 +198,7 @@
             </div>
         </div>
 
-        <div class="controls-grid" style="grid-template-columns: 1fr;">
+        <div class="controls-grid" style="grid-template-columns: 1fr 1fr;">
             <div class="control-box">
                 <label>🎥 Sinematik Görüntü Efektleri (Overlay)</label>
                 <select id="visualEffect">
@@ -211,23 +214,31 @@
                     <option value="retro">Retro</option>
                 </select>
             </div>
+            <div class="control-box">
+                <label>🎵 Arka Plan Müziği (Ses Dosyası)</label>
+                <input type="file" id="audioUpload" accept="audio/*" style="background: transparent; border: none; color: #94A3B8; font-size: 12px; padding: 8px 0;">
+                <div id="audioStatus" style="font-size: 11px; color: #10B981; display: none;">✅ Müzik Yüklendi</div>
+            </div>
         </div>
 
-        <div class="upload-area">
-            <label style="font-size: 13px; font-weight: 600; color: #E2E8F0;">Yeni Sahne Olarak Resim Yükle (Toplu Seçim Yapabilirsiniz):</label>
-            <input type="file" id="imageUpload" accept="image/*" multiple>
-            <div class="upload-status" id="uploadStatus">✅ Sahneler Yüklendi</div>
+        <div class="upload-row">
+            <div class="upload-area">
+                <label style="font-size: 13px; font-weight: 600; color: #E2E8F0;">Sahne Resimleri (Toplu Seçim Yapabilirsiniz):</label>
+                <input type="file" id="imageUpload" accept="image/*" multiple>
+            </div>
+            <div class="upload-area" style="justify-content: center; border-style: solid; border-color: #1E293B; background: #0F172A;">
+                <span style="font-size: 12px; color: #94A3B8; text-align: center;">Yüklediğiniz her resim yeni bir sahne oluşturur.<br>Resimleri aşağıdaki panelden sürükleyerek yerleştirin.</span>
+            </div>
         </div>
 
         <!-- SAHNE YÖNETİCİSİ -->
         <div class="scene-manager" id="sceneManager" style="display: none;">
-            <h3 style="margin: 0 0 10px 0; font-size: 14px; color: #38BDF8;">Sahne Yöneticisi</h3>
+            <h3 style="margin: 0 0 10px 0; font-size: 14px; color: #38BDF8;">Sahne Yöneticisi (Sürükle & Bırak)</h3>
             <div class="scene-tabs" id="sceneTabs"></div>
             
             <div class="scene-editor" id="sceneEditor">
                 <div class="interactive-canvas-container">
                     <label style="font-size: 12px; color: #94A3B8; font-weight: 600;">Önizleme (Resimleri Sürükleyerek Yerleştirin):</label>
-                    <!-- SÜRÜKLE BIRAK ALANI -->
                     <div class="interactive-canvas" id="interactiveCanvas"></div>
                     
                     <input type="file" id="addImageToScene" accept="image/*" style="display: none;" multiple>
@@ -244,9 +255,6 @@
                     <div class="slider-group">
                         <label>Açı <span id="valRot">0</span></label>
                         <input type="range" id="imgRot" min="-180" max="180" value="0" oninput="updateImageProperty('rotation', this.value)">
-                    </div>
-                    <div style="font-size: 11px; color: #64748B; margin-top: 10px;">
-                        * Resmi fareyle tutup önizleme ekranında sürükleyebilirsiniz.
                     </div>
                 </div>
             </div>
@@ -285,7 +293,7 @@
         const bgAnimation = document.getElementById('bgAnimation');
         const particleEffect = document.getElementById('particleEffect');
         const imageStyle = document.getElementById('imageStyle');
-        const imageAnimType = document.getElementById('imageAnimType');
+        const entryAnimation = document.getElementById('entryAnimation');
         const textStyle = document.getElementById('textStyle');
         const textAnimation = document.getElementById('textAnimation');
         const visualEffect = document.getElementById('visualEffect');
@@ -298,11 +306,28 @@
         const interactiveCanvas = document.getElementById('interactiveCanvas');
         const imageTransformControls = document.getElementById('imageTransformControls');
         const addImageToSceneInput = document.getElementById('addImageToScene');
+        
+        const audioUpload = document.getElementById('audioUpload');
+        const audioStatus = document.getElementById('audioStatus');
 
         let mediaRecorder, recordedChunks = [], animationId;
         let scenes = []; 
         let activeSceneIndex = -1;
         let activeImageIndex = -1;
+        
+        // Ses Değişkenleri
+        let audioCtx = null;
+        let audioElement = null;
+        let audioTrack = null;
+
+        // Ses Yükleme Kontrolü
+        audioUpload.addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                audioStatus.style.display = 'block';
+            } else {
+                audioStatus.style.display = 'none';
+            }
+        });
 
         // Görsel yükleme (Sahneler)
         document.getElementById('imageUpload').addEventListener('change', async function(e) {
@@ -311,7 +336,6 @@
                 const img = await loadImageFile(file);
                 scenes.push({
                     id: Date.now() + Math.random(),
-                    // Koordinatlar merkeze göre (0,0) olacak şekilde ayarlandı
                     images: [{ imgObj: img, x: 0, y: 0, scale: 1, rotation: 0, id: Date.now() + Math.random() }],
                     settings: getDefaultSceneSettings()
                 });
@@ -320,7 +344,6 @@
             if (activeSceneIndex === -1 && scenes.length > 0) selectScene(0);
         });
 
-        // Sahneye resim ekleme
         addImageToSceneInput.addEventListener('change', async function(e) {
             const files = Array.from(e.target.files);
             if (files.length === 0 || activeSceneIndex === -1) return;
@@ -344,7 +367,7 @@
         }
 
         function getDefaultSceneSettings() {
-            return { colorPalette: 'auto', bgAnimation: 'auto', particleEffect: 'auto', imageStyle: 'auto', imageAnimType: 'auto', textStyle: 'auto', textAnimation: 'auto', visualEffect: 'auto' };
+            return { colorPalette: 'auto', bgAnimation: 'auto', particleEffect: 'auto', imageStyle: 'auto', entryAnimation: 'auto', textStyle: 'auto', textAnimation: 'auto', visualEffect: 'auto' };
         }
 
         function updateSceneUI() {
@@ -376,13 +399,12 @@
             const s = scenes[index].settings;
             colorPalette.value = s.colorPalette; bgAnimation.value = s.bgAnimation;
             particleEffect.value = s.particleEffect; imageStyle.value = s.imageStyle;
-            imageAnimType.value = s.imageAnimType; textStyle.value = s.textStyle;
+            entryAnimation.value = s.entryAnimation; textStyle.value = s.textStyle;
             textAnimation.value = s.textAnimation; visualEffect.value = s.visualEffect;
         }
 
-        // ETKİLEŞİMLİ TUVAL - GÖRSELLERİ SÜRÜKLEME
         function renderInteractiveCanvas() {
-            interactiveCanvas.innerHTML = ''; // Temizle
+            interactiveCanvas.innerHTML = ''; 
             const scene = scenes[activeSceneIndex];
             
             scene.images.forEach((imgData, index) => {
@@ -391,14 +413,12 @@
                 imgEl.className = `draggable-img ${index === activeImageIndex ? 'selected' : ''}`;
                 imgEl.dataset.index = index;
                 
-                // Başlangıç Boyutu (Max 400 px genişlik)
                 let baseW = imgData.imgObj.width;
                 let baseH = imgData.imgObj.height;
                 let maxW = 400;
                 if (baseW > maxW) { baseH = (maxW / baseW) * baseH; baseW = maxW; }
 
-                // UI için boyutları ayarla (Önizleme alanına sığdırmak için /2 yapıyoruz ki daha rahat çalışılsın)
-                const uiScaleFactor = interactiveCanvas.clientWidth / 1280; // 1280 gerçek genişlik
+                const uiScaleFactor = interactiveCanvas.clientWidth / 1280; 
                 const finalW = baseW * imgData.scale * uiScaleFactor;
                 const finalH = baseH * imgData.scale * uiScaleFactor;
 
@@ -408,7 +428,6 @@
                 imgEl.style.top = `calc(50% + ${imgData.y * uiScaleFactor}px - ${finalH/2}px)`;
                 imgEl.style.transform = `rotate(${imgData.rotation}deg)`;
 
-                // Sürükleme Mantığı (Sadece X ve Y)
                 imgEl.addEventListener('mousedown', (e) => startDrag(e, index));
 
                 interactiveCanvas.appendChild(imgEl);
@@ -435,10 +454,9 @@
         window.updateImageProperty = function(prop, value) {
             if (activeSceneIndex === -1 || activeImageIndex === -1) return;
             scenes[activeSceneIndex].images[activeImageIndex][prop] = parseFloat(value);
-            renderInteractiveCanvas(); // UI'ı yeniden çiz
+            renderInteractiveCanvas(); 
         }
 
-        // SÜRÜKLEME (DRAG AND DROP) MANTIĞI
         let isDragging = false;
         let startX = 0, startY = 0;
         let initialImgX = 0, initialImgY = 0;
@@ -450,37 +468,28 @@
             isDragging = true;
             draggingIndex = index;
 
-            // Seçili resim UI güncellemesi
             document.querySelectorAll('.draggable-img').forEach(el => el.classList.remove('selected'));
             e.target.classList.add('selected');
             updateTransformControls();
 
-            // Fare ve resmin başlangıç konumunu kaydet
             startX = e.clientX;
             startY = e.clientY;
             initialImgX = scenes[activeSceneIndex].images[index].x;
             initialImgY = scenes[activeSceneIndex].images[index].y;
 
-            // Tüm belge üzerinde hareket dinle (böylece kutunun dışına çıksa bile takip eder)
             document.addEventListener('mousemove', onDrag);
             document.addEventListener('mouseup', stopDrag);
         }
 
         function onDrag(e) {
             if (!isDragging) return;
-            
-            // Farenin hareket mesafesi
             const deltaX = e.clientX - startX;
             const deltaY = e.clientY - startY;
-            
-            // UI ölçeğini gerçek Canvas boyutuna çevir
             const uiScaleFactor = 1280 / interactiveCanvas.clientWidth;
 
-            // Yeni konumu hesapla
             scenes[activeSceneIndex].images[draggingIndex].x = initialImgX + (deltaX * uiScaleFactor);
             scenes[activeSceneIndex].images[draggingIndex].y = initialImgY + (deltaY * uiScaleFactor);
 
-            // Sadece o resmin stilini güncelle (performans için)
             const imgEl = document.querySelector(`.draggable-img[data-index="${draggingIndex}"]`);
             if(imgEl) {
                 let baseW = scenes[activeSceneIndex].images[draggingIndex].imgObj.width;
@@ -492,7 +501,7 @@
                 const finalW = baseW * scenes[activeSceneIndex].images[draggingIndex].scale * uiScale;
                 
                 imgEl.style.left = `calc(50% + ${scenes[activeSceneIndex].images[draggingIndex].x * uiScale}px - ${finalW/2}px)`;
-                imgEl.style.top = `calc(50% + ${scenes[activeSceneIndex].images[draggingIndex].y * uiScale}px - ${finalW/2}px)`; // Kare varsayımı
+                imgEl.style.top = `calc(50% + ${scenes[activeSceneIndex].images[draggingIndex].y * uiScale}px - ${finalW/2}px)`; 
             }
         }
 
@@ -502,7 +511,6 @@
             document.removeEventListener('mouseup', stopDrag);
         }
 
-        // Yapay Zeka ve Render İşlemleri (Aynen korundu)
         async function initAI() {
             try {
                 const selectedModel = "Llama-3.2-1B-Instruct-q4f32_1-MLC";
@@ -529,14 +537,14 @@
         }
 
         function getLocalPromptDesign(prompt) {
-            // (Önceki kodun aynısı, yerel zeka yedek planı)
             const p = prompt.toLowerCase();
-            let design = { emoji: "", colors: ["#111827", "#374151", "#1F2937"], textColor: "#FFFFFF", bgAnimation: "gradient", particleEffect: "none", imageStyle: "glass", imageAnimType: "float", textStyle: "modern", textAnimation: "fade_up", visualEffect: "none" };
+            let design = { emoji: "", colors: ["#111827", "#374151", "#1F2937"], textColor: "#FFFFFF", bgAnimation: "gradient", particleEffect: "none", imageStyle: "glass", entryAnimation: "zoom_in", textStyle: "modern", textAnimation: "fade_up", visualEffect: "none" };
             const emojiMap = {'ruj': '💄', 'parfüm': '🧴', 'ağaç': '🌳', 'kalem': '✏️', 'araba': '🚗', 'saat': '⌚', 'kahve': '☕', 'çiçek': '🌸', 'kitap': '📚', 'telefon': '📱', 'gözlük': '🕶️', 'ayakkabı': '👠', 'yiyecek': '🍔', 'müzik': '🎵', 'elmas': '💎', 'roket': '🚀', 'uzay': '🌌', 'robot': '🤖', 'oyun': '🎮', 'pizza': '🍕', 'kedi': '🐱', 'köpek': '🐶', 'kuş': '🐦', 'deniz': '🌊', 'kalp': '❤️'};
             for (const [key, value] of Object.entries(emojiMap)) { if (p.includes(key)) { design.emoji = value; break; } }
-            if (p.includes('ruj') || p.includes('aşk') || p.includes('güzellik') || p.includes('kırmızı')) { design.colors = ["#4C0519", "#BE123C", "#FDA4AF"]; design.textColor = "#FFF1F2"; design.bgAnimation = "aurora"; design.particleEffect = "golden_dust"; design.imageStyle = "glass"; design.imageAnimType = "pulse"; design.textStyle = "elegant"; design.textAnimation = "neon_pulse"; design.visualEffect = "bloom"; }
-            else if (p.includes('doğa') || p.includes('ağaç') || p.includes('yeşil') || p.includes('orman')) { design.colors = ["#064E3B", "#10B981", "#A7F3D0"]; design.textColor = "#ECFDF5"; design.bgAnimation = "bokeh"; design.particleEffect = "fireflies"; design.imageStyle = "circle"; design.imageAnimType = "float"; design.textStyle = "classic"; design.textAnimation = "fade_up"; design.visualEffect = "lightleak"; }
-            else if (p.includes('parfüm') || p.includes('lüks') || p.includes('altın')) { design.colors = ["#1A0B1A", "#4C1D95", "#FBBF24"]; design.textColor = "#FEF3C7"; design.bgAnimation = "aurora"; design.particleEffect = "golden_dust"; design.imageStyle = "polaroid"; design.imageAnimType = "swing"; design.textStyle = "elegant"; design.textAnimation = "typewriter"; design.visualEffect = "vignette"; }
+            if (p.includes('ruj') || p.includes('aşk') || p.includes('güzellik') || p.includes('kırmızı')) { design.colors = ["#4C0519", "#BE123C", "#FDA4AF"]; design.textColor = "#FFF1F2"; design.bgAnimation = "aurora"; design.particleEffect = "golden_dust"; design.imageStyle = "glass"; design.entryAnimation = "orbit"; design.textStyle = "elegant"; design.textAnimation = "neon_pulse"; design.visualEffect = "bloom"; }
+            else if (p.includes('doğa') || p.includes('ağaç') || p.includes('yeşil') || p.includes('orman')) { design.colors = ["#064E3B", "#10B981", "#A7F3D0"]; design.textColor = "#ECFDF5"; design.bgAnimation = "bokeh"; design.particleEffect = "fireflies"; design.imageStyle = "circle"; design.entryAnimation = "fly_up"; design.textStyle = "classic"; design.textAnimation = "fade_up"; design.visualEffect = "lightleak"; }
+            else if (p.includes('parfüm') || p.includes('lüks') || p.includes('altın')) { design.colors = ["#1A0B1A", "#4C1D95", "#FBBF24"]; design.textColor = "#FEF3C7"; design.bgAnimation = "aurora"; design.particleEffect = "golden_dust"; design.imageStyle = "polaroid"; design.entryAnimation = "drop_down"; design.textStyle = "elegant"; design.textAnimation = "typewriter"; design.visualEffect = "vignette"; }
+            else if (p.includes('teknoloji') || p.includes('neon') || p.includes('uzay') || p.includes('roket')) { design.colors = ["#020617", "#1D4ED8", "#06B6D4"]; design.textColor = "#E0F2FE"; design.bgAnimation = "tunnel"; design.particleEffect = "none"; design.imageStyle = "neon_border"; design.entryAnimation = "slide_left"; design.textStyle = "mono"; design.textAnimation = "shake"; design.visualEffect = "glitch"; }
             return design;
         }
 
@@ -547,11 +555,11 @@
                     - bgAnimation: [aurora, galaxy, cyber, matrix, waves, tunnel, bokeh, gradient]
                     - particleEffect: [golden_dust, none, snow, confetti, fireflies]
                     - imageStyle: [glass, normal, circle, polaroid, neon_border, shadow]
-                    - imageAnimType: [float, pulse, rotate, zoom_in, swing, slide_side, 3d_tilt]
+                    - entryAnimation: [slide_left, slide_right, drop_down, fly_up, zoom_in, orbit]
                     - textStyle: [modern, classic, elegant, impact, handwriting, mono]
                     - textAnimation: [typewriter, slide_in, neon_pulse, bounce, color_cycle, fade_up, zoom_in, shake, split]
                     - visualEffect: [none, bloom, glitch, vignette, grain, scanlines, chromatic, lightleak, retro]
-                    JSON: {"title": "TITLE", "subtitle": "SUBTITLE", "colors": ["#hex1", "#hex2", "#hex3"], "emoji": "SINGLE_EMOJI", "bgAnimation": "...", "particleEffect": "...", "imageStyle": "...", "imageAnimType": "...", "textStyle": "...", "textAnimation": "...", "visualEffect": "..."}` },
+                    JSON: {"title": "TITLE", "subtitle": "SUBTITLE", "colors": ["#hex1", "#hex2", "#hex3"], "emoji": "SINGLE_EMOJI", "bgAnimation": "...", "particleEffect": "...", "imageStyle": "...", "entryAnimation": "...", "textStyle": "...", "textAnimation": "...", "visualEffect": "..."}` },
                 { role: "user", content: `Design for: "${prompt}"` }
             ];
             try {
@@ -575,7 +583,7 @@
                 scene.settings.bgAnimation = bgAnimation.value === 'auto' ? (aiDesign.bgAnimation || 'aurora') : bgAnimation.value;
                 scene.settings.particleEffect = particleEffect.value === 'auto' ? (aiDesign.particleEffect || 'none') : particleEffect.value;
                 scene.settings.imageStyle = imageStyle.value === 'auto' ? (aiDesign.imageStyle || 'glass') : imageStyle.value;
-                scene.settings.imageAnimType = imageAnimType.value === 'auto' ? (aiDesign.imageAnimType || 'float') : imageAnimType.value;
+                scene.settings.entryAnimation = entryAnimation.value === 'auto' ? (aiDesign.entryAnimation || 'zoom_in') : entryAnimation.value;
                 scene.settings.textStyle = textStyle.value === 'auto' ? (aiDesign.textStyle || 'modern') : textStyle.value;
                 scene.settings.textAnimation = textAnimation.value === 'auto' ? (aiDesign.textAnimation || 'fade_up') : textAnimation.value;
                 scene.settings.visualEffect = visualEffect.value === 'auto' ? (aiDesign.visualEffect || 'none') : visualEffect.value;
@@ -586,6 +594,11 @@
                 scene.settings.title = aiDesign.title || "REKLAM";
                 scene.settings.subtitle = aiDesign.subtitle || "SİZİN İÇİN";
             });
+        }
+
+        // Yumuşak Yavaşlama (Easing) Fonksiyonu
+        function easeOutCubic(x) {
+            return 1 - Math.pow(1 - x, 3);
         }
 
         window.generateVideo = async function() {
@@ -606,8 +619,31 @@
                 canvasContainer.querySelector('span').style.display = 'none';
                 recordedChunks = [];
 
-                const stream = canvas.captureStream(60);
-                mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9' });
+                // SES İŞLEME VE STREAM BİRLEŞTİRME
+                let stream = canvas.captureStream(60);
+                const audioFile = audioUpload.files[0];
+                
+                if (audioFile) {
+                    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    if(audioCtx.state === 'suspended') await audioCtx.resume();
+                    
+                    audioElement = new Audio(URL.createObjectURL(audioFile));
+                    audioElement.loop = true; // Müziğin bitmemesi için döngü
+                    
+                    const source = audioCtx.createMediaElementSource(audioElement);
+                    const dest = audioCtx.createMediaStreamDestination();
+                    
+                    source.connect(dest);
+                    source.connect(audioCtx.destination); // Kullanıcı sesi duysun
+                    
+                    const audioTrack = dest.stream.getAudioTracks()[0];
+                    // Video track + Ses track birleştir
+                    stream = new MediaStream([...stream.getVideoTracks(), audioTrack]);
+                    
+                    audioElement.play();
+                }
+
+                mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9,opus' });
                 mediaRecorder.ondataavailable = (event) => { if (event.data.size > 0) recordedChunks.push(event.data); };
                 mediaRecorder.onstop = () => {
                     const blob = new Blob(recordedChunks, { type: 'video/webm' });
@@ -618,6 +654,7 @@
                     generateBtn.disabled = false;
                     generateBtn.innerText = "✨ Otonom Reklamı Üret";
                     cancelAnimationFrame(animationId);
+                    if (audioElement) audioElement.pause();
                 };
 
                 mediaRecorder.start();
@@ -707,29 +744,66 @@
                         }
                     }
 
-                    // Sahnedeki Resimler
+                    // Sahnedeki Resimler (Giriş Animasyonlu)
                     let hasContent = false;
                     if (currentScene.images.length > 0) {
                         hasContent = true;
+                        
+                        // Giriş Animasyon Süresi (Örn: Sahneler arası geçişin ilk %30'u)
+                        const entryDuration = sceneDuration * 0.4; 
+                        let entryProgress = Math.min(1, sceneTime / entryDuration);
+                        let easedProgress = easeOutCubic(entryProgress);
+
                         currentScene.images.forEach(imgData => {
-                            let imgXOffset = imgData.x;
-                            let imgYOffset = imgData.y;
-                            let imgScale = imgData.scale;
+                            let targetX = imgData.x;
+                            let targetY = imgData.y;
+                            let targetScale = imgData.scale;
                             let imgRotation = (imgData.rotation * Math.PI) / 180;
                             
+                            // 1. GİRİŞ ANİMASYONU (Path)
+                            let currentX = targetX;
+                            let currentY = targetY;
+                            let currentScale = targetScale;
+                            let extraRotation = 0;
+
+                            if (entryProgress < 1) {
+                                let startX = targetX, startY = targetY, startScale = targetScale;
+                                
+                                if (s.entryAnimation === 'slide_left') { startX = -1500; startY = targetY + (Math.random()-0.5)*500; }
+                                else if (s.entryAnimation === 'slide_right') { startX = 1500; startY = targetY + (Math.random()-0.5)*500; }
+                                else if (s.entryAnimation === 'drop_down') { startX = targetX + (Math.random()-0.5)*500; startY = -1000; }
+                                else if (s.entryAnimation === 'fly_up') { startX = targetX + (Math.random()-0.5)*500; startY = 1000; }
+                                else if (s.entryAnimation === 'zoom_in') { startScale = 0; }
+                                else if (s.entryAnimation === 'orbit') { 
+                                    let angle = (1 - easedProgress) * Math.PI * 4; // 2 tur at
+                                    startX = targetX + Math.cos(angle) * 800;
+                                    startY = targetY + Math.sin(angle) * 800;
+                                    startScale = 0.2;
+                                    extraRotation = angle;
+                                }
+
+                                currentX = startX + (targetX - startX) * easedProgress;
+                                currentY = startY + (targetY - startY) * easedProgress;
+                                currentScale = startScale + (targetScale - startScale) * easedProgress;
+                            }
+
+                            // 2. SÜREKLİ ANİMASYONLAR (Sahnede durduktan sonraki hareketler)
+                            let imgXOffset = currentX;
+                            let imgYOffset = currentY;
+                            let imgScale = currentScale;
+                            let finalRot = imgRotation + extraRotation;
+
                             if (s.imageAnimType === 'float') imgYOffset += Math.sin(sceneTime / 300) * 20;
                             if (s.imageAnimType === 'pulse') imgScale *= 1 + Math.sin(sceneTime / 200) * 0.05;
-                            if (s.imageAnimType === 'rotate') imgRotation += Math.sin(sceneTime / 500) * 0.05;
-                            if (s.imageAnimType === 'zoom_in') imgScale *= 1 + (sceneProgress * 0.2);
-                            if (s.imageAnimType === 'swing') imgRotation += Math.sin(sceneTime / 300) * 0.15;
-                            if (s.imageAnimType === '3d_tilt') { imgRotation += Math.sin(sceneTime/1000)*0.1; imgScale *= 1 + Math.cos(sceneTime/1000)*0.05; }
+                            if (s.imageAnimType === 'rotate') finalRot += Math.sin(sceneTime / 500) * 0.1;
+                            if (s.imageAnimType === 'swing') finalRot += Math.sin(sceneTime / 300) * 0.15;
 
                             let imgW = imgData.imgObj.width, imgH = imgData.imgObj.height, maxSize = 400;
                             if (imgW > maxSize || imgH > maxSize) { if (imgW > imgH) { imgH = (maxSize / imgW) * imgH; imgW = maxSize; } else { imgW = (maxSize / imgH) * imgW; imgH = maxSize; } }
 
                             ctx.save();
                             ctx.translate(centerX + imgXOffset, centerY + imgYOffset); 
-                            ctx.rotate(imgRotation); ctx.scale(imgScale, imgScale);
+                            ctx.rotate(finalRot); ctx.scale(imgScale, imgScale);
 
                             if (s.imageStyle === 'neon_border') {
                                 ctx.shadowColor = finalColors[1]; ctx.shadowBlur = 50;
@@ -835,7 +909,6 @@
             }
         };
 
-        // Pencere boyutu değiştiğinde önizlemeyi yeniden çiz (responsive)
         window.addEventListener('resize', () => {
             if (activeSceneIndex !== -1) renderInteractiveCanvas();
         });
