@@ -414,7 +414,11 @@
                     video.muted = true; 
                     video.playsInline = true;
                     video.loop = true; 
-                    video.onloadedmetadata = () => resolve(video);
+                    video.onloadedmetadata = () => {
+                        // İlk kareyi yüklemek için oynat ve duraklat (Bazı tarayıcılarda siyah ekran sorununu çözer)
+                        video.play().then(() => video.pause()).catch(() => {});
+                        resolve(video);
+                    };
                     video.load(); 
                 }
             });
@@ -522,7 +526,7 @@
                     el = document.createElement('video');
                     el.src = mediaData.mediaObj.src;
                     el.muted = true; el.loop = true; el.playsInline = true;
-                    el.play(); 
+                    el.play().catch(e=>console.log(e)); 
                     el.className = `draggable-video ${index === activeImageIndex ? 'selected' : ''}`;
                 }
                 
@@ -780,8 +784,6 @@
                 scene.settings.textAnimation = textAnimation.value === 'auto' ? (aiDesign.textAnimation || 'fade_up') : textAnimation.value;
                 scene.settings.visualEffect = visualEffect.value === 'auto' ? (aiDesign.visualEffect || 'none') : visualEffect.value;
                 scene.settings.transitionEffect = transitionEffect.value === 'auto' ? (aiDesign.transitionEffect || 'fade') : transitionEffect.value;
-                
-                // AI'dan gelen başlık ve sloganı ATAMIYORUZ (Kullanıcı yazmadıysa boş kalacak).
             });
         }
 
@@ -844,7 +846,7 @@
 
                 scenes[sceneIndex].media.forEach(mediaData => {
                     if (mediaData.type === 'video') {
-                        if (mediaData.mediaObj.paused) mediaData.mediaObj.play();
+                        if (mediaData.mediaObj.paused) mediaData.mediaObj.play().catch(e=>console.log(e));
                     }
 
                     let targetX = mediaData.x;
@@ -1067,9 +1069,13 @@
                 let transitionStartTime = -1;
                 const transitionDuration = 800;
 
+                // Tüm videoları başlangıç durumuna al
                 scenes.forEach(scene => {
                     scene.media.forEach(m => {
-                        if (m.type === 'video') { m.mediaObj.currentTime = 0; m.mediaObj.pause(); }
+                        if (m.type === 'video') { 
+                            m.mediaObj.currentTime = 0; 
+                            m.mediaObj.pause(); 
+                        }
                     });
                 });
 
@@ -1087,11 +1093,20 @@
                             transitionStartTime = time;
                         }
                         
+                        // Eski sahnedeki videoları durdur
                         if (lastSceneIndex !== -1) {
                             scenes[lastSceneIndex].media.forEach(m => {
                                 if (m.type === 'video') m.mediaObj.pause();
                             });
                         }
+
+                        // Yeni sahnedeki videoları başlat (SORUN BURADAYDI, EKLENDİ)
+                        scenes[currentSceneIndex].media.forEach(m => {
+                            if (m.type === 'video') {
+                                m.mediaObj.currentTime = 0; // Baştan başlat
+                                m.mediaObj.play().catch(e => console.log("Video oynatma hatası:", e));
+                            }
+                        });
                         
                         lastSceneIndex = currentSceneIndex;
                     }
@@ -1132,6 +1147,12 @@
                     }
 
                     if (time >= totalDuration) { 
+                        // Videonun sonlanması durumunda tüm videoları durdur
+                        scenes.forEach(scene => {
+                            scene.media.forEach(m => {
+                                if (m.type === 'video') m.mediaObj.pause();
+                            });
+                        });
                         mediaRecorder.stop(); 
                     } 
                     else { animationId = requestAnimationFrame(drawFrame); }
