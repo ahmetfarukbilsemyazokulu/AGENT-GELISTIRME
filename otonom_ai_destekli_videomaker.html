@@ -102,7 +102,6 @@
             <textarea id="videoPrompt" placeholder="Örnek: Kırmızı ruj reklamı. Veya: Lüks bir araba tanıtımı."></textarea>
         </div>
 
-        <!-- Sahne Bazlı Ayarlar İçin Global Kontroller -->
         <div class="controls-grid">
             <div class="control-box">
                 <label>🎨 Renk Teması</label>
@@ -311,13 +310,24 @@
         let audioCtx = null;
         let audioElement = null;
 
-        // Ses Yükleme Kontrolü
+        // SES VE RENK YARDIMCI FONKSİYONLARI
         audioUpload.addEventListener('change', function(e) {
             if (e.target.files.length > 0) audioStatus.style.display = 'block';
             else audioStatus.style.display = 'none';
         });
 
-        // Yeni Sahne Yükle (Her dosya bir sahne)
+        // HATA ÇÖZÜMÜ: Hex kodunu güvenli RGBA'ya çevirir
+        function hexToRgba(hex, alpha) {
+            if (!hex) return `rgba(17, 24, 39, ${alpha})`; // fallback #111827
+            let c = hex.replace('#', '');
+            if (c.length === 3) c = c.split('').map(char => char + char).join('');
+            if (c.length !== 6) return `rgba(17, 24, 39, ${alpha})`;
+            const r = parseInt(c.substring(0, 2), 16);
+            const g = parseInt(c.substring(2, 4), 16);
+            const b = parseInt(c.substring(4, 6), 16);
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+
         document.getElementById('imageUpload').addEventListener('change', async function(e) {
             const files = Array.from(e.target.files);
             for (const file of files) {
@@ -351,7 +361,8 @@
                 textAnimation: 'auto', visualEffect: 'auto',
                 title: "REKLAM", titleX: 0, titleY: -230,
                 subtitle: "SİZİN İÇİN", subtitleX: 0, subtitleY: 260,
-                titleColor: "#FFFFFF", subtitleColor: "#CCCCCC"
+                titleColor: "#FFFFFF", subtitleColor: "#CCCCCC",
+                colors: ["#111827", "#374151", "#1F2937"] // Varsayılan renkler
             };
         }
 
@@ -382,19 +393,15 @@
             updateSceneUI();
             
             const s = scenes[index].settings;
-            
-            // Menüleri güncelle
             colorPalette.value = s.colorPalette; bgAnimation.value = s.bgAnimation;
             particleEffect.value = s.particleEffect; imageStyle.value = s.imageStyle;
             entryAnimation.value = s.entryAnimation; textStyle.value = s.textStyle;
             textAnimation.value = s.textAnimation; visualEffect.value = s.visualEffect;
             
-            // Yazı inputlarını güncelle
             sceneTitleInput.value = s.title;
             sceneSloganInput.value = s.subtitle;
         }
 
-        // Yazı inputları değiştiğinde sahne ayarlarını güncelle
         sceneTitleInput.addEventListener('input', (e) => {
             if (activeSceneIndex === -1) return;
             scenes[activeSceneIndex].settings.title = e.target.value;
@@ -412,7 +419,6 @@
             const scene = scenes[activeSceneIndex];
             const uiScaleFactor = interactiveCanvas.clientWidth / 1280; 
             
-            // 1. RESİMLERİ ÇİZ
             scene.images.forEach((imgData, index) => {
                 const imgEl = document.createElement('img');
                 imgEl.src = imgData.imgObj.src;
@@ -434,11 +440,9 @@
                 imgEl.style.transform = `rotate(${imgData.rotation}deg)`;
 
                 imgEl.addEventListener('mousedown', (e) => startDrag(e, 'image', index));
-
                 interactiveCanvas.appendChild(imgEl);
             });
 
-            // 2. YAZILARI ÇİZ (Sürüklenebilir)
             const titleEl = document.createElement('div');
             titleEl.className = 'draggable-text';
             titleEl.innerText = scene.settings.title || "Başlık";
@@ -446,7 +450,7 @@
             titleEl.style.top = `calc(50% + ${scene.settings.titleY * uiScaleFactor}px)`;
             titleEl.style.transform = `translate(-50%, -50%)`;
             titleEl.style.color = scene.settings.titleColor;
-            titleEl.style.fontSize = `${24 * uiScaleFactor * 2.5}px`; // Önizleme boyutu
+            titleEl.style.fontSize = `${24 * uiScaleFactor * 2.5}px`; 
             titleEl.addEventListener('mousedown', (e) => startDrag(e, 'title', 0));
             interactiveCanvas.appendChild(titleEl);
 
@@ -457,7 +461,7 @@
             subEl.style.top = `calc(50% + ${scene.settings.subtitleY * uiScaleFactor}px)`;
             subEl.style.transform = `translate(-50%, -50%)`;
             subEl.style.color = scene.settings.subtitleColor;
-            subEl.style.fontSize = `${16 * uiScaleFactor * 2.5}px`; // Önizleme boyutu
+            subEl.style.fontSize = `${16 * uiScaleFactor * 2.5}px`; 
             subEl.addEventListener('mousedown', (e) => startDrag(e, 'subtitle', 0));
             interactiveCanvas.appendChild(subEl);
             
@@ -508,7 +512,7 @@
                 initialY = scenes[activeSceneIndex].images[index].y;
             } else {
                 e.target.classList.add('selected');
-                imageTransformControls.style.display = 'none'; // Yazı seçilirse resim ayarlarını gizle
+                imageTransformControls.style.display = 'none'; 
                 if (type === 'title') {
                     initialX = scenes[activeSceneIndex].settings.titleX;
                     initialY = scenes[activeSceneIndex].settings.titleY;
@@ -570,7 +574,6 @@
             document.removeEventListener('mouseup', stopDrag);
         }
 
-        // AI ve Render İşlemleri
         async function initAI() {
             try {
                 const selectedModel = "Llama-3.2-1B-Instruct-q4f32_1-MLC";
@@ -639,15 +642,16 @@
             const aiDesign = await getGlobalDesignFromAI(prompt) || getLocalPromptDesign(prompt);
             
             scenes.forEach(scene => {
-                // Eğer kullanıcı kendi yazısını yazmadıysa AI'nın yazısını kullan
                 if (scene.settings.title === "REKLAM" || scene.settings.title === "") scene.settings.title = aiDesign.title || "REKLAM";
                 if (scene.settings.subtitle === "SİZİN İÇİN" || scene.settings.subtitle === "") scene.settings.subtitle = aiDesign.subtitle || "SİZİN İÇİN";
-                
-                // Renkleri uygula
                 if (scene.settings.titleColor === "#FFFFFF") scene.settings.titleColor = aiDesign.textColor || "#FFFFFF";
-                if (scene.settings.subtitleColor === "#CCCCCC") scene.settings.subtitleColor = aiDesign.colors[2] || "#CCCCCC";
+                if (scene.settings.subtitleColor === "#CCCCCC") scene.settings.subtitleColor = (aiDesign.colors && aiDesign.colors[2]) ? aiDesign.colors[2] : "#CCCCCC";
 
-                // Efektleri uygula
+                // HATA ÇÖZÜMÜ: Renk dizisi geçerli mi kontrol et
+                if (!Array.isArray(scene.settings.colors) || scene.settings.colors.length < 3) {
+                    scene.settings.colors = aiDesign.colors || ["#111827", "#374151", "#1F2937"];
+                }
+
                 scene.settings.bgAnimation = bgAnimation.value === 'auto' ? (aiDesign.bgAnimation || 'aurora') : bgAnimation.value;
                 scene.settings.particleEffect = particleEffect.value === 'auto' ? (aiDesign.particleEffect || 'none') : particleEffect.value;
                 scene.settings.imageStyle = imageStyle.value === 'auto' ? (aiDesign.imageStyle || 'glass') : imageStyle.value;
@@ -678,7 +682,6 @@
                 canvasContainer.querySelector('span').style.display = 'none';
                 recordedChunks = [];
 
-                // SES BİRLEŞTİRME
                 let stream = canvas.captureStream(60);
                 const audioFile = audioUpload.files[0];
                 
@@ -729,21 +732,21 @@
 
                     // Arka Plan
                     if (s.bgAnimation === 'aurora' || s.bgAnimation === 'gradient') {
-                        ctx.fillStyle = s.titleColor ? "#111827" : "#000"; // Fallback bg color
-                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        ctx.fillStyle = "#111827"; ctx.fillRect(0, 0, canvas.width, canvas.height);
                         const t = time / 1000;
                         for (let i = 0; i < 3; i++) {
                             let x = centerX + Math.cos(t * 0.5 + i * 2) * 400;
                             let y = centerY + Math.sin(t * 0.7 + i * 2) * 300;
                             let radGrad = ctx.createRadialGradient(x, y, 0, x, y, 600);
-                            let c = s.colors ? s.colors[i] : "#333";
-                            radGrad.addColorStop(0, c + "AA"); radGrad.addColorStop(1, c + "00"); 
+                            let c = (s.colors && s.colors[i]) ? s.colors[i] : "#111827"; // Güvenli renk ataması
+                            radGrad.addColorStop(0, hexToRgba(c, 0.66)); 
+                            radGrad.addColorStop(1, hexToRgba(c, 0)); 
                             ctx.fillStyle = radGrad; ctx.fillRect(0, 0, canvas.width, canvas.height);
                         }
                     } else if (s.bgAnimation === 'galaxy') {
                         ctx.fillStyle = "#000000"; ctx.fillRect(0, 0, canvas.width, canvas.height);
                         let radGrad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 800);
-                        radGrad.addColorStop(0, "#33344444"); radGrad.addColorStop(1, "transparent");
+                        radGrad.addColorStop(0, "rgba(51, 51, 51, 0.3)"); radGrad.addColorStop(1, "transparent");
                         ctx.fillStyle = radGrad; ctx.fillRect(0, 0, canvas.width, canvas.height);
                     } else if (s.bgAnimation === 'matrix') {
                         ctx.fillStyle = "#000000"; ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -768,7 +771,7 @@
                         }
                     }
 
-                    // Resimler (Giriş Animasyonlu)
+                    // Resimler
                     if (currentScene.images.length > 0) {
                         const entryDuration = sceneDuration * 0.4; 
                         let entryProgress = Math.min(1, sceneTime / entryDuration);
@@ -824,7 +827,7 @@
                         });
                     }
 
-                    // YAZILAR (Sahneye özel konumlar)
+                    // YAZILAR
                     let titleX = s.titleX;
                     let titleY = s.titleY;
                     let subX = s.subtitleX;
@@ -842,14 +845,12 @@
                         textScale = 1 + Math.sin(time / 150) * 0.05; 
                     }
 
-                    // Başlık
                     ctx.save(); 
                     ctx.translate(centerX + titleX, centerY + titleY); 
                     ctx.scale(textScale, textScale);
                     ctx.textAlign = "center"; ctx.textBaseline = "middle"; 
                     ctx.font = `600 80px ${selectedFont}`;
                     
-                    // Plaka
                     let titleWidth = ctx.measureText(s.title).width + 80;
                     ctx.fillStyle = "rgba(0, 0, 0, 0.5)"; 
                     ctx.beginPath(); ctx.roundRect(-titleWidth/2, -60, titleWidth, 110, 20); ctx.fill();
@@ -864,7 +865,6 @@
                     }
                     ctx.restore();
 
-                    // Slogan
                     ctx.save(); 
                     ctx.translate(centerX + subX, centerY + subY); 
                     ctx.scale(textScale, textScale);
