@@ -78,7 +78,7 @@
         /* Video Oynatıcı ve Canvas Alanı */
         .media-area { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; position: relative; display: flex; justify-content: center; align-items: center; margin-bottom: 15px; margin-top: 20px; border: 2px solid #334155; }
         canvas { width: 100%; height: 100%; display: none; }
-        video { width: 100%; height: 100%; display: none; object-fit: contain; background: #000; }
+        video.main-player { width: 100%; height: 100%; display: none; object-fit: contain; background: #000; }
         
         .status { text-align: center; font-size: 13px; color: #94A3B8; margin-bottom: 10px; font-weight: 600; }
         .status.recording { color: #F87171; animation: pulse 1.5s infinite; }
@@ -87,8 +87,11 @@
         .download-area { display: none; text-align: center; margin-top: 10px; }
         .download-area a { display: inline-block; background: #10B981; color: white; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 15px; margin-top: 10px;}
         
-        /* Gizli video elementi (Tarayıcının videoyu tanıması için DOM'a eklenir) */
-        .hidden-videos { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; top: -9999px; left: -9999px; }
+        /* GİZLİ VİDEO KAPSAYICISI - Tarayıcının videoyu oynatması için 1x1 boyutunda görünmez alan */
+        .hidden-video-container { 
+            position: fixed; top: 0; left: 0; width: 1px; height: 1px; 
+            opacity: 0.01; pointer-events: none; overflow: hidden; z-index: -1;
+        }
         
         @media (max-width: 800px) { .controls-grid, .upload-row { grid-template-columns: repeat(2, 1fr); } .scene-editor.active { grid-template-columns: 1fr; } }
     </style>
@@ -233,15 +236,15 @@
 
         <div class="upload-row">
             <div class="upload-area">
-                <label style="font-size: 13px; font-weight: 600; color: #E2E8F0;">Resim Yükle (Sahne):</label>
+                <label style="font-size: 13px; font-weight: 600; color: #E2E8F0;">Resim Yükle (Yeni Sahne):</label>
                 <input type="file" id="imageUpload" accept="image/*" multiple>
             </div>
             <div class="upload-area">
-                <label style="font-size: 13px; font-weight: 600; color: #E2E8F0;">Video Yükle (Sahne):</label>
+                <label style="font-size: 13px; font-weight: 600; color: #E2E8F0;">Video Yükle (Yeni Sahne):</label>
                 <input type="file" id="videoUpload" accept="video/*" multiple>
             </div>
             <div class="upload-area" style="justify-content: center; border-style: solid; border-color: #1E293B; background: #0F172A;">
-                <span style="font-size: 12px; color: #94A3B8; text-align: center;">Yüklediğiniz her dosya (resim veya video) yeni bir sahne oluşturur.</span>
+                <span style="font-size: 12px; color: #94A3B8; text-align: center;">Yüklediğiniz her dosya yeni bir sahne oluşturur.</span>
             </div>
         </div>
 
@@ -254,6 +257,11 @@
                     <label style="font-size: 12px; color: #94A3B8; font-weight: 600;">Canlı Önizleme (Görselleri ve yazıları sürükleyin):</label>
                     <div class="interactive-canvas" id="interactiveCanvas"></div>
                     
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <input type="file" id="addMediaToScene" accept="image/*,video/*" multiple style="display: none;">
+                        <button onclick="document.getElementById('addMediaToScene').click()" style="flex: 1; background: #334155; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold;">➕ Bu Sahneye Yeni Resim / Video Ekle</button>
+                    </div>
+
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
                         <div class="input-group" style="margin: 0;">
                             <label style="font-size: 11px;">Sahne Başlığı (İsteğe Bağlı)</label>
@@ -297,7 +305,7 @@
         <div class="media-area" id="mediaContainer">
             <span id="mediaPlaceholder" style="color: #64748B; font-weight: 300;">Reklamınız Burada Oluşacak</span>
             <canvas id="videoCanvas" width="1280" height="720"></canvas>
-            <video id="videoPlayer" controls></video>
+            <video id="videoPlayer" class="main-player" controls></video>
         </div>
 
         <div class="status" id="statusText">Model indiriliyor, lütfen bekleyin...</div>
@@ -307,8 +315,8 @@
         </div>
     </div>
 
-    <!-- Gizli Video Konteyneri (Tarayıcının oynatması için) -->
-    <div id="hiddenVideoContainer" class="hidden-videos"></div>
+    <!-- GİZLİ VİDEO KAPSAYICISI -->
+    <div id="hiddenVideoContainer" class="hidden-video-container"></div>
 
     <script type="module">
         import * as webllm from "https://esm.run/@mlc-ai/web-llm";
@@ -352,6 +360,7 @@
         const imageTransformControls = document.getElementById('imageTransformControls');
         const sceneTitleInput = document.getElementById('sceneTitleInput');
         const sceneSloganInput = document.getElementById('sceneSloganInput');
+        const addMediaToSceneInput = document.getElementById('addMediaToScene');
 
         const audioUpload = document.getElementById('audioUpload');
         const audioStatus = document.getElementById('audioStatus');
@@ -408,6 +417,22 @@
             if (activeSceneIndex === -1 && scenes.length > 0) selectScene(0);
         });
 
+        // YENİ: Aktif Sahneye Resim/Video Ekleme
+        addMediaToSceneInput.addEventListener('change', async function(e) {
+            const files = Array.from(e.target.files);
+            if (files.length === 0 || activeSceneIndex === -1) return;
+            
+            for (const file of files) {
+                const isVideo = file.type.startsWith('video');
+                const type = isVideo ? 'video' : 'image';
+                const mediaObj = await loadMediaFile(file, type);
+                scenes[activeSceneIndex].media.push({ 
+                    mediaObj: mediaObj, type: type, x: 0, y: 0, scale: 1, rotation: 0, id: Date.now() + Math.random() 
+                });
+            }
+            updateSceneUI();
+        });
+
         function loadMediaFile(file, type) {
             return new Promise((resolve) => {
                 const url = URL.createObjectURL(file);
@@ -424,10 +449,9 @@
                     video.crossOrigin = "anonymous";
                     video.preload = "auto";
                     
-                    // KRİTİK DÜZELTME: Videoyu DOM'a ekle (Gizli bir kapsayıcıya)
+                    // Videoyu DOM'a ekle (Görünmez olsa bile tarayıcı oynatması için bu şart)
                     hiddenVideoContainer.appendChild(video);
 
-                    // Oynatılmaya hazır olduğunda çöz (Sadece yüklendiğinde değil, oynatılabilir olduğunda)
                     video.oncanplay = () => {
                         resolve(video);
                     };
@@ -535,7 +559,6 @@
                     el.src = mediaData.mediaObj.src;
                     el.className = `draggable-img ${index === activeImageIndex ? 'selected' : ''}`;
                 } else {
-                    // Önizleme için kopya video oluştur (Ana video gizli oynarken bu da oynasın)
                     el = document.createElement('video');
                     el.src = mediaData.mediaObj.src;
                     el.muted = true; el.loop = true; el.playsInline = true;
@@ -855,9 +878,9 @@
                 let easedProgress = easeOutCubic(entryProgress);
 
                 scenes[sceneIndex].media.forEach(mediaData => {
-                    // VİDEO OYNATMA KONTROLÜ (Sahne aktifse ve video duraklatılmışsa oynat)
+                    // VİDEO OYNATMA GARANTİSİ (Eğer oynamıyorsa zorla oynat)
                     if (mediaData.type === 'video') {
-                        if (mediaData.mediaObj.paused && sceneTime < sceneDuration) {
+                        if (mediaData.mediaObj.paused) {
                             mediaData.mediaObj.play().catch(e => console.log("Play hatası:", e));
                         }
                     }
@@ -1066,7 +1089,6 @@
                     cancelAnimationFrame(animationId);
                     if (audioElement) audioElement.pause();
                     
-                    // Tüm videoları durdur
                     scenes.forEach(scene => {
                         scene.media.forEach(m => {
                             if (m.type === 'video') m.mediaObj.pause();
@@ -1089,7 +1111,6 @@
                 let transitionStartTime = -1;
                 const transitionDuration = 800;
 
-                // Tüm videoları başlangıç durumuna al
                 scenes.forEach(scene => {
                     scene.media.forEach(m => {
                         if (m.type === 'video') { 
@@ -1113,14 +1134,12 @@
                             transitionStartTime = time;
                         }
                         
-                        // Eski sahnedeki videoları durdur
                         if (lastSceneIndex !== -1) {
                             scenes[lastSceneIndex].media.forEach(m => {
                                 if (m.type === 'video') m.mediaObj.pause();
                             });
                         }
 
-                        // Yeni sahnedeki videoları başlat
                         scenes[currentSceneIndex].media.forEach(m => {
                             if (m.type === 'video') {
                                 m.mediaObj.currentTime = 0; 
