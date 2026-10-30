@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sürükle-Bırak Metin ve Sahne Stüdyosu | AGENT-GELISTIRME</title>
+    <title>Video Oynatıcılı ve Geçiş Efektli Sinema Stüdyosu | AGENT-GELISTIRME</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=Montserrat:wght@400;600;800&family=Caveat:wght@700&family=Cinzel:wght@700&family=Inter:wght@400&family=Courier+Prime:wght@700&display=swap" rel="stylesheet">
     
     <style>
@@ -57,7 +57,6 @@
         }
         .draggable-img.selected { border-color: #38BDF8; box-shadow: 0 0 15px rgba(56,189,248,0.8); }
         
-        /* Metin Sürükleme Elemanları */
         .draggable-text {
             position: absolute; cursor: grab; transform-origin: center center;
             padding: 5px 10px; white-space: nowrap; border: 2px dashed transparent;
@@ -75,15 +74,17 @@
         .action-row button:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(56,189,248,0.4); }
         .action-row button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; animation: none; background: #475569; }
 
-        .canvas-area { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; position: relative; display: flex; justify-content: center; align-items: center; margin-bottom: 15px; margin-top: 20px; border: 2px solid #334155; }
+        /* Video Oynatıcı ve Canvas Alanı */
+        .media-area { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; position: relative; display: flex; justify-content: center; align-items: center; margin-bottom: 15px; margin-top: 20px; border: 2px solid #334155; }
         canvas { width: 100%; height: 100%; display: none; }
+        video { width: 100%; height: 100%; display: none; object-fit: contain; background: #000; }
         
         .status { text-align: center; font-size: 13px; color: #94A3B8; margin-bottom: 10px; font-weight: 600; }
         .status.recording { color: #F87171; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
         .download-area { display: none; text-align: center; margin-top: 10px; }
-        .download-area a { display: inline-block; background: #10B981; color: white; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 15px; }
+        .download-area a { display: inline-block; background: #10B981; color: white; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 15px; margin-top: 10px;}
         
         @media (max-width: 800px) { .controls-grid, .upload-row { grid-template-columns: repeat(2, 1fr); } .scene-editor.active { grid-template-columns: 1fr; } }
     </style>
@@ -91,8 +92,8 @@
 <body>
 
     <div class="header">
-        <h1>Sürükle-Bırak Yazı ve Sahne Stüdyosu</h1>
-        <p>Her sahneye özel yazı yazın, fareyle konumlandırın.</p>
+        <h1>Geçiş Efektli ve Video Oynatıcılı Stüdyo</h1>
+        <p>Sahne geçişlerini seçin, videonuzu anında izleyin.</p>
     </div>
 
     <div class="studio-container">
@@ -148,7 +149,6 @@
                     <option value="circle">Yuvarlak</option>
                     <option value="polaroid">Polaroid</option>
                     <option value="neon_border">Neon Çerçeve</option>
-                    <option value="shadow">Gölge</option>
                 </select>
                 <label style="margin-top: 4px;">🚀 Giriş Animasyonu</label>
                 <select id="entryAnimation">
@@ -185,7 +185,7 @@
             </div>
         </div>
 
-        <div class="controls-grid" style="grid-template-columns: 1fr 1fr;">
+        <div class="controls-grid" style="grid-template-columns: 1fr 1fr 1fr;">
             <div class="control-box">
                 <label>🎥 Sinematik Görüntü Efektleri (Overlay)</label>
                 <select id="visualEffect">
@@ -196,6 +196,19 @@
                     <option value="vignette">Vignette</option>
                     <option value="grain">Film Greni</option>
                     <option value="scanlines">CRT Çizgileri</option>
+                </select>
+            </div>
+            <!-- YENİ: SAHNE GEÇİŞ EFEKTİ -->
+            <div class="control-box">
+                <label>🔄 Sahneler Arası Geçiş Efekti</label>
+                <select id="transitionEffect">
+                    <option value="auto" selected>✨ Yapay Zeka Karar Versin</option>
+                    <option value="none">Ani Geçiş (Yok)</option>
+                    <option value="fade">Yumuşak Karartma (Fade)</option>
+                    <option value="slide_left">Sola Kaydır</option>
+                    <option value="slide_right">Sağa Kaydır</option>
+                    <option value="zoom">Yakınlaşarak Gel</option>
+                    <option value="wipe">Perde (Wipe)</option>
                 </select>
             </div>
             <div class="control-box">
@@ -215,7 +228,6 @@
             </div>
         </div>
 
-        <!-- SAHNE YÖNETİCİSİ -->
         <div class="scene-manager" id="sceneManager" style="display: none;">
             <h3 style="margin: 0 0 10px 0; font-size: 14px; color: #38BDF8;">Sahne Yöneticisi (Yazı ve Resimleri Sürükleyin)</h3>
             <div class="scene-tabs" id="sceneTabs"></div>
@@ -256,9 +268,11 @@
             <button id="generateBtn" onclick="generateVideo()" disabled>Yapay Zeka Yükleniyor...</button>
         </div>
 
-        <div class="canvas-area" id="canvasContainer">
-            <span style="color: #64748B; font-weight: 300;">Reklamınız Burada Oluşacak</span>
+        <!-- MEDYA ALANI (Canvas ve Video Oynatıcı) -->
+        <div class="media-area" id="mediaContainer">
+            <span id="mediaPlaceholder" style="color: #64748B; font-weight: 300;">Reklamınız Burada Oluşacak</span>
             <canvas id="videoCanvas" width="1280" height="720"></canvas>
+            <video id="videoPlayer" controls></video>
         </div>
 
         <div class="status" id="statusText">Model indiriliyor, lütfen bekleyin...</div>
@@ -274,11 +288,23 @@
         let engine = null;
         const canvas = document.getElementById('videoCanvas');
         const ctx = canvas.getContext('2d');
+        
+        // Geçiş efektleri için offscreen canvas'lar
+        const sceneCanvas = document.createElement('canvas');
+        sceneCanvas.width = canvas.width; sceneCanvas.height = canvas.height;
+        const sceneCtx = sceneCanvas.getContext('2d');
+        
+        const prevCanvas = document.createElement('canvas');
+        prevCanvas.width = canvas.width; prevCanvas.height = canvas.height;
+        const prevCtx = prevCanvas.getContext('2d');
+
         const statusText = document.getElementById('statusText');
         const generateBtn = document.getElementById('generateBtn');
         const downloadArea = document.getElementById('downloadArea');
         const downloadLink = document.getElementById('downloadLink');
-        const canvasContainer = document.getElementById('canvasContainer');
+        const mediaContainer = document.getElementById('mediaContainer');
+        const mediaPlaceholder = document.getElementById('mediaPlaceholder');
+        const videoPlayer = document.getElementById('videoPlayer');
         
         // UI Elements
         const colorPalette = document.getElementById('colorPalette');
@@ -289,6 +315,7 @@
         const textStyle = document.getElementById('textStyle');
         const textAnimation = document.getElementById('textAnimation');
         const visualEffect = document.getElementById('visualEffect');
+        const transitionEffect = document.getElementById('transitionEffect');
         
         const sceneManager = document.getElementById('sceneManager');
         const sceneTabs = document.getElementById('sceneTabs');
@@ -306,19 +333,16 @@
         let activeSceneIndex = -1;
         let activeImageIndex = -1;
         
-        // Ses Değişkenleri
         let audioCtx = null;
         let audioElement = null;
 
-        // SES VE RENK YARDIMCI FONKSİYONLARI
         audioUpload.addEventListener('change', function(e) {
             if (e.target.files.length > 0) audioStatus.style.display = 'block';
             else audioStatus.style.display = 'none';
         });
 
-        // HATA ÇÖZÜMÜ: Hex kodunu güvenli RGBA'ya çevirir
         function hexToRgba(hex, alpha) {
-            if (!hex) return `rgba(17, 24, 39, ${alpha})`; // fallback #111827
+            if (!hex) return `rgba(17, 24, 39, ${alpha})`;
             let c = hex.replace('#', '');
             if (c.length === 3) c = c.split('').map(char => char + char).join('');
             if (c.length !== 6) return `rgba(17, 24, 39, ${alpha})`;
@@ -358,11 +382,11 @@
             return { 
                 colorPalette: 'auto', bgAnimation: 'auto', particleEffect: 'auto', 
                 imageStyle: 'auto', entryAnimation: 'auto', textStyle: 'auto', 
-                textAnimation: 'auto', visualEffect: 'auto',
+                textAnimation: 'auto', visualEffect: 'auto', transitionEffect: 'auto',
                 title: "REKLAM", titleX: 0, titleY: -230,
                 subtitle: "SİZİN İÇİN", subtitleX: 0, subtitleY: 260,
                 titleColor: "#FFFFFF", subtitleColor: "#CCCCCC",
-                colors: ["#111827", "#374151", "#1F2937"] // Varsayılan renkler
+                colors: ["#111827", "#374151", "#1F2937"]
             };
         }
 
@@ -397,6 +421,7 @@
             particleEffect.value = s.particleEffect; imageStyle.value = s.imageStyle;
             entryAnimation.value = s.entryAnimation; textStyle.value = s.textStyle;
             textAnimation.value = s.textAnimation; visualEffect.value = s.visualEffect;
+            transitionEffect.value = s.transitionEffect;
             
             sceneTitleInput.value = s.title;
             sceneSloganInput.value = s.subtitle;
@@ -601,11 +626,12 @@
 
         function getLocalPromptDesign(prompt) {
             const p = prompt.toLowerCase();
-            let design = { emoji: "", colors: ["#111827", "#374151", "#1F2937"], textColor: "#FFFFFF", bgAnimation: "gradient", particleEffect: "none", imageStyle: "glass", entryAnimation: "zoom_in", textStyle: "modern", textAnimation: "fade_up", visualEffect: "none" };
+            let design = { emoji: "", colors: ["#111827", "#374151", "#1F2937"], textColor: "#FFFFFF", bgAnimation: "gradient", particleEffect: "none", imageStyle: "glass", entryAnimation: "zoom_in", textStyle: "modern", textAnimation: "fade_up", visualEffect: "none", transitionEffect: "fade" };
             const emojiMap = {'ruj': '💄', 'parfüm': '🧴', 'ağaç': '🌳', 'kalem': '✏️', 'araba': '🚗', 'saat': '⌚', 'kahve': '☕', 'çiçek': '🌸', 'kitap': '📚', 'telefon': '📱', 'gözlük': '🕶️', 'ayakkabı': '👠', 'yiyecek': '🍔', 'müzik': '🎵', 'elmas': '💎', 'roket': '🚀', 'uzay': '🌌', 'robot': '🤖', 'oyun': '🎮', 'pizza': '🍕', 'kedi': '🐱', 'köpek': '🐶', 'kuş': '🐦', 'deniz': '🌊', 'kalp': '❤️'};
             for (const [key, value] of Object.entries(emojiMap)) { if (p.includes(key)) { design.emoji = value; break; } }
-            if (p.includes('ruj') || p.includes('aşk') || p.includes('güzellik') || p.includes('kırmızı')) { design.colors = ["#4C0519", "#BE123C", "#FDA4AF"]; design.textColor = "#FFF1F2"; design.bgAnimation = "aurora"; design.particleEffect = "golden_dust"; design.imageStyle = "glass"; design.entryAnimation = "orbit"; design.textStyle = "elegant"; design.textAnimation = "neon_pulse"; design.visualEffect = "bloom"; }
-            else if (p.includes('doğa') || p.includes('ağaç') || p.includes('yeşil') || p.includes('orman')) { design.colors = ["#064E3B", "#10B981", "#A7F3D0"]; design.textColor = "#ECFDF5"; design.bgAnimation = "bokeh"; design.particleEffect = "fireflies"; design.imageStyle = "circle"; design.entryAnimation = "fly_up"; design.textStyle = "classic"; design.textAnimation = "fade_up"; design.visualEffect = "lightleak"; }
+            if (p.includes('ruj') || p.includes('aşk') || p.includes('güzellik') || p.includes('kırmızı')) { design.colors = ["#4C0519", "#BE123C", "#FDA4AF"]; design.textColor = "#FFF1F2"; design.bgAnimation = "aurora"; design.particleEffect = "golden_dust"; design.imageStyle = "glass"; design.entryAnimation = "orbit"; design.textStyle = "elegant"; design.textAnimation = "neon_pulse"; design.visualEffect = "bloom"; design.transitionEffect = "fade"; }
+            else if (p.includes('doğa') || p.includes('ağaç') || p.includes('yeşil') || p.includes('orman')) { design.colors = ["#064E3B", "#10B981", "#A7F3D0"]; design.textColor = "#ECFDF5"; design.bgAnimation = "bokeh"; design.particleEffect = "fireflies"; design.imageStyle = "circle"; design.entryAnimation = "fly_up"; design.textStyle = "classic"; design.textAnimation = "fade_up"; design.visualEffect = "lightleak"; design.transitionEffect = "zoom"; }
+            else if (p.includes('teknoloji') || p.includes('neon') || p.includes('uzay') || p.includes('roket')) { design.colors = ["#020617", "#1D4ED8", "#06B6D4"]; design.textColor = "#E0F2FE"; design.bgAnimation = "tunnel"; design.particleEffect = "none"; design.imageStyle = "neon_border"; design.entryAnimation = "slide_left"; design.textStyle = "mono"; design.textAnimation = "shake"; design.visualEffect = "glitch"; design.transitionEffect = "slide_right"; }
             return design;
         }
 
@@ -620,7 +646,8 @@
                     - textStyle: [modern, classic, elegant, impact, handwriting, mono]
                     - textAnimation: [typewriter, slide_in, neon_pulse, bounce, color_cycle, fade_up, zoom_in, shake, split]
                     - visualEffect: [none, bloom, glitch, vignette, grain, scanlines, chromatic, lightleak, retro]
-                    JSON: {"title": "TITLE", "subtitle": "SUBTITLE", "colors": ["#hex1", "#hex2", "#hex3"], "emoji": "SINGLE_EMOJI", "bgAnimation": "...", "particleEffect": "...", "imageStyle": "...", "entryAnimation": "...", "textStyle": "...", "textAnimation": "...", "visualEffect": "..."}` },
+                    - transitionEffect: [none, fade, slide_left, slide_right, zoom, wipe]
+                    JSON: {"title": "TITLE", "subtitle": "SUBTITLE", "colors": ["#hex1", "#hex2", "#hex3"], "emoji": "SINGLE_EMOJI", "bgAnimation": "...", "particleEffect": "...", "imageStyle": "...", "entryAnimation": "...", "textStyle": "...", "textAnimation": "...", "visualEffect": "...", "transitionEffect": "..."}` },
                 { role: "user", content: `Design for: "${prompt}"` }
             ];
             try {
@@ -647,7 +674,6 @@
                 if (scene.settings.titleColor === "#FFFFFF") scene.settings.titleColor = aiDesign.textColor || "#FFFFFF";
                 if (scene.settings.subtitleColor === "#CCCCCC") scene.settings.subtitleColor = (aiDesign.colors && aiDesign.colors[2]) ? aiDesign.colors[2] : "#CCCCCC";
 
-                // HATA ÇÖZÜMÜ: Renk dizisi geçerli mi kontrol et
                 if (!Array.isArray(scene.settings.colors) || scene.settings.colors.length < 3) {
                     scene.settings.colors = aiDesign.colors || ["#111827", "#374151", "#1F2937"];
                 }
@@ -659,11 +685,192 @@
                 scene.settings.textStyle = textStyle.value === 'auto' ? (aiDesign.textStyle || 'modern') : textStyle.value;
                 scene.settings.textAnimation = textAnimation.value === 'auto' ? (aiDesign.textAnimation || 'fade_up') : textAnimation.value;
                 scene.settings.visualEffect = visualEffect.value === 'auto' ? (aiDesign.visualEffect || 'none') : visualEffect.value;
+                scene.settings.transitionEffect = transitionEffect.value === 'auto' ? (aiDesign.transitionEffect || 'fade') : transitionEffect.value;
             });
         }
 
         function easeOutCubic(x) {
             return 1 - Math.pow(1 - x, 3);
+        }
+
+        // SAHNE ÇİZİM FONKSİYONU (Offscreen Canvas'a çizer)
+        function renderSceneToCtx(targetCtx, sceneIndex, sceneTime, sceneDuration, globalTime) {
+            const s = scenes[sceneIndex].settings;
+            const selectedFont = getFontFamily(s.textStyle);
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            // Arka Plan
+            if (s.bgAnimation === 'aurora' || s.bgAnimation === 'gradient') {
+                targetCtx.fillStyle = "#111827"; targetCtx.fillRect(0, 0, canvas.width, canvas.height);
+                const t = globalTime / 1000;
+                for (let i = 0; i < 3; i++) {
+                    let x = centerX + Math.cos(t * 0.5 + i * 2) * 400;
+                    let y = centerY + Math.sin(t * 0.7 + i * 2) * 300;
+                    let radGrad = targetCtx.createRadialGradient(x, y, 0, x, y, 600);
+                    let c = (s.colors && s.colors[i]) ? s.colors[i] : "#111827";
+                    radGrad.addColorStop(0, hexToRgba(c, 0.66)); 
+                    radGrad.addColorStop(1, hexToRgba(c, 0)); 
+                    targetCtx.fillStyle = radGrad; targetCtx.fillRect(0, 0, canvas.width, canvas.height);
+                }
+            } else if (s.bgAnimation === 'galaxy') {
+                targetCtx.fillStyle = "#000000"; targetCtx.fillRect(0, 0, canvas.width, canvas.height);
+                let radGrad = targetCtx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 800);
+                radGrad.addColorStop(0, "rgba(51, 51, 51, 0.3)"); radGrad.addColorStop(1, "transparent");
+                targetCtx.fillStyle = radGrad; targetCtx.fillRect(0, 0, canvas.width, canvas.height);
+            } else if (s.bgAnimation === 'matrix') {
+                targetCtx.fillStyle = "#000000"; targetCtx.fillRect(0, 0, canvas.width, canvas.height);
+                targetCtx.fillStyle = "#00FF41"; targetCtx.font = "20px monospace";
+                for(let i=0; i<canvas.width; i+=30) { for(let j=0; j<canvas.height; j+=30) { if(Math.random() > 0.95) targetCtx.fillText(Math.random().toString(36).substring(2,3), i, j + (globalTime/10)%30); } }
+            } else {
+                targetCtx.fillStyle = "#111827"; targetCtx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+
+            // Parçacıklar
+            if (s.particleEffect !== 'none') {
+                let pCount = s.particleEffect === 'golden_dust' ? 100 : 50;
+                for (let i = 0; i < pCount; i++) {
+                    let pX = (Math.random() * canvas.width + globalTime * 0.1) % canvas.width;
+                    let pY = (Math.random() * canvas.height - globalTime * 0.2) % canvas.height;
+                    if(pY < 0) pY += canvas.height;
+                    targetCtx.beginPath(); let pRadius = Math.random() * 2 + 1;
+                    if(s.particleEffect === 'golden_dust') { targetCtx.fillStyle = `rgba(255, 215, 0, 0.8)`; targetCtx.shadowColor = "gold"; targetCtx.shadowBlur = 10; }
+                    else if(s.particleEffect === 'snow') { targetCtx.fillStyle = `rgba(255, 255, 255, 0.8)`; }
+                    else if(s.particleEffect === 'fireflies') { targetCtx.fillStyle = `rgba(200, 255, 100, 0.8)`; targetCtx.shadowColor = "yellow"; targetCtx.shadowBlur = 15; }
+                    targetCtx.arc(pX, pY, pRadius, 0, Math.PI*2); targetCtx.fill(); targetCtx.shadowBlur = 0;
+                }
+            }
+
+            // Resimler
+            if (scenes[sceneIndex].images.length > 0) {
+                const entryDuration = sceneDuration * 0.4; 
+                let entryProgress = Math.min(1, sceneTime / entryDuration);
+                let easedProgress = easeOutCubic(entryProgress);
+
+                scenes[sceneIndex].images.forEach(imgData => {
+                    let targetX = imgData.x;
+                    let targetY = imgData.y;
+                    let targetScale = imgData.scale;
+                    let imgRotation = (imgData.rotation * Math.PI) / 180;
+                    
+                    let currentX = targetX, currentY = targetY, currentScale = targetScale, extraRotation = 0;
+
+                    if (entryProgress < 1) {
+                        let startX = targetX, startY = targetY, startScale = targetScale;
+                        if (s.entryAnimation === 'slide_left') { startX = -1500; }
+                        else if (s.entryAnimation === 'slide_right') { startX = 1500; }
+                        else if (s.entryAnimation === 'drop_down') { startY = -1000; }
+                        else if (s.entryAnimation === 'fly_up') { startY = 1000; }
+                        else if (s.entryAnimation === 'zoom_in') { startScale = 0; }
+                        else if (s.entryAnimation === 'orbit') { 
+                            let angle = (1 - easedProgress) * Math.PI * 4; 
+                            startX = targetX + Math.cos(angle) * 800;
+                            startY = targetY + Math.sin(angle) * 800;
+                            startScale = 0.2; extraRotation = angle;
+                        }
+                        currentX = startX + (targetX - startX) * easedProgress;
+                        currentY = startY + (targetY - startY) * easedProgress;
+                        currentScale = startScale + (targetScale - startScale) * easedProgress;
+                    }
+
+                    let imgW = imgData.imgObj.width, imgH = imgData.imgObj.height, maxSize = 400;
+                    if (imgW > maxSize || imgH > maxSize) { if (imgW > imgH) { imgH = (maxSize / imgW) * imgH; imgW = maxSize; } else { imgW = (maxSize / imgH) * imgW; imgH = maxSize; } }
+
+                    targetCtx.save();
+                    targetCtx.translate(centerX + currentX, centerY + currentY); 
+                    targetCtx.rotate(imgRotation + extraRotation); targetCtx.scale(currentScale, currentScale);
+
+                    if (s.imageStyle === 'glass') {
+                        targetCtx.beginPath(); targetCtx.roundRect(-imgW/2, -imgH/2, imgW, imgH, 30); targetCtx.clip();
+                        targetCtx.globalAlpha = 0.85; targetCtx.drawImage(imgData.imgObj, -imgW/2, -imgH/2, imgW, imgH);
+                        targetCtx.shadowBlur = 0;
+                        let glare = targetCtx.createLinearGradient(-imgW/2, -imgH/2, imgW/2, imgH/2);
+                        glare.addColorStop(0, "rgba(255,255,255,0.4)"); glare.addColorStop(0.5, "rgba(255,255,255,0)");
+                        targetCtx.fillStyle = glare; targetCtx.fillRect(-imgW/2, -imgH/2, imgW, imgH);
+                    } else if (s.imageStyle === 'circle') {
+                        targetCtx.beginPath(); targetCtx.arc(0, 0, Math.min(imgW, imgH)/2, 0, Math.PI*2); targetCtx.clip();
+                        let drawSize = Math.min(imgW, imgH); targetCtx.drawImage(imgData.imgObj, -drawSize/2, -drawSize/2, drawSize, drawSize);
+                    } else {
+                        targetCtx.drawImage(imgData.imgObj, -imgW/2, -imgH/2, imgW, imgH);
+                    }
+                    targetCtx.restore();
+                });
+            }
+
+            // YAZILAR
+            let titleX = s.titleX;
+            let titleY = s.titleY;
+            let subX = s.subtitleX;
+            let subY = s.subtitleY;
+            
+            let currentTitleColor = s.titleColor;
+            let currentSubColor = s.subtitleColor;
+            let textScale = 1;
+
+            if (s.textAnimation === 'color_cycle') { 
+                let hue = (globalTime / 10) % 360; currentTitleColor = `hsl(${hue}, 100%, 60%)`; currentSubColor = currentTitleColor;
+            } else if (s.textAnimation === 'bounce') { 
+                titleY += Math.sin(globalTime / 200) * 15; subY += Math.sin(globalTime / 200) * 15; 
+            } else if (s.textAnimation === 'neon_pulse') { 
+                textScale = 1 + Math.sin(globalTime / 150) * 0.05; 
+            }
+
+            targetCtx.save(); 
+            targetCtx.translate(centerX + titleX, centerY + titleY); 
+            targetCtx.scale(textScale, textScale);
+            targetCtx.textAlign = "center"; targetCtx.textBaseline = "middle"; 
+            targetCtx.font = `600 80px ${selectedFont}`;
+            
+            let titleWidth = targetCtx.measureText(s.title).width + 80;
+            targetCtx.fillStyle = "rgba(0, 0, 0, 0.5)"; 
+            targetCtx.beginPath(); targetCtx.roundRect(-titleWidth/2, -60, titleWidth, 110, 20); targetCtx.fill();
+
+            targetCtx.shadowColor = currentTitleColor; targetCtx.shadowBlur = 20; targetCtx.fillStyle = currentTitleColor;
+            
+            if (s.textAnimation === 'typewriter') {
+                let charsToShow = Math.floor(sceneTime / 50);
+                targetCtx.fillText(s.title.substring(0, charsToShow), 0, 0);
+            } else { 
+                targetCtx.fillText(s.title, 0, 0); 
+            }
+            targetCtx.restore();
+
+            targetCtx.save(); 
+            targetCtx.translate(centerX + subX, centerY + subY); 
+            targetCtx.scale(textScale, textScale);
+            targetCtx.textAlign = "center"; targetCtx.textBaseline = "middle";
+            targetCtx.font = `400 32px 'Montserrat', sans-serif`; 
+            
+            let subWidth = targetCtx.measureText(s.subtitle).width + 60;
+            targetCtx.fillStyle = "rgba(0, 0, 0, 0.5)"; 
+            targetCtx.beginPath(); targetCtx.roundRect(-subWidth/2, -25, subWidth, 50, 15); targetCtx.fill();
+
+            targetCtx.shadowColor = "rgba(0,0,0,0.8)"; targetCtx.shadowBlur = 10;
+            targetCtx.fillStyle = currentSubColor;
+            targetCtx.fillText(s.subtitle, 0, 0); 
+            targetCtx.restore();
+
+            // Efektler (Sadece sahne tuvaline uygulanır)
+            if (s.visualEffect === 'bloom') {
+                targetCtx.globalCompositeOperation = 'screen'; targetCtx.globalAlpha = 0.4; targetCtx.filter = 'blur(15px)';
+                targetCtx.drawImage(sceneCanvas, 0, 0); targetCtx.filter = 'none'; targetCtx.globalAlpha = 1; targetCtx.globalCompositeOperation = 'source-over';
+            }
+            else if (s.visualEffect === 'vignette') {
+                const vignette = targetCtx.createRadialGradient(centerX, centerY, canvas.height * 0.2, centerX, centerY, canvas.height * 0.9);
+                vignette.addColorStop(0, "rgba(0,0,0,0)"); vignette.addColorStop(1, "rgba(0,0,0,0.9)");
+                targetCtx.fillStyle = vignette; targetCtx.fillRect(0, 0, canvas.width, canvas.height);
+            } 
+            else if (s.visualEffect === 'grain') {
+                const grainData = targetCtx.getImageData(0, 0, canvas.width, canvas.height);
+                for (let i = 0; i < grainData.data.length; i += 4) {
+                    let noise = (Math.random() - 0.5) * 30; grainData.data[i] += noise; grainData.data[i+1] += noise; grainData.data[i+2] += noise;
+                }
+                targetCtx.putImageData(grainData, 0, 0);
+            }
+            else if (s.visualEffect === 'scanlines') {
+                targetCtx.fillStyle = "rgba(0, 0, 0, 0.2)";
+                for (let i = 0; i < canvas.height; i += 4) { targetCtx.fillRect(0, i, canvas.width, 2); }
+            }
         }
 
         window.generateVideo = async function() {
@@ -672,14 +879,16 @@
 
             generateBtn.disabled = true;
             downloadArea.style.display = 'none';
+            videoPlayer.style.display = 'none';
+            canvas.style.display = 'block';
+            mediaPlaceholder.style.display = 'none';
+            
             statusText.innerText = "🧠 Yapay Zeka sahneleri tasarlıyor...";
             statusText.className = "status recording";
 
             try {
                 await applyAIDesignToScenes(prompt);
                 statusText.innerText = "🎬 Sinematik render başladı...";
-                canvas.style.display = 'block';
-                canvasContainer.querySelector('span').style.display = 'none';
                 recordedChunks = [];
 
                 let stream = canvas.captureStream(60);
@@ -703,9 +912,17 @@
                 mediaRecorder.ondataavailable = (event) => { if (event.data.size > 0) recordedChunks.push(event.data); };
                 mediaRecorder.onstop = () => {
                     const blob = new Blob(recordedChunks, { type: 'video/webm' });
-                    downloadLink.href = URL.createObjectURL(blob);
+                    const url = URL.createObjectURL(blob);
+                    
+                    // Video Oynatıcıyı Ayarla
+                    videoPlayer.src = url;
+                    videoPlayer.style.display = 'block';
+                    canvas.style.display = 'none';
+                    videoPlayer.play();
+                    
+                    downloadLink.href = url;
                     downloadArea.style.display = 'block';
-                    statusText.innerText = "✅ Reklam Filmi Hazır!";
+                    statusText.innerText = "✅ Reklam Filmi Hazır! Videodan izleyebilirsiniz.";
                     statusText.className = "status";
                     generateBtn.disabled = false;
                     generateBtn.innerText = "✨ Otonom Reklamı Üret";
@@ -717,168 +934,69 @@
                 let startTime = Date.now();
                 const totalDuration = 6000; 
                 const sceneDuration = totalDuration / scenes.length;
-                const centerX = canvas.width / 2;
-                const centerY = canvas.height / 2;
+                
+                let lastSceneIndex = -1;
+                let transitionStartTime = -1;
+                const transitionDuration = 800; // 0.8 saniye geçiş süresi
 
                 function drawFrame() {
                     const time = Date.now() - startTime;
                     const currentSceneIndex = Math.min(Math.floor(time / sceneDuration), scenes.length - 1);
-                    const currentScene = scenes[currentSceneIndex];
                     const sceneTime = time % sceneDuration;
-                    const sceneProgress = sceneTime / sceneDuration;
-                    const s = currentScene.settings;
+                    
+                    const s = scenes[currentSceneIndex].settings;
 
-                    const selectedFont = getFontFamily(s.textStyle);
-
-                    // Arka Plan
-                    if (s.bgAnimation === 'aurora' || s.bgAnimation === 'gradient') {
-                        ctx.fillStyle = "#111827"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-                        const t = time / 1000;
-                        for (let i = 0; i < 3; i++) {
-                            let x = centerX + Math.cos(t * 0.5 + i * 2) * 400;
-                            let y = centerY + Math.sin(t * 0.7 + i * 2) * 300;
-                            let radGrad = ctx.createRadialGradient(x, y, 0, x, y, 600);
-                            let c = (s.colors && s.colors[i]) ? s.colors[i] : "#111827"; // Güvenli renk ataması
-                            radGrad.addColorStop(0, hexToRgba(c, 0.66)); 
-                            radGrad.addColorStop(1, hexToRgba(c, 0)); 
-                            ctx.fillStyle = radGrad; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    // Yeni sahneye geçildi mi?
+                    if (currentSceneIndex !== lastSceneIndex) {
+                        if (lastSceneIndex !== -1) {
+                            // Önceki sahnenin son halini kopyala
+                            prevCtx.clearRect(0, 0, canvas.width, canvas.height);
+                            prevCtx.drawImage(sceneCanvas, 0, 0); 
+                            transitionStartTime = time;
                         }
-                    } else if (s.bgAnimation === 'galaxy') {
-                        ctx.fillStyle = "#000000"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-                        let radGrad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 800);
-                        radGrad.addColorStop(0, "rgba(51, 51, 51, 0.3)"); radGrad.addColorStop(1, "transparent");
-                        ctx.fillStyle = radGrad; ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    } else if (s.bgAnimation === 'matrix') {
-                        ctx.fillStyle = "#000000"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-                        ctx.fillStyle = "#00FF41"; ctx.font = "20px monospace";
-                        for(let i=0; i<canvas.width; i+=30) { for(let j=0; j<canvas.height; j+=30) { if(Math.random() > 0.95) ctx.fillText(Math.random().toString(36).substring(2,3), i, j + (time/10)%30); } }
+                        lastSceneIndex = currentSceneIndex;
+                    }
+
+                    // Mevcut sahneyi kendi tuvaline çiz
+                    sceneCtx.clearRect(0, 0, canvas.width, canvas.height);
+                    renderSceneToCtx(sceneCtx, currentSceneIndex, sceneTime, sceneDuration, time);
+
+                    // Ana tuvale aktar (Geçiş efekti varsa uygula)
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    
+                    const isTransitioning = (transitionStartTime !== -1 && (time - transitionStartTime) < transitionDuration);
+                    
+                    if (isTransitioning && currentSceneIndex > 0) {
+                        const progress = (time - transitionStartTime) / transitionDuration;
+                        
+                        // Önceki sahneyi çiz
+                        ctx.drawImage(prevCanvas, 0, 0);
+                        
+                        // Geçiş Efektini Uygula
+                        ctx.save();
+                        if (s.transitionEffect === 'fade') {
+                            ctx.globalAlpha = progress;
+                        } else if (s.transitionEffect === 'slide_left') {
+                            ctx.translate(-canvas.width * (1 - progress), 0);
+                        } else if (s.transitionEffect === 'slide_right') {
+                            ctx.translate(canvas.width * (1 - progress), 0);
+                        } else if (s.transitionEffect === 'zoom') {
+                            ctx.translate(canvas.width/2, canvas.height/2);
+                            ctx.scale(progress, progress);
+                            ctx.translate(-canvas.width/2, -canvas.height/2);
+                        } else if (s.transitionEffect === 'wipe') {
+                            ctx.beginPath();
+                            ctx.rect(0, 0, canvas.width * progress, canvas.height);
+                            ctx.clip();
+                        }
+                        
+                        // Yeni sahneyi çiz
+                        ctx.drawImage(sceneCanvas, 0, 0);
+                        ctx.restore();
                     } else {
-                         ctx.fillStyle = "#111827"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        // Geçiş yoksa direkt çiz
+                        ctx.drawImage(sceneCanvas, 0, 0);
                     }
-
-                    // Parçacıklar
-                    if (s.particleEffect !== 'none') {
-                        let pCount = s.particleEffect === 'golden_dust' ? 100 : 50;
-                        for (let i = 0; i < pCount; i++) {
-                            let pX = (Math.random() * canvas.width + time * 0.1) % canvas.width;
-                            let pY = (Math.random() * canvas.height - time * 0.2) % canvas.height;
-                            if(pY < 0) pY += canvas.height;
-                            ctx.beginPath(); let pRadius = Math.random() * 2 + 1;
-                            if(s.particleEffect === 'golden_dust') { ctx.fillStyle = `rgba(255, 215, 0, 0.8)`; ctx.shadowColor = "gold"; ctx.shadowBlur = 10; }
-                            else if(s.particleEffect === 'snow') { ctx.fillStyle = `rgba(255, 255, 255, 0.8)`; }
-                            else if(s.particleEffect === 'fireflies') { ctx.fillStyle = `rgba(200, 255, 100, 0.8)`; ctx.shadowColor = "yellow"; ctx.shadowBlur = 15; }
-                            ctx.arc(pX, pY, pRadius, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0;
-                        }
-                    }
-
-                    // Resimler
-                    if (currentScene.images.length > 0) {
-                        const entryDuration = sceneDuration * 0.4; 
-                        let entryProgress = Math.min(1, sceneTime / entryDuration);
-                        let easedProgress = easeOutCubic(entryProgress);
-
-                        currentScene.images.forEach(imgData => {
-                            let targetX = imgData.x;
-                            let targetY = imgData.y;
-                            let targetScale = imgData.scale;
-                            let imgRotation = (imgData.rotation * Math.PI) / 180;
-                            
-                            let currentX = targetX, currentY = targetY, currentScale = targetScale, extraRotation = 0;
-
-                            if (entryProgress < 1) {
-                                let startX = targetX, startY = targetY, startScale = targetScale;
-                                if (s.entryAnimation === 'slide_left') { startX = -1500; }
-                                else if (s.entryAnimation === 'slide_right') { startX = 1500; }
-                                else if (s.entryAnimation === 'drop_down') { startY = -1000; }
-                                else if (s.entryAnimation === 'fly_up') { startY = 1000; }
-                                else if (s.entryAnimation === 'zoom_in') { startScale = 0; }
-                                else if (s.entryAnimation === 'orbit') { 
-                                    let angle = (1 - easedProgress) * Math.PI * 4; 
-                                    startX = targetX + Math.cos(angle) * 800;
-                                    startY = targetY + Math.sin(angle) * 800;
-                                    startScale = 0.2; extraRotation = angle;
-                                }
-                                currentX = startX + (targetX - startX) * easedProgress;
-                                currentY = startY + (targetY - startY) * easedProgress;
-                                currentScale = startScale + (targetScale - startScale) * easedProgress;
-                            }
-
-                            let imgW = imgData.imgObj.width, imgH = imgData.imgObj.height, maxSize = 400;
-                            if (imgW > maxSize || imgH > maxSize) { if (imgW > imgH) { imgH = (maxSize / imgW) * imgH; imgW = maxSize; } else { imgW = (maxSize / imgH) * imgW; imgH = maxSize; } }
-
-                            ctx.save();
-                            ctx.translate(centerX + currentX, centerY + currentY); 
-                            ctx.rotate(imgRotation + extraRotation); ctx.scale(currentScale, currentScale);
-
-                            if (s.imageStyle === 'glass') {
-                                ctx.beginPath(); ctx.roundRect(-imgW/2, -imgH/2, imgW, imgH, 30); ctx.clip();
-                                ctx.globalAlpha = 0.85; ctx.drawImage(imgData.imgObj, -imgW/2, -imgH/2, imgW, imgH);
-                                ctx.shadowBlur = 0;
-                                let glare = ctx.createLinearGradient(-imgW/2, -imgH/2, imgW/2, imgH/2);
-                                glare.addColorStop(0, "rgba(255,255,255,0.4)"); glare.addColorStop(0.5, "rgba(255,255,255,0)");
-                                ctx.fillStyle = glare; ctx.fillRect(-imgW/2, -imgH/2, imgW, imgH);
-                            } else if (s.imageStyle === 'circle') {
-                                ctx.beginPath(); ctx.arc(0, 0, Math.min(imgW, imgH)/2, 0, Math.PI*2); ctx.clip();
-                                let drawSize = Math.min(imgW, imgH); ctx.drawImage(imgData.imgObj, -drawSize/2, -drawSize/2, drawSize, drawSize);
-                            } else {
-                                ctx.drawImage(imgData.imgObj, -imgW/2, -imgH/2, imgW, imgH);
-                            }
-                            ctx.restore();
-                        });
-                    }
-
-                    // YAZILAR
-                    let titleX = s.titleX;
-                    let titleY = s.titleY;
-                    let subX = s.subtitleX;
-                    let subY = s.subtitleY;
-                    
-                    let currentTitleColor = s.titleColor;
-                    let currentSubColor = s.subtitleColor;
-                    let textScale = 1;
-
-                    if (s.textAnimation === 'color_cycle') { 
-                        let hue = (time / 10) % 360; currentTitleColor = `hsl(${hue}, 100%, 60%)`; currentSubColor = currentTitleColor;
-                    } else if (s.textAnimation === 'bounce') { 
-                        titleY += Math.sin(time / 200) * 15; subY += Math.sin(time / 200) * 15; 
-                    } else if (s.textAnimation === 'neon_pulse') { 
-                        textScale = 1 + Math.sin(time / 150) * 0.05; 
-                    }
-
-                    ctx.save(); 
-                    ctx.translate(centerX + titleX, centerY + titleY); 
-                    ctx.scale(textScale, textScale);
-                    ctx.textAlign = "center"; ctx.textBaseline = "middle"; 
-                    ctx.font = `600 80px ${selectedFont}`;
-                    
-                    let titleWidth = ctx.measureText(s.title).width + 80;
-                    ctx.fillStyle = "rgba(0, 0, 0, 0.5)"; 
-                    ctx.beginPath(); ctx.roundRect(-titleWidth/2, -60, titleWidth, 110, 20); ctx.fill();
-
-                    ctx.shadowColor = currentTitleColor; ctx.shadowBlur = 20; ctx.fillStyle = currentTitleColor;
-                    
-                    if (s.textAnimation === 'typewriter') {
-                        let charsToShow = Math.floor(sceneTime / 50);
-                        ctx.fillText(s.title.substring(0, charsToShow), 0, 0);
-                    } else { 
-                        ctx.fillText(s.title, 0, 0); 
-                    }
-                    ctx.restore();
-
-                    ctx.save(); 
-                    ctx.translate(centerX + subX, centerY + subY); 
-                    ctx.scale(textScale, textScale);
-                    ctx.textAlign = "center"; ctx.textBaseline = "middle";
-                    ctx.font = `400 32px 'Montserrat', sans-serif`; 
-                    
-                    let subWidth = ctx.measureText(s.subtitle).width + 60;
-                    ctx.fillStyle = "rgba(0, 0, 0, 0.5)"; 
-                    ctx.beginPath(); ctx.roundRect(-subWidth/2, -25, subWidth, 50, 15); ctx.fill();
-
-                    ctx.shadowColor = "rgba(0,0,0,0.8)"; ctx.shadowBlur = 10;
-                    ctx.fillStyle = currentSubColor;
-                    ctx.fillText(s.subtitle, 0, 0); 
-                    ctx.restore();
 
                     if (time >= totalDuration) { mediaRecorder.stop(); } 
                     else { animationId = requestAnimationFrame(drawFrame); }
